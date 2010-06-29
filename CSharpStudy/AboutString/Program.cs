@@ -15,18 +15,20 @@ namespace AboutString
             Console.WriteLine(string.Compare("list.aspx","List.aspx",true));
             Console.WriteLine(string.Compare("list.aspx", "sadf"));
             Console.ReadKey(); 
-            string aaa="234,";
+
+            string aaa="我,";
             Console.WriteLine(System.Text.Encoding.GetEncoding(936).GetBytes("我是1").Length);
-            Console.WriteLine(Regex.Replace(aaa, "[^\x00-\xff]", "aa").Length); //没有上面的快，但比上面的准确
+            Console.WriteLine(Regex.Replace(aaa, "[^\x00-\xff]", "aa").Length); //没有上面的快，但比上面的通用，可判断所有双字节字符
             Console.WriteLine(aaa.Remove(aaa.Length-1));
             Console.ReadKey(); 
+
             Console.WriteLine("{0}String.PadLeft{0}", new string('=', 20));
             string[] strTemp = { "12", "1", "234", "12345" };
             foreach (string item in strTemp)
             {
                 Console.WriteLine(item.PadLeft(6,'0'));
             }
-
+            Console.ReadKey(); 
 
 
             char[] sArr = new char[10000];
@@ -56,86 +58,86 @@ namespace AboutString
             for (int i = 0; i < 10000; i++) //这个用时271毫秒左右
                 CutString(s, 255, true, CutType.Varchar);
             sw.Stop();
-            Console.WriteLine("字符串截取的方法Intercept1: " + sw.Elapsed.TotalMilliseconds + "ms");
+            Console.WriteLine("字符串截取的方法CutString: " + sw.Elapsed.TotalMilliseconds + "ms");
 
 
             sw.Reset();
             sw.Start();
             for (int i = 0; i < 10000; i++) //这个用时271毫秒左右
-                Intercept1(s, 255);
+                Truncate002(s, 255);
             sw.Stop();
-            Console.WriteLine("字符串截取的方法Intercept1: " + sw.Elapsed.TotalMilliseconds + "ms");
+            Console.WriteLine("字符串截取的方法Truncate002: " + sw.Elapsed.TotalMilliseconds + "ms");
 
             sw.Reset();
             sw.Start();
             for (int i = 0; i < 10000; i++) //这个用时540毫秒左右
-                HalfSubstring(s, 255);
+                Truncate004(s, 255);
             sw.Stop();
-            Console.WriteLine("字符串截取的方法HalfSubstring: " + sw.Elapsed.TotalMilliseconds + "ms");
+            Console.WriteLine("字符串截取的方法Truncate004: " + sw.Elapsed.TotalMilliseconds + "ms");
 
             sw.Reset();
             sw.Start();
             for (int i = 0; i < 10000; i++) //这个用时1784毫秒左右
-                Intercept(s, 255);
+                Truncate001(s, 255);
             sw.Stop();
 
-            Console.WriteLine("按奇偶位判断的方法Intercept: " + sw.Elapsed.TotalMilliseconds + "ms");
+            Console.WriteLine("按奇偶位判断的方法Truncate001: " + sw.Elapsed.TotalMilliseconds + "ms");
 
-            //sw.Reset();
-            //sw.Start();
-            //for (int i = 0; i < 10000; i++)//这个慢的吓人，我没耐心等...
-            //    Intercept2(s, 255);
-            //sw.Stop();
+            sw.Reset();
+            sw.Start();
+            for (int i = 0; i < 10000; i++)//这个慢的吓人，我没耐心等...
+                Truncate003(s, 255);
+            sw.Stop();
 
-            //Console.WriteLine("网友提供的方法: " + sw.Elapsed.TotalMilliseconds + "ms");
+            Console.WriteLine("网友提供的方法Truncate003: " + sw.Elapsed.TotalMilliseconds + "ms");
             Console.Read();
         }
 
         //这个算法用时：22毫秒左右
-        public static string Truncate(string strOriginal, int intLength)
+        public static string Truncate(string input, int length)
         {
-            int len = strOriginal.Length;
+            int len = input.Length;
             int i = 0;
-            for (; i < intLength && i < len; i++)
+            for (; i < length && i < len; i++)
             {
-                if ((int)(strOriginal[i]) > 0xFF)
+                if ((int)(input[i]) > 0xFF)
                 {
-                    --intLength;
+                    --length;
                 }
             }
 
-            if (intLength < i)
+            if (length < i)
             {
-                intLength = i;
+                length = i;
             }
-            else if (intLength > len)
+            else if (length > len)
             {
-                intLength = len;
+                length = len;
             }
 
-            return strOriginal.Substring(0, intLength);
+            return input.Substring(0, length);
         }
 
         //这个用时1784毫秒左右
-        public static string Intercept(string input, int p)
+        public static string Truncate001(string input, int length)
         {
             Encoding encode = Encoding.GetEncoding("gb2312");
             byte[] byteArr = encode.GetBytes(input);
-            if (byteArr.Length <= p) return input;
+            if (byteArr.Length <= length) return input;
 
             int m = 0, n = 0;
             foreach (byte b in byteArr)
             {
-                if (n >= p) break;
+                if (n >= length) break;
                 if (b > 127) m++; //重要一步：对前p个字节中的值大于127的字符进行统计
                 n++;
             }
-            if (m % 2 != 0) n = p + 1; //如果非偶：则说明末尾为双字节字符，截取位数加1
+            if (m % 2 != 0) n = length + 1; //如果非偶：则说明末尾为双字节字符，截取位数加1
 
             return encode.GetString(byteArr, 0, n);
         }
         //这个用时271毫秒左右
-        public static string Intercept1(string input, int length)
+        public static string Truncate002(string input, int length)
         {
             if (input.Length == 0)
                 return string.Empty;
@@ -154,17 +156,18 @@ namespace AboutString
             return temp.ToString();
         }
         //这个慢的吓人，我没耐心等...
-        public static string Intercept2(string input, int length)
+        public static string Truncate003(string input, int length)
         {
+            Encoding encode = Encoding.GetEncoding("gb2312");
             string res = String.Empty;
-            int bytecount = System.Text.Encoding.GetEncoding("GB2312").GetByteCount(input);
+            int bytecount = encode.GetByteCount(input);
             if (length >= bytecount)
             {
                 return input;
             }
             for (int i = input.Length - 1; i >= 0; i--)
             {
-                if (System.Text.Encoding.GetEncoding("GB2312").GetByteCount(input.Substring(0, i)) <= length)
+                if (encode.GetByteCount(input.Substring(0, i)) <= length)
                 {
                     return input.Substring(0, i);
                 }
@@ -173,20 +176,20 @@ namespace AboutString
         }
 
         //这个用时540毫秒左右
-        static string HalfSubstring(string str, int strLength)
+        static string Truncate004(string input, int length)
         {
-            if (System.Text.Encoding.Unicode.GetByteCount(str) < strLength)
-                return str;
-            byte[] bytesStr = System.Text.Encoding.Unicode.GetBytes(str);
+            if (System.Text.Encoding.Unicode.GetByteCount(input) < length)
+                return input;
+            byte[] bytesStr = System.Text.Encoding.Unicode.GetBytes(input);
             List<byte> list = new List<byte>();
             int count = 0;
             for (int i = 0; i < bytesStr.Length; i += 2)
             {
-                if (count == strLength)
+                if (count == length)
                     break;
                 if (bytesStr[i + 1] == 0)
                 {
-                    if (count + 1 == strLength)
+                    if (count + 1 == length)
                     {
                         list.Add(46);
                         list.Add(0);
@@ -201,13 +204,13 @@ namespace AboutString
                 }
                 else
                 {
-                    if (count + 2 > strLength)
+                    if (count + 2 > length)
                     {
                         list.Add(46);
                         list.Add(0);
                         count++;
                     }
-                    else if (count + 2 == strLength)
+                    else if (count + 2 == length)
                     {
                         list.Add(46);
                         list.Add(0);
