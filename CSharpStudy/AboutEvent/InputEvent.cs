@@ -48,7 +48,7 @@ namespace AboutDelegateEvent
     /// </summary>
     class MyClass
     {
-        delegate void InputHandler(string s);
+        public delegate void InputHandler(string s);
         public event InputHandler OnInput;
         public void Run(string str)
         {
