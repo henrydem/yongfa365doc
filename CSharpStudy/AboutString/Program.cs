@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-
+//from http://kb.cnblogs.com/a/1429559/
 namespace AboutString
 {
     class Program
@@ -49,19 +49,23 @@ namespace AboutString
 
             int length = 255;
             int count = 10000;
-            RunTest(s, length, count, Truncate);
-            RunTest(s, length, count, Truncate001);
-            RunTest(s, length, count, Truncate002);
-            RunTest(s, length, count, Truncate003);
+            //RunTest(s, length, count, Truncate);
+            //RunTest(s, length, count, Truncate001);
+            //RunTest(s, length, count, Truncate002);
+            //RunTest(s, length, count, Truncate003);
 
-            Console.ReadKey();
+            //Console.ReadKey();
 
             length = 22;
+            for (length = 0; length < 10000; length++)
+            {
             Console.WriteLine("\r\n正确性测试\r\n{0}结果: {1} ", "True Length".PadRight(12, ' '), new string('A', length));
             RunTest2(s, length, Truncate);
             RunTest2(s, length, Truncate001);
             RunTest2(s, length, Truncate002);
-            RunTest2(s, length, Truncate003);
+            RunTest2(s, length, Truncate003);                
+            }
+
 
             Console.ReadKey();
         }
@@ -83,12 +87,15 @@ namespace AboutString
             Console.WriteLine("{0}结果: {1} ", truncate.Method.Name.PadRight(12, ' '), truncate(input, length));
         }
 
+
+
         //这个算法用时：22毫秒左右
         public static string Truncate(string input, int length)
         {
             int len = input.Length;
-            int i = 0;
-            for (; i < length && i < len; i++)
+            int i;
+
+            for (i = 0; i < length && i < len; i++)
             {
                 if ((int)(input[i]) > 0xFF)
                 {
@@ -133,9 +140,12 @@ namespace AboutString
         //这个用时500毫秒左右
         static string Truncate002(string input, int length)
         {
-            if (System.Text.Encoding.Unicode.GetByteCount(input) < length)
+            if (Encoding.Unicode.GetByteCount(input) < length)
+            {
                 return input;
-            byte[] bytesStr = System.Text.Encoding.Unicode.GetBytes(input);
+            }
+
+            byte[] bytesStr = Encoding.Unicode.GetBytes(input);
             List<byte> list = new List<byte>();
             int count = 0;
             for (int i = 0; i < bytesStr.Length; i += 2)
@@ -181,7 +191,7 @@ namespace AboutString
                     }
                 }
             }
-            return System.Text.Encoding.Unicode.GetString(list.ToArray());
+            return Encoding.Unicode.GetString(list.ToArray());
         }
 
 
