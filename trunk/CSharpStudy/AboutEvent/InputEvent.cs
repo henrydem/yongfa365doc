@@ -10,7 +10,7 @@ namespace AboutDelegateEvent
     /// </summary>
     class 事件Demo
     {
-        static void Main(string[] args)
+        static void Main3(string[] args)
         {
             MyClass cls = new MyClass();
 
@@ -48,7 +48,7 @@ namespace AboutDelegateEvent
     /// </summary>
     class MyClass
     {
-        public delegate void InputHandler(string s);
+        delegate void InputHandler(string s);
         public event InputHandler OnInput;
         public void Run(string str)
         {

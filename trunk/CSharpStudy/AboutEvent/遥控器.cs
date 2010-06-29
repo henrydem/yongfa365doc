@@ -63,6 +63,7 @@ namespace AboutDelegate
             我的遥控器.选台(10);
             我的遥控器.选台(5);
             我的遥控器.关机();
+            Console.ReadKey(); 
         }
     } 
 }
