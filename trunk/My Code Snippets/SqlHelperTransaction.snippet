@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>SqlHelperTransaction</Title>
+			<Shortcut>SqlHelperTransaction</Shortcut>
+			<Description>SqlHelperTransaction</Description>
+			<Author>yongfa365</Author>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+				<SnippetType>SurroundsWith</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Code Language="csharp"><![CDATA[
+            using (SqlConnection ConnNow = new SqlConnection(SqlHelper.SqlConnection))
+            {
+                ConnNow.Open();
+                using (SqlTransaction trans = ConnNow.BeginTransaction())
+                {
+                    try
+                    {
+			$selected$ $end$
+                        trans.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        MessageBox.Show(ex.Message);
+                        return;
+                    }
+                }
+            }
+]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
