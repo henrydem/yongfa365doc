@@ -8,27 +8,28 @@ namespace AboutString
 {
     class Program
     {
-        //本示例测试方法相同
+        public delegate string TruncateDelegate(string input, int length);
+
 
         static void Main(string[] args)
         {
-            Console.WriteLine(string.Compare("list.aspx","List.aspx",true));
+            Console.WriteLine(string.Compare("list.aspx", "List.aspx", true));
             Console.WriteLine(string.Compare("list.aspx", "sadf"));
-            Console.ReadKey(); 
+            Console.ReadKey();
 
-            string aaa="我,";
+            string aaa = "我,";
             Console.WriteLine(System.Text.Encoding.GetEncoding(936).GetBytes("我是1").Length);
             Console.WriteLine(Regex.Replace(aaa, "[^\x00-\xff]", "aa").Length); //没有上面的快，但比上面的通用，可判断所有双字节字符
-            Console.WriteLine(aaa.Remove(aaa.Length-1));
-            Console.ReadKey(); 
+            Console.WriteLine(aaa.Remove(aaa.Length - 1));
+            Console.ReadKey();
 
             Console.WriteLine("{0}String.PadLeft{0}", new string('=', 20));
             string[] strTemp = { "12", "1", "234", "12345" };
             foreach (string item in strTemp)
             {
-                Console.WriteLine(item.PadLeft(6,'0'));
+                Console.WriteLine(item.PadLeft(6, '0'));
             }
-            Console.ReadKey(); 
+            Console.ReadKey();
 
 
             char[] sArr = new char[10000];
@@ -46,51 +47,40 @@ namespace AboutString
                     s = s.Insert(i, "中国人");
             }
 
+            int length = 255;
+            int count = 10000;
+            RunTest(s, length, count, Truncate);
+            RunTest(s, length, count, Truncate001);
+            RunTest(s, length, count, Truncate002);
+            RunTest(s, length, count, Truncate003);
+
+            Console.ReadKey();
+
+            length = 22;
+            Console.WriteLine("\r\n正确性测试\r\n{0}结果: {1} ", "True Length".PadRight(12, ' '), new string('A', length));
+            RunTest2(s, length, Truncate);
+            RunTest2(s, length, Truncate001);
+            RunTest2(s, length, Truncate002);
+            RunTest2(s, length, Truncate003);
+
+            Console.ReadKey();
+        }
+
+        public static void RunTest(string input, int length, int count, TruncateDelegate truncate)
+        {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            for (int i = 0; i < 10000; i++)//这个算法用时：22毫秒左右
-                Truncate(s, 255);
+            for (int i = 0; i < count; i++)
+            {
+                truncate(input, length);
+            }
             sw.Stop();
-            Console.WriteLine("字符串截取的方法Truncate: " + sw.Elapsed.TotalMilliseconds + "ms");
+            Console.WriteLine("字符串截取的方法{0}:{1}ms ", truncate.Method.Name, sw.Elapsed.TotalMilliseconds);
+        }
 
-            sw.Reset();
-            sw.Start();
-            for (int i = 0; i < 10000; i++) //这个用时271毫秒左右
-                CutString(s, 255, true, CutType.Varchar);
-            sw.Stop();
-            Console.WriteLine("字符串截取的方法CutString: " + sw.Elapsed.TotalMilliseconds + "ms");
-
-
-            sw.Reset();
-            sw.Start();
-            for (int i = 0; i < 10000; i++) //这个用时271毫秒左右
-                Truncate002(s, 255);
-            sw.Stop();
-            Console.WriteLine("字符串截取的方法Truncate002: " + sw.Elapsed.TotalMilliseconds + "ms");
-
-            sw.Reset();
-            sw.Start();
-            for (int i = 0; i < 10000; i++) //这个用时540毫秒左右
-                Truncate004(s, 255);
-            sw.Stop();
-            Console.WriteLine("字符串截取的方法Truncate004: " + sw.Elapsed.TotalMilliseconds + "ms");
-
-            sw.Reset();
-            sw.Start();
-            for (int i = 0; i < 10000; i++) //这个用时1784毫秒左右
-                Truncate001(s, 255);
-            sw.Stop();
-
-            Console.WriteLine("按奇偶位判断的方法Truncate001: " + sw.Elapsed.TotalMilliseconds + "ms");
-
-            sw.Reset();
-            sw.Start();
-            for (int i = 0; i < 10000; i++)//这个慢的吓人，我没耐心等...
-                Truncate003(s, 255);
-            sw.Stop();
-
-            Console.WriteLine("网友提供的方法Truncate003: " + sw.Elapsed.TotalMilliseconds + "ms");
-            Console.Read();
+        public static void RunTest2(string input, int length, TruncateDelegate truncate)
+        {
+            Console.WriteLine("{0}结果: {1} ", truncate.Method.Name.PadRight(12, ' '), truncate(input, length));
         }
 
         //这个算法用时：22毫秒左右
@@ -118,26 +108,10 @@ namespace AboutString
             return input.Substring(0, length);
         }
 
-        //这个用时1784毫秒左右
+
+
+        //这个用时240毫秒左右
         public static string Truncate001(string input, int length)
-        {
-            Encoding encode = Encoding.GetEncoding("gb2312");
-            byte[] byteArr = encode.GetBytes(input);
-            if (byteArr.Length <= length) return input;
-
-            int m = 0, n = 0;
-            foreach (byte b in byteArr)
-            {
-                if (n >= length) break;
-                if (b > 127) m++; //重要一步：对前p个字节中的值大于127的字符进行统计
-                n++;
-            }
-            if (m % 2 != 0) n = length + 1; //如果非偶：则说明末尾为双字节字符，截取位数加1
-
-            return encode.GetString(byteArr, 0, n);
-        }
-        //这个用时271毫秒左右
-        public static string Truncate002(string input, int length)
         {
             if (input.Length == 0)
                 return string.Empty;
@@ -155,28 +129,9 @@ namespace AboutString
             temp.Append("...");
             return temp.ToString();
         }
-        //这个慢的吓人，我没耐心等...
-        public static string Truncate003(string input, int length)
-        {
-            Encoding encode = Encoding.GetEncoding("gb2312");
-            string res = String.Empty;
-            int bytecount = encode.GetByteCount(input);
-            if (length >= bytecount)
-            {
-                return input;
-            }
-            for (int i = input.Length - 1; i >= 0; i--)
-            {
-                if (encode.GetByteCount(input.Substring(0, i)) <= length)
-                {
-                    return input.Substring(0, i);
-                }
-            }
-            return string.Empty;
-        }
 
-        //这个用时540毫秒左右
-        static string Truncate004(string input, int length)
+        //这个用时500毫秒左右
+        static string Truncate002(string input, int length)
         {
             if (System.Text.Encoding.Unicode.GetByteCount(input) < length)
                 return input;
@@ -230,75 +185,113 @@ namespace AboutString
         }
 
 
+        //这个用时1877毫秒左右
+        public static string Truncate003(string input, int length)
+        {
+            Encoding encode = Encoding.GetEncoding("gb2312");
+            byte[] byteArr = encode.GetBytes(input);
+            if (byteArr.Length <= length) return input;
+
+            int m = 0, n = 0;
+            foreach (byte b in byteArr)
+            {
+                if (n >= length) break;
+                if (b > 127) m++; //重要一步：对前p个字节中的值大于127的字符进行统计
+                n++;
+            }
+            if (m % 2 != 0) n = length + 1; //如果非偶：则说明末尾为双字节字符，截取位数加1
+
+            return encode.GetString(byteArr, 0, n);
+        }
+
+
+
+
+
+
         /// <summary>
         /// 要截取的字节数
         /// </summary>
-        /// <param name="value">输入的字符串</param>
+        /// <param name="input">输入的字符串</param>
         /// <param name="length">限定长度</param>
         /// <param name="ellipsis">是否需要省略号,true--需要，false--不需要</param>
         /// <param name="cuttype">截取类型</param>
         /// <returns>截取后的字符串，如果是NVarchar--则20个字节就会有10个字符，Varchar--20个字节会有>=10个字符</returns>
-        public static string CutString(string value, int length, bool ellipsis, CutType cuttype)
+        public static string CutString(string input, int length, bool ellipsis, CutType cuttype)
         {
-            value = value.Trim();
-            if (value.Length == 0)
+            input = input.Trim();
+            if (input.Length == 0)
+            {
                 return string.Empty;
+            }
+
             if (cuttype == CutType.NVarchar)
             {
-                if (value.Length > length / 2)
+                if (input.Length > length / 2)
                 {
-                    value = value.Substring(0, length / 2);
+                    input = input.Substring(0, length / 2);
                     if (ellipsis)
-                        return value + "..";
+                    {
+                        return input + "..";
+                    }
                 }
             }
             else
             {
+                Encoding encode = Encoding.GetEncoding("gbk");
                 string resultString = string.Empty;
-                byte[] myByte = System.Text.Encoding.GetEncoding("gbk").GetBytes(value);
+                byte[] myByte = encode.GetBytes(input);
                 if (myByte.Length > length)
                 {
-                    resultString = Encoding.GetEncoding("gbk").GetString(myByte, 0, length);
+                    resultString = encode.GetString(myByte, 0, length);
                     string lastChar = resultString.Substring(resultString.Length - 1, 1);
-                    if (lastChar.Equals(value.Substring(resultString.Length - 1, 1)))
-                    { value = resultString; }//如果截取后最后一个字符与原始输入字符串中同一位置的字符相等，则表示截取完成
-                    else//如果不相等，则减去一个字节再截取
+                    if (lastChar.Equals(input.Substring(resultString.Length - 1, 1)))
                     {
-                        value = Encoding.GetEncoding("gbk").GetString(myByte, 0, length - 1);
+                        //如果截取后最后一个字符与原始输入字符串中同一位置的字符相等，则表示截取完成
+                        input = resultString;
+                    }
+                    else
+                    {
+                        //如果不相等，则减去一个字节再截取
+                        input = encode.GetString(myByte, 0, length - 1);
                     }
                     if (ellipsis)
-                        return value + "..";
-                    return value;
+                        return input + "..";
+                    return input;
                 }
             }
-            return value;
+            return input;
         }
+
         #region  截短字串的函数，分区中英文
         /// <summary>
         /// 截短字串的函数
         /// </summary>
-        /// <param name="mText">要加工的字串</param>
-        /// <param name="byteCount">长度</param>
+        /// <param name="input">要加工的字串</param>
+        /// <param name="length">长度</param>
         /// <returns>被加工过的字串</returns>
-        public static string Left(string mText, int byteCount)
+        public static string Left(string input, int length)
         {
-            if (byteCount < 1)
-                return mText;
-
-            if (System.Text.Encoding.Default.GetByteCount(mText) <= byteCount)
+            if (length < 1)
             {
-                return mText;
+                return input;
+            }
+            Encoding encode = Encoding.GetEncoding("gbk");
+
+            if (encode.GetByteCount(input) <= length)
+            {
+                return input;
             }
             else
             {
-                byte[] txtBytes = System.Text.Encoding.Default.GetBytes(mText);
-                byte[] newBytes = new byte[byteCount - 4];
+                byte[] txtBytes = encode.GetBytes(input);
+                byte[] newBytes = new byte[length - 4];
 
-                for (int i = 0; i < byteCount - 4; i++)
+                for (int i = 0; i < length - 4; i++)
                 {
                     newBytes[i] = txtBytes[i];
                 }
-                string OutPut = System.Text.Encoding.Default.GetString(newBytes) + "...";
+                string OutPut = encode.GetString(newBytes) + "...";
                 if (OutPut.EndsWith("?...") == true)
                 {
                     OutPut = OutPut.Substring(0, OutPut.Length - 4);
