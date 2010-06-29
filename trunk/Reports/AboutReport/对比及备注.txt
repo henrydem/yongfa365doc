@@ -1,0 +1,59 @@
+﻿
+如果字段或参数内容很长，可能到第二页，默认情况下，他会跳过第一页，从第二页开始，所以要设置下：
+
+设置对象格式--》将对象保持在一起勾上
+
+
+--------------------------------------------------------------------------------
+
+还有内容如果很长，得设置其 “可以增大”
+
+--------------------------------------------------------------------------------
+
+
+分组后要如何汇总：在组页脚或组页眉上点右键，插入，汇总，选某某个字段，汇总方式为：计数，汇总位置为：某个组
+
+--------------------------------------------------------------------------------
+
+对比：
+
+功能		水晶报表				RDLC
+
+图表功能	很强大					比较弱
+字段上		支持html				只支持txt
+分页上		可以把一长段文字分页	好像不行
+显示速度	显示速度快				要一个比较长的缓冲
+漂亮		默认不好看				向导生成的很漂亮（VSt010生成的更漂亮）
+
+RDLC基本上可以实现所有需求，还不用装水晶报表，做出来的分组报表，显示内容的，非常漂亮
+
+关于*.rdlc,*.rpt 嵌入资源及文件实现。
+默认都是嵌入但不复制，都推荐使用嵌入资源，如果希望报表定义可以由用户定制的话，这种情况就不要嵌入，而是将rdlc文件当作是内容文件随着应用程序一起发布
+
+rdlc:
+非嵌入资源：
+reportViewer1.LocalReport.ReportPath = "rptParam.rdlc";
+reportViewer1.LocalReport.DataSources.Add(new ReportDataSource("DataSetArticles_Articles", dt));
+
+嵌入资源：
+reportViewer1.LocalReport.ReportEmbeddedResource = "AboutReport.RDLC.rptDataSet.rdlc";
+reportViewer1.LocalReport.DataSources.Add(new ReportDataSource("DataSetArticles_Articles", dt));
+
+
+
+rpt:
+
+非嵌入资源：
+ReportDocument doc = new ReportDocument();
+doc.Load(@"CrystalReport\rptGroup.rpt");
+doc.SetDataSource(DBMaker.GetDataTable());
+crystalReportViewer1.ReportSource = doc;
+
+嵌入资源：
+rptOther doc = new rptOther();
+doc.SetDataSource(DBMaker.GetDataTable());
+crystalReportViewer1.ReportSource = doc;
+
+
+
+--------------------------------------------------------------------------------

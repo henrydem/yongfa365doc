@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSetOffice" targetNamespace="http://tempuri.org/DataSetOffice.xsd" xmlns:mstns="http://tempuri.org/DataSetOffice.xsd" xmlns="http://tempuri.org/DataSetOffice.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSetOffice" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_DataSetName="DataSetOffice" msprop:Generator_UserDSName="DataSetOffice" msprop:EnableTableAdapterManager="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="人员表" msprop:Generator_UserTableName="人员表" msprop:Generator_RowDeletedName="人员表RowDeleted" msprop:Generator_TableClassName="人员表DataTable" msprop:Generator_RowChangedName="人员表RowChanged" msprop:Generator_RowClassName="人员表Row" msprop:Generator_RowChangingName="人员表RowChanging" msprop:Generator_RowEvArgName="人员表RowChangeEvent" msprop:Generator_RowEvHandlerName="人员表RowChangeEventHandler" msprop:Generator_TablePropName="人员表" msprop:Generator_TableVarName="table人员表" msprop:Generator_RowDeletingName="人员表RowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="姓名" msprop:Generator_UserColumnName="姓名" msprop:Generator_ColumnPropNameInRow="姓名" msprop:Generator_ColumnVarNameInTable="column姓名" msprop:Generator_ColumnPropNameInTable="姓名Column" type="xs:string" minOccurs="0" />
+              <xs:element name="所在部门" msprop:Generator_UserColumnName="所在部门" msprop:Generator_ColumnPropNameInRow="所在部门" msprop:Generator_ColumnVarNameInTable="column所在部门" msprop:Generator_ColumnPropNameInTable="所在部门Column" type="xs:string" minOccurs="0" />
+              <xs:element name="工资" msprop:Generator_UserColumnName="工资" msprop:Generator_ColumnPropNameInRow="工资" msprop:Generator_ColumnVarNameInTable="column工资" msprop:Generator_ColumnPropNameInTable="工资Column" type="xs:decimal" minOccurs="0" />
+              <xs:element name="行号" msprop:Generator_UserColumnName="行号" msprop:Generator_ColumnPropNameInRow="行号" msprop:Generator_ColumnVarNameInTable="column行号" msprop:Generator_ColumnPropNameInTable="行号Column" type="xs:long" minOccurs="0" />
+              <xs:element name="列号" msprop:Generator_UserColumnName="列号" msprop:Generator_ColumnPropNameInRow="列号" msprop:Generator_ColumnVarNameInTable="column列号" msprop:Generator_ColumnPropNameInTable="列号Column" type="xs:long" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
