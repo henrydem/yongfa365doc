@@ -1,0 +1,72 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPOI_Test", "NPOI_Test\NPOI_Test.csproj", "{F619A2E2-40CA-4E6C-8C29-7363C066F060}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9D41A976-118D-4156-820D-D07DF8034064} = {9D41A976-118D-4156-820D-D07DF8034064}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyXls_Test", "MyXls_Test\MyXls_Test.csproj", "{85AAC0BB-6FAB-4AAA-8476-98AD79ECDBDC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9D41A976-118D-4156-820D-D07DF8034064} = {9D41A976-118D-4156-820D-D07DF8034064}
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "NPOI_Test_Web", "NPOI_Test_Web\", "{BD78C673-E4F4-4B6E-B98B-E064C2841879}"
+	ProjectSection(WebsiteProperties) = preProject
+		SccProjectName = "Svn"
+		SccAuxPath = "Svn"
+		SccLocalPath = "Svn"
+		SccProvider = "SubversionScc"
+		TargetFramework = "3.5"
+		ProjectReferences = "{9D41A976-118D-4156-820D-D07DF8034064}|ClassLibrary1.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/NPOI_Test_Web"
+		Debug.AspNetCompiler.PhysicalPath = "NPOI_Test_Web\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\NPOI_Test_Web\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/NPOI_Test_Web"
+		Release.AspNetCompiler.PhysicalPath = "NPOI_Test_Web\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\NPOI_Test_Web\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "5469"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{9D41A976-118D-4156-820D-D07DF8034064}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F619A2E2-40CA-4E6C-8C29-7363C066F060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F619A2E2-40CA-4E6C-8C29-7363C066F060}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F619A2E2-40CA-4E6C-8C29-7363C066F060}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F619A2E2-40CA-4E6C-8C29-7363C066F060}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85AAC0BB-6FAB-4AAA-8476-98AD79ECDBDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85AAC0BB-6FAB-4AAA-8476-98AD79ECDBDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85AAC0BB-6FAB-4AAA-8476-98AD79ECDBDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85AAC0BB-6FAB-4AAA-8476-98AD79ECDBDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD78C673-E4F4-4B6E-B98B-E064C2841879}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD78C673-E4F4-4B6E-B98B-E064C2841879}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD78C673-E4F4-4B6E-B98B-E064C2841879}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD78C673-E4F4-4B6E-B98B-E064C2841879}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{9D41A976-118D-4156-820D-D07DF8034064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D41A976-118D-4156-820D-D07DF8034064}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D41A976-118D-4156-820D-D07DF8034064}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D41A976-118D-4156-820D-D07DF8034064}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
