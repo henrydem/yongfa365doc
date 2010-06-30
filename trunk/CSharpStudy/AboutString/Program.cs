@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-//from http://kb.cnblogs.com/a/1429559/
+//from http://www.cnblogs.com/zhiyuanf/archive/2009/04/04/1429559.html
 namespace AboutString
 {
     class Program
@@ -13,17 +13,20 @@ namespace AboutString
 
         static void Main(string[] args)
         {
+            Console.WriteLine("\r\nstring.Compare。。。。。。。。。。。");
             Console.WriteLine(string.Compare("list.aspx", "List.aspx", true));
             Console.WriteLine(string.Compare("list.aspx", "sadf"));
             Console.ReadKey();
 
+            Console.WriteLine("\r\n字符串长度测试。。。。。。。。。。。");
             string aaa = "我,";
             Console.WriteLine(System.Text.Encoding.GetEncoding(936).GetBytes("我是1").Length);
             Console.WriteLine(Regex.Replace(aaa, "[^\x00-\xff]", "aa").Length); //没有上面的快，但比上面的通用，可判断所有双字节字符
             Console.WriteLine(aaa.Remove(aaa.Length - 1));
             Console.ReadKey();
 
-            Console.WriteLine("{0}String.PadLeft{0}", new string('=', 20));
+
+            Console.WriteLine("\r\n{0}String.PadLeft{0}", new string('=', 20));
             string[] strTemp = { "12", "1", "234", "12345" };
             foreach (string item in strTemp)
             {
@@ -36,34 +39,45 @@ namespace AboutString
             for (int i = 0; i < 10000; i++)
             {
                 if (i % 2 == 0)
+                {
                     sArr[i] = 'A';
+                }
                 else
+                {
                     sArr[i] = 'B';
+                }
             }
             string s = new string(sArr);
             for (int i = 0; i < sArr.Length; i++)
             {
                 if (i % 10 == 0)
+                {
                     s = s.Insert(i, "中国人");
+                }
             }
 
             int length = 255;
             int count = 10000;
-            //RunTest(s, length, count, Truncate);
-            //RunTest(s, length, count, Truncate001);
-            //RunTest(s, length, count, Truncate002);
-            //RunTest(s, length, count, Truncate003);
-
-            //Console.ReadKey();
+            Console.WriteLine("\r\n速度测试。。。。。。。。。。。");
+            RunTest(s, length, count, Truncate);
+            RunTest(s, length, count, Truncate001);
+            RunTest(s, length, count, Truncate002);
+            RunTest(s, length, count, Truncate003);
+            RunTest(s, length, count, Left);
+            RunTest(s, length, count, CutString);
+            Console.ReadKey();
 
             length = 22;
-            for (length = 0; length < 10000; length++)
+            for (length = 5; length < 10000; length++)
             {
-            Console.WriteLine("\r\n正确性测试\r\n{0}结果: {1} ", "True Length".PadRight(12, ' '), new string('A', length));
-            RunTest2(s, length, Truncate);
-            RunTest2(s, length, Truncate001);
-            RunTest2(s, length, Truncate002);
-            RunTest2(s, length, Truncate003);                
+                Console.WriteLine("\r\n正确性测试\r\n{0}结果: {1} ", "True Length".PadRight(12, ' '), new string('A', length));
+                RunTest2(s, length, Truncate);
+                RunTest2(s, length, Truncate001);
+                RunTest2(s, length, Truncate002);
+                RunTest2(s, length, Truncate003);
+                RunTest2(s, length, Left);
+                RunTest2(s, length, CutString);
+                Console.ReadKey();
             }
 
 
@@ -97,7 +111,7 @@ namespace AboutString
 
             for (i = 0; i < length && i < len; i++)
             {
-                if ((int)(input[i]) > 0xFF)
+                if ((int)input[i] > 0xFF)
                 {
                     --length;
                 }
@@ -121,20 +135,35 @@ namespace AboutString
         public static string Truncate001(string input, int length)
         {
             if (input.Length == 0)
+            {
                 return string.Empty;
+            }
             if (input.Length <= length)
+            {
                 return input;
+            }
             int total = 0;
             StringBuilder temp = new StringBuilder();
             for (int i = 0; i < input.Length; i++)
             {
-                if (total >= (length - 1)) break;
+                if (total >= (length - 1))
+                {
+                    break;
+                }
                 string s = input.Substring(i, 1);
                 temp.Append(s);
                 total += Encoding.Default.GetByteCount(s);
             }
-            temp.Append("...");
-            return temp.ToString();
+
+            string strOK = temp.ToString();
+            if (Encoding.Default.GetByteCount(strOK) < length)
+            {
+                return strOK + ".";
+            }
+            else
+            {
+                return strOK;
+            }
         }
 
         //这个用时500毫秒左右
@@ -215,9 +244,20 @@ namespace AboutString
         }
 
 
+        /// <summary>
+        /// 截取字符枚举值,Varchar--英文一个字节，中文两个字节，NVarchar--无论中英文都是两个字节
+        /// </summary>
+        public enum CutType
+        {
+            Varchar,
+            NVarchar
+        }
 
-
-
+        //1800ms左右
+        public static string CutString(string input, int length)
+        {
+            return CutString(input, length, true, CutType.Varchar);
+        }
 
         /// <summary>
         /// 要截取的字节数
@@ -266,14 +306,16 @@ namespace AboutString
                         input = encode.GetString(myByte, 0, length - 1);
                     }
                     if (ellipsis)
+                    {
                         return input + "..";
+                    }
                     return input;
                 }
             }
             return input;
         }
 
-        #region  截短字串的函数，分区中英文
+
         /// <summary>
         /// 截短字串的函数
         /// </summary>
@@ -286,7 +328,7 @@ namespace AboutString
             {
                 return input;
             }
-            Encoding encode = Encoding.GetEncoding("gbk");
+            Encoding encode = Encoding.Default;
 
             if (encode.GetByteCount(input) <= length)
             {
@@ -310,16 +352,18 @@ namespace AboutString
                 return OutPut;
             }
         }
-        #endregion
+
 
 
     }
-    /// <summary>
-    /// 截取字符枚举值,Varchar--英文一个字节，中文两个字节，NVarchar--无论中英文都是两个字节
-    /// </summary>
-    public enum CutType
-    {
-        Varchar,
-        NVarchar
-    }
+
 }
+//html里可以这么实现
+//.title
+//{
+//width:200px;
+//white-space:nowrap;
+//word-break:keep-all;
+//overflow:hidden;
+//text-overflow:ellipsis;
+//}
