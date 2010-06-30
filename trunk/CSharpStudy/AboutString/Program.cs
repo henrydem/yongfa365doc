@@ -60,6 +60,7 @@ namespace AboutString
             int count = 10000;
             Console.WriteLine("\r\n速度测试。。。。。。。。。。。");
             RunTest(s, length, count, Truncate);
+            RunTest(s, length, count, TruncateNow);
             RunTest(s, length, count, Truncate001);
             RunTest(s, length, count, Truncate002);
             RunTest(s, length, count, Truncate003);
@@ -72,6 +73,7 @@ namespace AboutString
             {
                 Console.WriteLine("\r\n正确性测试\r\n{0}结果: {1} ", "True Length".PadRight(12, ' '), new string('A', length));
                 RunTest2(s, length, Truncate);
+                RunTest2(s, length, TruncateNow);
                 RunTest2(s, length, Truncate001);
                 RunTest2(s, length, Truncate002);
                 RunTest2(s, length, Truncate003);
@@ -127,6 +129,30 @@ namespace AboutString
             }
 
             return input.Substring(0, length);
+        }
+
+        //上面最后的判断代码不明白什么意思，改造下
+        public static string TruncateNow(string input, int length)
+        {
+            int len = input.Length;
+            int i;
+
+            for (i = 0; i < length && i < len; i++)
+            {
+                if ((int)input[i] > 0xFF)
+                {
+                    --length;
+                }
+            }
+
+            if (length < i)
+            {
+                return input.Substring(0, length) + ".";
+            }
+            else
+            {
+                return input.Substring(0, length);
+            }
         }
 
 
