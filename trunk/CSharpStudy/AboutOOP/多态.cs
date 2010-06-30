@@ -34,7 +34,7 @@ public class Square : DrawingObject
 
 public class DrawDemo
 {
-    public static int Main(string[] args)
+    public static int Main2(string[] args)
     {
         DrawingObject[] dObj = new DrawingObject[4];
         dObj[0] = new Line();
