@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="FrmBackgroundWorker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +127,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SafeInvoke.cs" />
+    <Compile Include="Threads.cs" />
     <Compile Include="WaitHandle.WaitAll.cs" />
     <Compile Include="WaitHandle.WaitOne.cs" />
   </ItemGroup>
