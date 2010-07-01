@@ -7,7 +7,7 @@ namespace AboutThreading
     {
         static ManualResetEvent manualEvent = new ManualResetEvent(false);
 
-        static void Main12()
+        static void Main()
         {
             Console.WriteLine("Main starting.");
 
