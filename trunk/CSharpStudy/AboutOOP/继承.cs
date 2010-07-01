@@ -107,7 +107,7 @@ namespace AboutOOP
             a.Fun1(2);
             Fun1(5);
         }
-        public static void Main333()
+        public static void Main()
         {
             A b = new B();
             A a = new A();
