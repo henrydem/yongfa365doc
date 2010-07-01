@@ -107,7 +107,7 @@ namespace AboutOOP
             a.Fun1(2);
             Fun1(5);
         }
-        public static void Main()
+        public static void Main333()
         {
             A b = new B();
             A a = new A();
@@ -116,5 +116,42 @@ namespace AboutOOP
             Console.ReadKey();
         }
     }
+
+
+
+
+    ////静态字段及静态构造函数，及相关调用
+    //using System;
+
+
+    //public class A
+    //{
+    //    public static int X;
+
+    //    static A()
+    //    {
+    //        X = B.Y + 1;
+    //    }
+    //}
+
+
+    //public class B
+    //{
+    //    public static int Y = A.X + 1;
+    //    static B()
+    //    { }
+    //}
+
+
+    //class MyClass
+    //{
+    //    static void Main(string[] args)
+    //    {
+    //        Console.WriteLine(String.Format("{0} ,{1}\t\n", B.Y, A.X));
+    //        Console.ReadKey();
+    //    }
+    //}
+
+
 
 }
