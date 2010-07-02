@@ -45,7 +45,8 @@
   </Target>
   -->
   <ItemGroup>
-    <Content Include="1.柳永法的SQL模板\Sql Server心得.txt" />
+    <Content Include="2.心得及理论知识\Sql Server心得.txt" />
+    <Content Include="2.心得及理论知识\SQL Server数据库开发的二十一条军规.txt" />
     <Content Include="readme.txt" />
   </ItemGroup>
   <ItemGroup>

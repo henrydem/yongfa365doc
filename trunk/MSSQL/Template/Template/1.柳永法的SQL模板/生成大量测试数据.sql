@@ -76,5 +76,4 @@ WHILE @i < 1048576
         VALUES  ( '柳永法', 'show.aspx?id=12'+CAST(@i AS VARCHAR) )
         SET @i = @i + 1
     END
-    
-    
+COMMIT
