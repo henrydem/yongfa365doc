@@ -7,7 +7,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Common.Serialization
+namespace YongFa365.Serialization
 {
     class SerializeHelper
     {
