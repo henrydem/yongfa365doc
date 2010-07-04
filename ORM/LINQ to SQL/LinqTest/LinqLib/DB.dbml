@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="LinqTest" Class="LinqDB" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.;Initial Catalog=LinqTest;Integrated Security=True;Pooling=False" SettingsObjectName="LinqLib.Properties.Settings" SettingsPropertyName="LinqTestConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Articles" Member="Articles">
+    <Type Name="Articles">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="txtTitle" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="txtContent" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="AddTime" AutoSync="Never" Type="System.DateTime" DbType="DateTime NOT NULL" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CategoryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Category_Articles" Member="Category" ThisKey="CategoryId" OtherKey="Id" Type="Category" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Category" Member="Category">
+    <Type Name="Category">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Category" Member="Category1" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Association Name="Category_Articles" Member="Articles" ThisKey="Id" OtherKey="CategoryId" Type="Articles" />
+    </Type>
+  </Table>
+  <Function Name="dbo.ContainsOne" Method="ContainsOne" IsComposable="true">
+    <Parameter Name="input" Type="System.String" DbType="NVarChar(MAX)" />
+    <Parameter Name="search" Type="System.String" DbType="NVarChar(4000)" />
+    <Return Type="System.Int32" />
+  </Function>
+</Database>
