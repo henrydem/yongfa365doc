@@ -84,10 +84,10 @@ namespace LinqLib
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.ContainsOne", IsComposable=true)]
-		public System.Nullable<int> ContainsOne([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(MAX)")] string input, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(4000)")] string search)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.GetOrderId", IsComposable=true)]
+		public string GetOrderId()
 		{
-			return ((System.Nullable<int>)(this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), input, search).ReturnValue));
+			return ((string)(this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod()))).ReturnValue));
 		}
 	}
 	
@@ -107,8 +107,6 @@ namespace LinqLib
 		
 		private int _CategoryId;
 		
-		private EntityRef<Category> _Category;
-		
     #region 可扩展性方法定义
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -127,7 +125,6 @@ namespace LinqLib
 		
 		public Articles()
 		{
-			this._Category = default(EntityRef<Category>);
 			OnCreated();
 		}
 		
@@ -222,49 +219,11 @@ namespace LinqLib
 			{
 				if ((this._CategoryId != value))
 				{
-					if (this._Category.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
 					this.OnCategoryIdChanging(value);
 					this.SendPropertyChanging();
 					this._CategoryId = value;
 					this.SendPropertyChanged("CategoryId");
 					this.OnCategoryIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Category_Articles", Storage="_Category", ThisKey="CategoryId", OtherKey="Id", IsForeignKey=true)]
-		public Category Category
-		{
-			get
-			{
-				return this._Category.Entity;
-			}
-			set
-			{
-				Category previousValue = this._Category.Entity;
-				if (((previousValue != value) 
-							|| (this._Category.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Category.Entity = null;
-						previousValue.Articles.Remove(this);
-					}
-					this._Category.Entity = value;
-					if ((value != null))
-					{
-						value.Articles.Add(this);
-						this._CategoryId = value.Id;
-					}
-					else
-					{
-						this._CategoryId = default(int);
-					}
-					this.SendPropertyChanged("Category");
 				}
 			}
 		}
@@ -300,8 +259,6 @@ namespace LinqLib
 		
 		private string _Category1;
 		
-		private EntitySet<Articles> _Articles;
-		
     #region 可扩展性方法定义
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -314,7 +271,6 @@ namespace LinqLib
 		
 		public Category()
 		{
-			this._Articles = new EntitySet<Articles>(new Action<Articles>(this.attach_Articles), new Action<Articles>(this.detach_Articles));
 			OnCreated();
 		}
 		
@@ -358,19 +314,6 @@ namespace LinqLib
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Category_Articles", Storage="_Articles", ThisKey="Id", OtherKey="CategoryId")]
-		public EntitySet<Articles> Articles
-		{
-			get
-			{
-				return this._Articles;
-			}
-			set
-			{
-				this._Articles.Assign(value);
-			}
-		}
-		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -389,18 +332,6 @@ namespace LinqLib
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_Articles(Articles entity)
-		{
-			this.SendPropertyChanging();
-			entity.Category = this;
-		}
-		
-		private void detach_Articles(Articles entity)
-		{
-			this.SendPropertyChanging();
-			entity.Category = null;
 		}
 	}
 }

@@ -39,7 +39,14 @@ namespace LinqTest
             LinqDB data = new LinqDB();
             data.Log = writer;
 
-            Category cat = new Category() { Category1 = "哈哈哈哈" };
+            Category cat = new Category() { Category1 = "分类1" };
+            data.Category.InsertOnSubmit(cat);
+
+            cat = new Category() { Category1 = "分类2" };
+            data.Category.InsertOnSubmit(cat);
+
+            cat = new Category() { Category1 = "分类3" };
+            data.Category.InsertOnSubmit(cat);
 
             for (int i = 0; i < 100; i++)
             {
@@ -47,14 +54,12 @@ namespace LinqTest
                 {
                     txtTitle = "title" + DateTime.Now.Second,
                     txtContent = "内容" + DateTime.Now.Second,
-                    CategoryId = i
+                    CategoryId = i % 3
                 };
-                cat.Articles.Add(art);
-
+                data.Articles.InsertOnSubmit(art);
             }
-            data.Category.InsertOnSubmit(cat);
-            data.SubmitChanges();
 
+            data.SubmitChanges();
             dataGridView1.DataSource = data.Articles;
             writer.Close();
         }
@@ -95,21 +100,38 @@ namespace LinqTest
             data.Log = writer;
 
 
-            var ds = from c in data.Category
-                     from a in data.Articles
+            var ds = from cat in data.Category
+                     from art in data.Articles
+                     where art.CategoryId == cat.Id && data.GetOrderId() != "1"
+                     select new { 编号 = art.Id, 标题 = art.txtTitle, 内容 = art.txtContent, 添加时间 = art.AddTime, 分类 = cat.Category1 };
 
-                     where a.CategoryId==c.Id  && data.ContainsOne(a.txtTitle,"4")==1
-                     select new { a.Id, a.txtTitle, c.Category1 };
 
-            dataGridView1.DataSource = ds;
+            var 条件查询 = data.Articles.Where(art => art.Id % 2 == 0).Where(art => art.txtTitle.Length > 5);
+            var 分页 = (from art in data.Articles select art).Skip(10).Take(10);
+            var 分页2 = data.Articles.Skip(10).Take(10);
+
+            {
+                string _txtTitle = "3";
+                string _txtContent = null;
+                int? _id = null;
+
+                var ds2 = from cat in data.Category
+                          from art in data.Articles
+                          where art.CategoryId == cat.Id && data.GetOrderId() != "1" &&
+                          (_txtTitle == null || art.txtTitle.Contains(_txtTitle)) &&
+                            (_txtContent == null || art.txtContent.Contains(_txtContent)) &&
+                            (_id == null || art.Id > _id)
+                          select new { 编号 = art.Id, 标题 = art.txtTitle, 内容 = art.txtContent, 添加时间 = art.AddTime, 分类 = cat.Category1 };
+
+                dataGridView1.DataSource = ds2;
+
+            }
+           // dataGridView1.DataSource = ds;
 
 
             writer.Close();
 
 
-            //DataLoadOptions options = new DataLoadOptions();
-            //options.LoadWith<Articles>(p => p.AddTime);
-            //data.LoadOptions = options;
 
 
         }
