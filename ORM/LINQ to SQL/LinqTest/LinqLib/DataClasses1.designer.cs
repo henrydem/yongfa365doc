@@ -148,7 +148,7 @@ namespace LinqLib
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_txtTitle", DbType="NVarChar(50)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_txtTitle", DbType="NVarChar(200)")]
 		public string txtTitle
 		{
 			get
@@ -294,7 +294,7 @@ namespace LinqLib
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Category", Storage="_Category1", DbType="NVarChar(50)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="Category", Storage="_Category1", DbType="VarChar(50)")]
 		public string Category1
 		{
 			get

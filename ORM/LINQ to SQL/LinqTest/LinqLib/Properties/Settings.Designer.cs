@@ -26,7 +26,7 @@ namespace LinqLib.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.;Initial Catalog=LinqTest;Integrated Security=True;Pooling=False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.;Initial Catalog=LinqTest;Integrated Security=True")]
         public string LinqTestConnectionString {
             get {
                 return ((string)(this["LinqTestConnectionString"]));

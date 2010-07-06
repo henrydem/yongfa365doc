@@ -153,7 +153,62 @@ namespace LinqTest
             }
             #endregion
 
+            #region 查询
+            {
+                var union = (from art in data.Articles where art.Id < 10 select art).Union
+                                (from art in data.Articles where art.Id > 15 && art.Id < 20 select art);
+
+
+                var union_all_Concat = (from art in data.Articles where art.Id < 10 select art).Concat
+                                (from art in data.Articles where art.Id > 15 && art.Id < 20 select art);
+
+
+                var in操作 = from art in data.Articles
+                           where new int[] { 1, 200, 3, 100 }.Contains(art.CategoryId)
+                           select art;
+
+
+
+
+                var InnerJoin = from art in data.Articles
+                                join cat in data.Category on art.CategoryId equals cat.Id
+                                select new { art.Id, art.txtTitle, cat.Category1 };
+
+
+
+
+                var LeftJoin = from art in data.Articles
+                               join cat in data.Category on art.CategoryId equals cat.Id into pro
+                               from x in pro.DefaultIfEmpty()
+                               select new { art.Id, art.txtTitle, x.Category1 };
+
+
+
+
+                var LeftJoinMore = from art in data.Articles
+                                   join cat in data.Category on art.CategoryId equals cat.Id into pro
+                                   join cat in data.Category on art.CategoryId equals cat.Id into pro2
+                                   join cat in data.Category on art.CategoryId equals cat.Id into pro3
+                                   from x in pro.DefaultIfEmpty()
+                                   from y in pro.DefaultIfEmpty()
+                                   from z in pro.DefaultIfEmpty()
+                                   select new { art.Id, art.txtTitle, x.Category1, y = y.Category1, z = z.Category1 };
+
+
+
+                Console.WriteLine("=============union_all_Concat=========\r\n{0}\r\n\r\n", data.GetCommand(union_all_Concat).CommandText);
+                Console.WriteLine("=============in操作=========\r\n{0}\r\n\r\n", data.GetCommand(in操作).CommandText);
+                Console.WriteLine("=============InnerJoin=========\r\n{0}\r\n\r\n", data.GetCommand(InnerJoin).CommandText);
+                Console.WriteLine("=============LeftJoin=========\r\n{0}\r\n\r\n", data.GetCommand(LeftJoin).CommandText);
+                Console.WriteLine("=============LeftJoinMore=========\r\n{0}\r\n\r\n", data.GetCommand(LeftJoinMore).CommandText);
+
+                dgv1.DataSource = in操作;
+            }
+            #endregion
+
         }
+
+
 
 
         //Expression<Func<Articles, Category, bool>> expr = (art, cat) => GetCondition(art, cat);
@@ -169,4 +224,6 @@ namespace LinqTest
         //    return boolResult;
         //}
     }
+
+
 }
