@@ -18,6 +18,7 @@ using LinqLib;
 //AddTime让系统自动生成
 //外键问题
 //用户定义函数
+//Union,Concat生成多层select，效率问题
 
 
 
@@ -119,8 +120,9 @@ namespace LinqTest
                           from art in data.Articles
                           where art.CategoryId == cat.Id && data.GetOrderId() != "1" &&
                           (_txtTitle == null || art.txtTitle.Contains(_txtTitle)) &&
-                            (_txtContent == null || art.txtContent.Contains(_txtContent)) &&
-                            (_id == null || art.Id > _id)
+                          (_txtContent == null || art.txtContent.Contains(_txtContent)) &&
+                          (_id == null || art.Id > _id)
+                          orderby art.Id descending, art.CategoryId ascending
                           select new { 编号 = art.Id, 标题 = art.txtTitle, 内容 = art.txtContent, 添加时间 = art.AddTime, 分类 = cat.Category1 };
 
                 dgv1.DataSource = ds2;
@@ -150,24 +152,33 @@ namespace LinqTest
                 dgv1.DataSource = data.ExecuteQuery<Articles>("select * from Articles where id%3=0", "").ToList();
 
                 dgv1.DataSource = data.ExecuteQuery(typeof(Articles), "select * from Articles where id%3=0", "").Cast<Articles>().ToList();
+
+
+                //dgv1.DataSource = data.Articles.Where("Id%3=0").OrderBy("id desc");
+
             }
             #endregion
 
             #region 查询
             {
                 var union = (from art in data.Articles where art.Id < 10 select art).Union
-                                (from art in data.Articles where art.Id > 15 && art.Id < 20 select art);
+                (from art in data.Articles where art.Id > 15 && art.Id < 20 select art).Union
+                (from art in data.Articles where art.Id > 30 && art.Id < 40 select art);
 
 
-                var union_all_Concat = (from art in data.Articles where art.Id < 10 select art).Concat
-                                (from art in data.Articles where art.Id > 15 && art.Id < 20 select art);
+
+                var union_all用Concat实现 = (from art in data.Articles where art.Id < 10 select art).Concat
+                (from art in data.Articles where art.Id > 15 && art.Id < 20 select art).Concat
+                (from art in data.Articles where art.Id > 30 && art.Id < 40 select art);
 
 
                 var in操作 = from art in data.Articles
                            where new int[] { 1, 200, 3, 100 }.Contains(art.CategoryId)
                            select art;
 
-
+                var 子查询 = from art in data.Articles
+                          where (from cat in data.Category where cat.Id > 0 select cat.Id).Contains(art.CategoryId)
+                          select art;
 
 
                 var InnerJoin = from art in data.Articles
@@ -194,15 +205,39 @@ namespace LinqTest
                                    from z in pro.DefaultIfEmpty()
                                    select new { art.Id, art.txtTitle, x.Category1, y = y.Category1, z = z.Category1 };
 
+                var distinct = (from art in data.Articles orderby art.Id select art.CategoryId).Distinct();
 
 
-                Console.WriteLine("=============union_all_Concat=========\r\n{0}\r\n\r\n", data.GetCommand(union_all_Concat).CommandText);
+                var CaseWhen = from art in data.Articles
+                               select new
+                               {
+                                   art.Id,
+                                   art.txtTitle,
+                                   ID能被3整除 = art.Id % 3 == 0,
+                                   ID能被2整除 = art.Id % 2 == 0 ? "是" : "否",
+                               };
+
+                var GroupBy = from art in data.Articles
+                              group art by art.CategoryId into g
+                              select new
+                              {
+                                  g.Key,
+                                  最大ID = g.Max(a => a.Id),
+                                  数量 = g.Count(),
+                                  ID之和 = g.Sum(a => a.Id)
+                              };
+
+                Console.WriteLine("=============union=========\r\n{0}\r\n\r\n", data.GetCommand(union).CommandText);
+                Console.WriteLine("=============union_all_Concat=========\r\n{0}\r\n\r\n", data.GetCommand(union_all用Concat实现).CommandText);
                 Console.WriteLine("=============in操作=========\r\n{0}\r\n\r\n", data.GetCommand(in操作).CommandText);
+                Console.WriteLine("=============子查询=========\r\n{0}\r\n\r\n", data.GetCommand(子查询).CommandText);
                 Console.WriteLine("=============InnerJoin=========\r\n{0}\r\n\r\n", data.GetCommand(InnerJoin).CommandText);
                 Console.WriteLine("=============LeftJoin=========\r\n{0}\r\n\r\n", data.GetCommand(LeftJoin).CommandText);
                 Console.WriteLine("=============LeftJoinMore=========\r\n{0}\r\n\r\n", data.GetCommand(LeftJoinMore).CommandText);
+                Console.WriteLine("=============CaseWhen=========\r\n{0}\r\n\r\n", data.GetCommand(CaseWhen).CommandText);
+                Console.WriteLine("=============group=========\r\n{0}\r\n\r\n", data.GetCommand(GroupBy).CommandText);
 
-                dgv1.DataSource = in操作;
+                dgv1.DataSource = 子查询;
             }
             #endregion
 
