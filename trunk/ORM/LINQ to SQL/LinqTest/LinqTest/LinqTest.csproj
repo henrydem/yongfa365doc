@@ -88,13 +88,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LinqTest.sql" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\LinqLib\LinqLib.csproj">
       <Project>{6E469674-1F23-469F-BDA1-72BD496EFA1D}</Project>
       <Name>LinqLib</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="LinqTest.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

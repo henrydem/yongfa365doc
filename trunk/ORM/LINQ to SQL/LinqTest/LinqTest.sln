@@ -2,9 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqTest", "LinqTest\LinqTest.csproj", "{C5A3EA97-A4E9-4BD2-8F98-E49323A52740}"
-	ProjectSection(ProjectDependencies) = postProject
-		{6E469674-1F23-469F-BDA1-72BD496EFA1D} = {6E469674-1F23-469F-BDA1-72BD496EFA1D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqLib", "LinqLib\LinqLib.csproj", "{6E469674-1F23-469F-BDA1-72BD496EFA1D}"
 EndProject
