@@ -32,3 +32,7 @@ BEGIN
 	return(@ok)
 END
 
+
+
+--NorthWnd,Pubs
+--http://www.microsoft.com/downloads/details.aspx?FamilyId=06616212-0356-46A0-8DA2-EEBC53A68034&displaylang=en
