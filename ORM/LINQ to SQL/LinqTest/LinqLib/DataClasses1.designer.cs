@@ -84,10 +84,25 @@ namespace LinqLib
 			}
 		}
 		
+		public System.Data.Linq.Table<手动添加类_显示结果> 手动添加类_显示结果
+		{
+			get
+			{
+				return this.GetTable<手动添加类_显示结果>();
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.GetOrderId", IsComposable=true)]
 		public string GetOrderId()
 		{
 			return ((string)(this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod()))).ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.up_GetArticles")]
+		public ISingleResult<up_GetArticlesResult> up_GetArticles([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(50)")] string txtTitle, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(100)")] string txtContent)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), txtTitle, txtContent);
+			return ((ISingleResult<up_GetArticlesResult>)(result.ReturnValue));
 		}
 	}
 	
@@ -331,6 +346,167 @@ namespace LinqLib
 			if ((this.PropertyChanged != null))
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="")]
+	public partial class 手动添加类_显示结果
+	{
+		
+		private string _标题;
+		
+		private string _内容;
+		
+		private string _分类;
+		
+		public 手动添加类_显示结果()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_标题", CanBeNull=false)]
+		public string 标题
+		{
+			get
+			{
+				return this._标题;
+			}
+			set
+			{
+				if ((this._标题 != value))
+				{
+					this._标题 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_内容", CanBeNull=false)]
+		public string 内容
+		{
+			get
+			{
+				return this._内容;
+			}
+			set
+			{
+				if ((this._内容 != value))
+				{
+					this._内容 = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_分类", CanBeNull=false)]
+		public string 分类
+		{
+			get
+			{
+				return this._分类;
+			}
+			set
+			{
+				if ((this._分类 != value))
+				{
+					this._分类 = value;
+				}
+			}
+		}
+	}
+	
+	public partial class up_GetArticlesResult
+	{
+		
+		private int _Id;
+		
+		private string _txtTitle;
+		
+		private string _txtContent;
+		
+		private System.DateTime _AddTime;
+		
+		private int _CategoryId;
+		
+		public up_GetArticlesResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int NOT NULL")]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this._Id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_txtTitle", DbType="NVarChar(200)")]
+		public string txtTitle
+		{
+			get
+			{
+				return this._txtTitle;
+			}
+			set
+			{
+				if ((this._txtTitle != value))
+				{
+					this._txtTitle = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_txtContent", DbType="NVarChar(MAX)")]
+		public string txtContent
+		{
+			get
+			{
+				return this._txtContent;
+			}
+			set
+			{
+				if ((this._txtContent != value))
+				{
+					this._txtContent = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AddTime", DbType="DateTime NOT NULL")]
+		public System.DateTime AddTime
+		{
+			get
+			{
+				return this._AddTime;
+			}
+			set
+			{
+				if ((this._AddTime != value))
+				{
+					this._AddTime = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CategoryId", DbType="Int NOT NULL")]
+		public int CategoryId
+		{
+			get
+			{
+				return this._CategoryId;
+			}
+			set
+			{
+				if ((this._CategoryId != value))
+				{
+					this._CategoryId = value;
+				}
 			}
 		}
 	}

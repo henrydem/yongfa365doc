@@ -15,7 +15,25 @@
       <Column Name="Category" Member="Category1" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
     </Type>
   </Table>
+  <Table Name="" Member="手动添加类_显示结果">
+    <Type Name="手动添加类_显示结果">
+      <Column Member="标题" Type="System.String" CanBeNull="false" />
+      <Column Member="内容" Type="System.String" CanBeNull="false" />
+      <Column Member="分类" Type="System.String" CanBeNull="false" />
+    </Type>
+  </Table>
   <Function Name="dbo.GetOrderId" Method="GetOrderId" IsComposable="true">
     <Return Type="System.String" />
+  </Function>
+  <Function Name="dbo.up_GetArticles" Method="up_GetArticles">
+    <Parameter Name="txtTitle" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="txtContent" Type="System.String" DbType="VarChar(100)" />
+    <ElementType Name="up_GetArticlesResult">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="txtTitle" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="txtContent" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="AddTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CategoryId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </ElementType>
   </Function>
 </Database>

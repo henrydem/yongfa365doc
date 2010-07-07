@@ -32,6 +32,16 @@ BEGIN
 	return(@ok)
 END
 
+CREATE PROC up_GetArticles
+    @txtTitle VARCHAR(50) ,
+    @txtContent VARCHAR(100)
+AS 
+    BEGIN 
+        SELECT  *
+        FROM    Articles
+        WHERE   txtTitle LIKE '%' + @txtTitle + '%'
+    END
+
 
 
 --NorthWnd,Pubs
