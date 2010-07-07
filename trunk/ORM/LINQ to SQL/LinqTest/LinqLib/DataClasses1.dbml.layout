@@ -14,5 +14,11 @@
         <elementListCompartment Id="ae37a322-6714-4b2a-8b05-39c01607da20" absoluteBounds="3.765, 1.21, 1.9700000000000002, 0.62950642903645826" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
+    <classShape Id="ddaec61b-19b4-4a81-badc-8b87e03b79bd" absoluteBounds="2.875, 3.25, 2, 1.3805261230468746">
+      <DataClassMoniker Name="/LinqDB/手动添加类_显示结果" />
+      <nestedChildShapes>
+        <elementListCompartment Id="373ad1a9-691c-4025-8ea3-42583b48d13c" absoluteBounds="2.89, 3.71, 1.9700000000000002, 0.820526123046875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>
