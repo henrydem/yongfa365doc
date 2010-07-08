@@ -1,0 +1,4 @@
+SQLite没有Linq to SQL 的Provider,要说有就是DbLinq了
+但他有ADO.net Entity FrameWork的Provider,使用方法是，去http://sqlite.phxsoftware.com/下载SQLite Provider support for Microsoft's EFQuery
+使用方法：
+右击项目，添加新建项，数据，ADO.net Entiry Data Model 新建链接里，更改数据源为：SQLite Database File
