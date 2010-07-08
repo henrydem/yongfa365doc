@@ -1,3 +1,9 @@
 ﻿执行sample.cmd,生成各种数据库的类似dbml的文件
 柳永法当前只测试了生成Sqlite及SqlServer,生成SQLite时需要文件夹下放置自己下载的：System.Data.SQLite.dll
 把DbLinq.dll及相应的数据库组件，如：DbLinq.Sqlite.dll及自己下载的System.Data.SQLite.dll一起引用到项目，就OK了
+
+
+目前发现一个问题：
+Linq to SQL表的字段名是什么就显示什么，不会做大小写更改，
+而DbLinq会把你的DBLinq改成DbLinq,把LinqDB改成LinqDb,把txtTitle改成TxtTitle
+很郁闷，没找到解决方法
