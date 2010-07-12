@@ -23,6 +23,7 @@ namespace _51job
         private void Form1_Load(object sender, EventArgs e)
         {
             LoadColumns();
+            加载默认ToolStripMenuItem.PerformClick();
         }
 
 
