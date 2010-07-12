@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.dgv1 = new System.Windows.Forms.DataGridView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.列ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,6 +52,7 @@
             this.dgv1.RowTemplate.Height = 23;
             this.dgv1.Size = new System.Drawing.Size(766, 488);
             this.dgv1.TabIndex = 1;
+            this.dgv1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv1_CellContentClick);
             // 
             // menuStrip1
             // 
@@ -67,23 +69,23 @@
             // 列ToolStripMenuItem
             // 
             this.列ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.job全部ToolStripMenuItem,
-            this.精选ToolStripMenuItem});
+            this.精选ToolStripMenuItem,
+            this.job全部ToolStripMenuItem});
             this.列ToolStripMenuItem.Name = "列ToolStripMenuItem";
-            this.列ToolStripMenuItem.Size = new System.Drawing.Size(29, 20);
-            this.列ToolStripMenuItem.Text = "列";
+            this.列ToolStripMenuItem.Size = new System.Drawing.Size(107, 20);
+            this.列ToolStripMenuItem.Text = "加载城市列表(&1)";
             // 
             // job全部ToolStripMenuItem
             // 
             this.job全部ToolStripMenuItem.Name = "job全部ToolStripMenuItem";
-            this.job全部ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.job全部ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.job全部ToolStripMenuItem.Text = "51job全部";
             this.job全部ToolStripMenuItem.Click += new System.EventHandler(this.job全部ToolStripMenuItem_Click);
             // 
             // 精选ToolStripMenuItem
             // 
             this.精选ToolStripMenuItem.Name = "精选ToolStripMenuItem";
-            this.精选ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.精选ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.精选ToolStripMenuItem.Text = "精选";
             this.精选ToolStripMenuItem.Click += new System.EventHandler(this.精选ToolStripMenuItem_Click);
             // 
@@ -94,27 +96,27 @@
             this.加载从文件ToolStripMenuItem,
             this.保存到文件ToolStripMenuItem});
             this.关键词ToolStripMenuItem.Name = "关键词ToolStripMenuItem";
-            this.关键词ToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
-            this.关键词ToolStripMenuItem.Text = "关键词";
+            this.关键词ToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
+            this.关键词ToolStripMenuItem.Text = "加载关键词(&2)";
             // 
             // 加载默认ToolStripMenuItem
             // 
             this.加载默认ToolStripMenuItem.Name = "加载默认ToolStripMenuItem";
-            this.加载默认ToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.加载默认ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.加载默认ToolStripMenuItem.Text = "加载默认";
             this.加载默认ToolStripMenuItem.Click += new System.EventHandler(this.加载默认ToolStripMenuItem_Click);
             // 
             // 加载从文件ToolStripMenuItem
             // 
             this.加载从文件ToolStripMenuItem.Name = "加载从文件ToolStripMenuItem";
-            this.加载从文件ToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.加载从文件ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.加载从文件ToolStripMenuItem.Text = "加载从文件";
             this.加载从文件ToolStripMenuItem.Click += new System.EventHandler(this.加载从文件ToolStripMenuItem_Click);
             // 
             // 保存到文件ToolStripMenuItem
             // 
             this.保存到文件ToolStripMenuItem.Name = "保存到文件ToolStripMenuItem";
-            this.保存到文件ToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.保存到文件ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.保存到文件ToolStripMenuItem.Text = "保存到文件";
             this.保存到文件ToolStripMenuItem.Click += new System.EventHandler(this.保存到文件ToolStripMenuItem_Click);
             // 
@@ -123,8 +125,9 @@
             this.开始分析ToolStripMenuItem.Image = global::_51job.Properties.Resources.查询;
             this.开始分析ToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.开始分析ToolStripMenuItem.Name = "开始分析ToolStripMenuItem";
-            this.开始分析ToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
-            this.开始分析ToolStripMenuItem.Text = "开始分析";
+            this.开始分析ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.开始分析ToolStripMenuItem.Size = new System.Drawing.Size(105, 20);
+            this.开始分析ToolStripMenuItem.Text = "开始分析(F5)";
             this.开始分析ToolStripMenuItem.Click += new System.EventHandler(this.开始分析ToolStripMenuItem_Click);
             // 
             // Form1
@@ -134,6 +137,7 @@
             this.ClientSize = new System.Drawing.Size(766, 512);
             this.Controls.Add(this.dgv1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "51job职位要求分析系统";

@@ -20,17 +20,23 @@ namespace _51job
             InitializeComponent();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            LoadColumns();
+        }
+
+
 
         private void 加载默认ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<string> list = new List<string>() 
             {
-                "ASP.net",".net winform",".net C#","MVC","WebService","三层架构","多层架构",
-                "Linq","Linq to sql","ORM","NHibernate","WCF","OOP","OOA",
-                "SQL Server","MSSQL","Mysql","SQLite","Access",
+                "VS2005","VS2010","VS2008","多线程","VisualStudio","Visual Studio","ASP.net",".net winform",".net C#","MVC","WebService","三层架构","多层架构",
+                "Linq","Linq to sql","ORM","NHibernate","WCF","WPF","OOP","OOA",
+                "SQLServer","SQL Server","MSSQL","SQL2000","SQL2005","SQL2008","Mysql","SQLite","Access","Oracle",
                 "IIS","服务器安全","邮件服务器","FTP","DNS",
-                "正则表达式","CRM","水晶报表","报表","RDLC",
-                "OA","工作流","Viso","PowerDesigner","uml","CodeSmith",
+                "正则表达式","CRM","水晶报表",".net 报表",
+                "WF","workflow",".nwt OA",".net HR",".net CRM",".net 工作流","Viso","PowerDesigner","uml",
                 ".net 项目经理","CTO","架构师",".net 主管",
             };
             foreach (var item in list)
@@ -39,10 +45,6 @@ namespace _51job
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
 
 
 
@@ -68,6 +70,17 @@ namespace _51job
 
         }
 
+
+        private void dgv1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex > 0)
+            {
+                string url = string.Format("http://search.51job.com/list/{0},%2B,%2B,%2B,%2B,%2B,{1},2,%2B.html?lang=c&stype=1",
+                             dgv1.Columns[e.ColumnIndex].Name, HttpUtility.UrlEncode(dgv1[0, e.RowIndex].Value.ToString(), Encoding.Default));
+                System.Diagnostics.Process.Start("Iexplore.exe", url);
+            }
+        }
+
         private void job全部ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadColumnsFrom51job();
@@ -81,11 +94,18 @@ namespace _51job
         void LoadColumns()
         {
             dgv1.Columns.Clear();
+            //dgv1.Columns.Add("0000", "关键词");
+            //dgv1.Columns.Add("0400", "深圳");
+            //dgv1.Columns.Add("0302", "广州");
+            //dgv1.Columns.Add("0100", "北京");
+            //dgv1.Columns.Add("0200", "上海");
+
             dgv1.Columns.Add("0000", "关键词");
-            dgv1.Columns.Add("0400", "深圳");
-            dgv1.Columns.Add("0302", "广州");
-            dgv1.Columns.Add("0100", "北京");
-            dgv1.Columns.Add("0200", "上海");
+            dgv1.Columns.Add(MakeLinkColumn("0400", "深圳"));
+            dgv1.Columns.Add(MakeLinkColumn("0302", "广州"));
+            dgv1.Columns.Add(MakeLinkColumn("0100", "北京"));
+            dgv1.Columns.Add(MakeLinkColumn("0200", "上海"));
+
 
 
             for (int i = 1; i < dgv1.ColumnCount; i++)
@@ -95,6 +115,7 @@ namespace _51job
             }
         }
 
+
         void LoadColumnsFrom51job()
         {
 
@@ -102,7 +123,7 @@ namespace _51job
             dgv1.Columns.Add("0000", "关键词");
 
             string body = HttpClient.Get("http://www.51job.com/default.php").GetOne("areacname", "clearboth");
-            if (body==null)
+            if (body == null)
             {
                 MessageBox.Show("连不上51job");
                 return;
@@ -117,6 +138,14 @@ namespace _51job
                 dgv1.Columns[i].ValueType = typeof(int);
                 dgv1.Columns[i].Width = 55;
             }
+        }
+
+        DataGridViewLinkColumn MakeLinkColumn(string name, string headText)
+        {
+            DataGridViewLinkColumn dg = new DataGridViewLinkColumn();
+            dg.Name = name;
+            dg.HeaderText = headText;
+            return dg;
         }
 
         private void 加载从文件ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -147,6 +176,7 @@ namespace _51job
                 File.WriteAllLines(dlg.FileName, ok); ;
             }
         }
+
     }
 
 }
