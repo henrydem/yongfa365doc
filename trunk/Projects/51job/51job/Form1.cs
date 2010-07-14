@@ -33,7 +33,7 @@ namespace _51job
             List<string> list = new List<string>() 
             {
                 "VS2005","VS2010","VS2008","多线程","VisualStudio","Visual Studio","ASP.net",".net winform",".net C#","MVC","WebService","三层架构","多层架构",
-                "Linq","Linq to sql","ORM","NHibernate","WCF","WPF","OOP","OOA",
+                "Linq","Linq to sql","ORM","Nhibernate","WCF","WPF","OOP","OOA",
                 "SQLServer","SQL Server","MSSQL","SQL2000","SQL2005","SQL2008","Mysql","SQLite","Access","Oracle",
                 "IIS","服务器安全","邮件服务器","FTP","DNS",
                 "正则表达式","CRM","水晶报表",".net 报表",
