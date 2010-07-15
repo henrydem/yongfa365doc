@@ -34,12 +34,11 @@
             // 
             // comboBox1
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(2, 0);
+            this.comboBox1.Location = new System.Drawing.Point(0, 0);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(155, 20);
+            this.comboBox1.Size = new System.Drawing.Size(157, 20);
             this.comboBox1.TabIndex = 0;
             this.comboBox1.Enter += new System.EventHandler(this.comboBox1_Enter);
             // 
@@ -57,14 +56,15 @@
             this.treeView1.Enter += new System.EventHandler(this.treeView1_Enter);
             this.treeView1.Leave += new System.EventHandler(this.treeView1_Leave);
             // 
-            // ComboboxTree
+            // ComboBoxTree
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.comboBox1);
-            this.Name = "ComboboxTree";
-            this.Size = new System.Drawing.Size(157, 20);
+            this.Name = "ComboBoxTree";
+            this.Size = new System.Drawing.Size(157, 19);
             this.Load += new System.EventHandler(this.ComboboxTree_Load);
             this.Leave += new System.EventHandler(this.ComboboxTree_Leave);
             this.ResumeLayout(false);
