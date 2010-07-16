@@ -41,11 +41,6 @@ namespace YongFa365.Winform.UserControls
             _size = this.Size = comboBox1.Size;
         }
 
-        private void comboBox1_Enter(object sender, EventArgs e)
-        {
-            treeView1.Select();
-        }
-
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (e.Action == TreeViewAction.Unknown)
@@ -60,11 +55,22 @@ namespace YongFa365.Winform.UserControls
             this.SendToBack();
         }
 
+        private void comboBox1_Enter(object sender, EventArgs e)
+        {
+            treeView1.Select();
+        }
+
+
         private void treeView1_Enter(object sender, EventArgs e)
         {
             this.BringToFront();
             this.Size = new Size(200, 200);
             treeView1.Visible = true;
+        }
+
+        private void treeView1_Leave(object sender, EventArgs e)
+        {
+            this.Size = _size;
         }
 
         private void ComboboxTree_Leave(object sender, EventArgs e)
@@ -74,10 +80,6 @@ namespace YongFa365.Winform.UserControls
             this.SendToBack();
         }
 
-        private void treeView1_Leave(object sender, EventArgs e)
-        {
-            this.Size = _size;
-        } 
 
         #endregion
 
