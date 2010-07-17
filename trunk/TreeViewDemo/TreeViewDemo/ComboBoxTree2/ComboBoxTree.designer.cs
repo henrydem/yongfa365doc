@@ -44,12 +44,10 @@
             // 
             // treeView1
             // 
-            this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.treeView1.Location = new System.Drawing.Point(0, 19);
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 20);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(157, 4);
+            this.treeView1.Size = new System.Drawing.Size(157, 194);
             this.treeView1.TabIndex = 1;
             this.treeView1.Visible = false;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -64,7 +62,7 @@
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.comboBox1);
             this.Name = "ComboBoxTree";
-            this.Size = new System.Drawing.Size(157, 23);
+            this.Size = new System.Drawing.Size(157, 214);
             this.Load += new System.EventHandler(this.ComboboxTree_Load);
             this.Leave += new System.EventHandler(this.ComboboxTree_Leave);
             this.ResumeLayout(false);

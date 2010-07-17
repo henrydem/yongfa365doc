@@ -41,7 +41,7 @@ namespace YongFa365.Winform.UserControls
         }
 
 
-        [Browsable(true), Category("ComboboxTree"), Description("0为正常大小"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Browsable(true), Category("ComboboxTree"), Description("0为正常宽度，与控件一样宽"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int DropDownWidth
         {
             get { return _dropDownWidth; }
@@ -49,7 +49,7 @@ namespace YongFa365.Winform.UserControls
         }
 
 
-        [Browsable(true), Category("ComboboxTree"), Description("获取或设置DropDownWidth"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Browsable(true), Category("ComboboxTree"), Description("控件展开后的高度"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int DropDownHeigth
         {
             get { return _dropDownHeigth; }
@@ -65,7 +65,6 @@ namespace YongFa365.Winform.UserControls
             {
                 _dropDownWidth = this.Size.Width;
             }
-            this.treeView1.SendToBack();
         }
 
 
@@ -79,7 +78,6 @@ namespace YongFa365.Winform.UserControls
             comboBox1.Text = this.Text = treeView1.SelectedNode.Text;
 
             this.Size = _size;
-            this.SendToBack();
         }
 
         private void comboBox1_Enter(object sender, EventArgs e)
