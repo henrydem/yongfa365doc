@@ -25,7 +25,7 @@ namespace YongFa365.Winform.UserControls
 
 
         #region 通过属性选择器给Text及Value赋值
-        [Browsable(true), Category("ComboboxTree"), Description("获取或设置Value"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Browsable(true), DefaultValue(-1), Category("ComboboxTree"), Description("获取或设置Value"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int Value
         {
             get { return _value; }
@@ -33,7 +33,7 @@ namespace YongFa365.Winform.UserControls
         }
 
 
-        [Browsable(true), Category("ComboboxTree"), Description("获取或设置Text"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Browsable(true), DefaultValue("==请选择=="), Category("ComboboxTree"), Description("获取或设置Text"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public override string Text
         {
             get { return comboBox1.Text; }
@@ -41,7 +41,7 @@ namespace YongFa365.Winform.UserControls
         }
 
 
-        [Browsable(true), Category("ComboboxTree"), Description("0为正常宽度，与控件一样宽"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Browsable(true), DefaultValue(0), Category("ComboboxTree"), Description("0为正常宽度，与控件一样宽"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int DropDownWidth
         {
             get { return _dropDownWidth; }
@@ -49,7 +49,7 @@ namespace YongFa365.Winform.UserControls
         }
 
 
-        [Browsable(true), Category("ComboboxTree"), Description("控件展开后的高度"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Browsable(true), DefaultValue(200), Category("ComboboxTree"), Description("控件展开后的高度"), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int DropDownHeigth
         {
             get { return _dropDownHeigth; }
@@ -61,7 +61,7 @@ namespace YongFa365.Winform.UserControls
         private void ComboboxTree_Load(object sender, EventArgs e)
         {
             _size = this.Size = comboBox1.Size;
-            if (_dropDownWidth==0)
+            if (_dropDownWidth == 0)
             {
                 _dropDownWidth = this.Size.Width;
             }

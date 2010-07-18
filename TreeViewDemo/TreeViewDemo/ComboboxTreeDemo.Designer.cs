@@ -66,14 +66,12 @@
             // comboboxTree1
             // 
             this.comboboxTree1.BackColor = System.Drawing.Color.Transparent;
-            this.comboboxTree1.DropDownHeigth = 200;
-            this.comboboxTree1.DropDownWidth = 200;
+            this.comboboxTree1.DropDownHeigth = 300;
             this.comboboxTree1.Location = new System.Drawing.Point(131, 12);
             this.comboboxTree1.Name = "comboboxTree1";
-            this.comboboxTree1.Size = new System.Drawing.Size(95, 20);
+            this.comboboxTree1.Size = new System.Drawing.Size(125, 20);
             this.comboboxTree1.TabIndex = 1;
-            this.comboboxTree1.Text = "==请选择==";
-            this.comboboxTree1.Value = -1;
+            this.comboboxTree1.Text = "";
             // 
             // ComboboxTreeDemo
             // 
