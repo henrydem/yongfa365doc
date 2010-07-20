@@ -24,6 +24,7 @@ namespace WinformControlsDemo
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            System.Diagnostics.Process.Start(linkLabel1.Text);
             System.Diagnostics.Process.Start("iexplore", linkLabel1.Text);
             System.Diagnostics.Process.Start("firefox", linkLabel1.Text);
             System.Diagnostics.Process.Start("chrome", linkLabel1.Text);
