@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AboutEvent", "AboutEvent\Ab
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AboutThreadingConsole", "AboutThreadingConsole\AboutThreadingConsole.csproj", "{D2BA895A-8154-4E4B-B9B3-09808CE92B4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinformControlsDemo", "WinformControlsDemo\WinformControlsDemo.csproj", "{1332A207-7019-4E56-A86A-43DCBA1C2555}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -200,6 +202,15 @@ Global
 		{D2BA895A-8154-4E4B-B9B3-09808CE92B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2BA895A-8154-4E4B-B9B3-09808CE92B4C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D2BA895A-8154-4E4B-B9B3-09808CE92B4C}.Release|x86.ActiveCfg = Release|Any CPU
+		{1332A207-7019-4E56-A86A-43DCBA1C2555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1332A207-7019-4E56-A86A-43DCBA1C2555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1332A207-7019-4E56-A86A-43DCBA1C2555}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1332A207-7019-4E56-A86A-43DCBA1C2555}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{1332A207-7019-4E56-A86A-43DCBA1C2555}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{1332A207-7019-4E56-A86A-43DCBA1C2555}.Default|x86.ActiveCfg = Debug|Any CPU
+		{1332A207-7019-4E56-A86A-43DCBA1C2555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1332A207-7019-4E56-A86A-43DCBA1C2555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1332A207-7019-4E56-A86A-43DCBA1C2555}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
