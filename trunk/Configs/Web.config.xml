@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" ?>
+<configuration>
+  <!--http://msdn.microsoft.com/zh-cn/library/dayb112d(VS.100).aspx-->
+<!--
+常用
+<system.web> 
+   <authentication> 
+   <caching> 
+   <compilation> 
+   <customErrors> 
+   <globalization> 
+   <httpCookies> 
+   <httpHandlers> 
+   <httpModules> 
+   <httpRuntime> 
+   <machineKey> 
+   <membership> 
+   <pages> 
+   <sessionState> 
+   <siteMap> 
+   <urlMappings> 
+   <webControls> 
+   <webParts> 
+   <webServices> 
+</system.web>
+-->
+
+  <!--System.Configuration.ConfigurationManager.AppSettings["SQLiteFileName"];-->
+  <!--保存配置信息-->
+  <appSettings>
+    <add key="SQLiteFileName" value="SQLiteDB.sqlite"/>
+    <add key="mdbFileName" value="Data.mdb"/>
+    <add key="Domain" value="http://www.yongfa365.com/"/>
+    <add key="Author" value="柳永法,yongfa365"/>
+    <!--允许上传的图片格式类型-->
+    <add key="ImageType" value=".jpg;.bmp;.gif;.png;.jpeg"/>
+    <!--允许上传的文件类型-->
+    <add key="FileType" value=".jpg;.bmp;.gif;.png;.jpeg;.pdf;.zip;.rar;.xls;.doc"/>
+  </appSettings>
+
+
+  <!--System.Configuration.ConfigurationManager.ConnectionStrings["SqlConnection"].ProviderName;-->
+  <!--System.Configuration.ConfigurationManager.ConnectionStrings["SqlConnection"].ConnectionString;-->
+  <!--数据库链接字符串-->
+  <connectionStrings>
+    <add name="LocalSqlConnection" connectionString="Data Source=.;Initial Catalog=test;Integrated Security=True" providerName="System.Data.SqlClient"/>
+    <add name="SqlConnection" connectionString="Data Source=.\SQL2005;Initial Catalog=MSSQLDB;User ID=usr;Password=pwd" providerName="System.Data.SqlClient"/>
+    <add name="OleDbConnection" connectionString="Provider=Microsoft.Jet.OLEDB.4.0;Data Source = D:\Data\mydb.mdb;" providerName="System.Data.OleDb"/>
+  </connectionStrings>
+
+  <system.web>
+    <httpHandlers>
+      <!--禁止下载Data目录下的所有mdb文件-->
+      <add path="DBBAK/*.bak" verb="*" type="System.Web.HttpForbiddenHandler" validate="true"/>
+      <!--特定类型文件发给某一个type去处理，比如要验证只有登录用户才能下载-->
+      <add verb="*" path="*.rar" type="LoginDownload.MyHandler"/>
+      <add verb="*" path="*.zip" type="LoginDownload.MyHandler"/>
+      <add verb="*" path="*.doc" type="LoginDownload.MyHandler"/>
+      <add verb="*" path="*.docx" type="LoginDownload.MyHandler"/>
+      <add verb="*" path="*.xls" type="LoginDownload.MyHandler"/>
+      <add verb="*" path="*.pdf" type="LoginDownload.MyHandler"/>
+      <add verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah"/>
+    </httpHandlers>
+
+    <httpModules>
+      <add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah"/>
+    </httpModules>
+
+    <!--
+    <customErrors>用于定义一些自定义错误信息的信息。此节点有Mode和defaultRedirect两个 属性，其中defaultRedirect属性是一个可选属性，表示应用程序发生错误时重定向到的默认URL，如果没有指定该属性则显示一般性错误。 Mode属性是一个必选属性，它有三个可能值，它们所代表的意义分别如下：
+    Mode 说明
+    On 表示在本地和远程用户都会看到自定义错误信息。
+    Off 禁用自定义错误信息，本地和远程用户都会看到详细的错误信息。
+    RemoteOnly 表示本地用户将看到详细错误信息，而远程用户将会看到自定义错误信息。
+    
+    要使<error>子节点下的配置生效，必须将<customErrors>节点节点的Mode属 性设置为“On”。
+    -->
+    <customErrors mode="On" defaultRedirect="GenericErrorPage.htm">
+      <error statusCode="403" redirect="403.htm" />
+      <error statusCode="404" redirect="404.htm" />
+    </customErrors>
+
+    <!--
+    <globalization>
+      节点：
+      用于配置应用程序的全球化设置。此节点有几个比较重要的属性，分别如下：
+      属性名 说明
+      fileEncoding 可选属性。设置.aspx、.asmx 和 .asax 文件的存储编码。无论此属性的值是什么，用 byte order mark 前缀保存的 Unicode 和 UTF-8 文件都将被自动识别。
+      requestEncoding 可选属性。设置客户端请求的编码，默认为UTF-8.
+      responseEncoding 可选属性。设置服务器端响应的编码，默认为UTF-8.
+      -->
+    <globalization requestEncoding="gb2312" responseEncoding="gb2312" culture="zh-CN" uiCulture="zh-CN" responseHeaderEncoding="gb2312" fileEncoding="gb2312" />
+
+
+
+    <!--配置 ASP.NET 使用的所有编译设置。默认的debug属性为“true”，即允许调试，在这种情况下会影响网站的性能，所以在程序编译完成交付使用之后应将其设为“false”。-->
+    <compilation debug="false" />
+
+
+    <!--
+    <httpRuntime>节点用于对 ASP.NET HTTP 运行库设置。该节可以在计算机、站点、应用程序和子目录级别声明。 
+    例如下面的配置控制用户最大能上传的文件为40M（40*1024K），最大超时时间为60秒，最大并发请求为100个。
+    -->
+    <httpRuntime maxRequestLength="40960" executionTimeout="60" appRequestQueueLimit="100"/>
+
+
+    <!--
+    <pages>节点用于表示对特定页设置，主要有三个属性，分别如下： 
+    属性名 说明 
+    buffer 是否启用了 HTTP 响应缓冲。 
+    enableViewStateMac 是否应该对页的视图状态运行计算机身份验证检查 (MAC)，以放置用户篡改，默认为false，如果设置为true将会引起性能的降低。 
+    validateRequest 是否验证用户输入中有跨站点脚本攻击和SQL注入式漏洞攻击，默认为true，如果出现匹配情况就会发 HttpRequestValidationException 异常。对于包含有在线文本编辑器页面一般自行验证用户输入而将此属性设为false。 
+    smartNavigation 智能导航
+    maintainScrollPositionOnPostBack PostBack后滚动条回到原来的位置，网速快时，感觉就没动，很好用
+    -->
+    <pages buffer="true" enableViewStateMac="true" validateRequest="false" smartNavigation="true" maintainScrollPositionOnPostBack="true"/>
+
+    <machineKey
+      validationKey="0F355EDEE34ED5697B96A8DDFBA812F1260ED2ED46C784B75FEF8E4F133A2B13F200CE326456BA66FA4196A2B8626D820741AB31160E21C3BC4AA9839BD315D9"
+      decryptionKey="324D6E3D8DF2530566C96FCD63869A19F2DF4FFF87951E6C915D1E8E428BC254"
+      validation="SHA1" decryption="AES" />
+
+
+
+  </system.web>
+
+  <!--
+    设置asp.net身份验证模式，有四种身份验证模式，它们的值分别如下：
+    Windows 使用Windows身份验证，适用于域用户或者局域网用户。
+    Forms 使用表单验证，依靠网站开发人员进行身份验证。
+    Passport 使用微软提供的身份验证服务进行身份验证。
+    None 不进行任何身份验证。
+    -->
+  <authentication mode="Forms">
+    <forms loginUrl="LogIn.aspx" defaultUrl="/" name=".ASPXFORMSAUTH" timeout="60">
+    </forms>
+  </authentication>
+
+  <system.web>
+    <authorization>
+      <deny users="?"/>
+    </authorization>
+  </system.web>
+  <location path="VerifyCode.ashx">
+    <system.web>
+      <authorization>
+        <allow users="?"/>
+      </authorization>
+    </system.web>
+  </location>
+  <location path="Admin">
+    <system.web>
+      <authorization>
+        <allow roles="管理员,超级管理员"/>
+        <deny users="*"/>
+      </authorization>
+    </system.web>
+  </location>
+  <location path="Error">
+    <system.web>
+      <authorization>
+        <allow roles="管理员,超级管理员"/>
+        <deny users="*"/>
+      </authorization>
+    </system.web>
+  </location>
+
+
+</configuration>

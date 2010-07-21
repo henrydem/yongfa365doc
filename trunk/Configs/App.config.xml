@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <appSettings>
+    <add key="SQLiteFileName" value="SQLiteDB.sqlite"/>
+    <add key="mdbFileName" value="Data.mdb"/>
+  </appSettings>
+  <connectionStrings>
+    <add name="LocalSqlConnection" connectionString="Data Source=.;Initial Catalog=test;Integrated Security=True" providerName="System.Data.SqlClient"/>
+    <add name="SqlConnection" connectionString="Data Source=.\SQL2005;Initial Catalog=MSSQLDB;User ID=usr;Password=pwd" providerName="System.Data.SqlClient"/>
+    <add name="OleDbConnection" connectionString="Provider=Microsoft.Jet.OLEDB.4.0;Data Source = D:\Data\mydb.mdb;" providerName="System.Data.OleDb"/>
+  </connectionStrings>
+</configuration>
