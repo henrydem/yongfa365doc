@@ -58,7 +58,30 @@ namespace AboutSort
 
         }
 
+        public static void 字符排序()
+        {
+            //把sSDsBEaaaaaAAAAA排序成AAAAAaaaaaBDESss
+            String s = "sSDsBEaaaaaAAAAA";
+            char[] arrChar = s.ToCharArray();
 
+            int[] arrInt = new Int32[arrChar.Length];
+            for (int i = 0; i < arrChar.Length; i++)
+            {
+                int temp = (int)arrChar[i];
+                if (arrChar[i] >= 'A' && arrChar[i] <= 'Z')
+                {
+                    temp *= 1000;
+                }
+                else
+                {
+                    temp = (temp - 32) * 1000 + temp;
+                }
+                arrInt[i] = temp;
+            }
+            Array.Sort(arrInt, arrChar);
+            Console.WriteLine(new string(arrChar));
+        
+        }
 
 
     }
