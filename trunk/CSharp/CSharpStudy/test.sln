@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinformControlsDemo", "Winf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AboutReflection", "AboutReflection\AboutReflection.csproj", "{995A9784-295B-4696-A7BC-FD02AEC2FBFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "算法", "算法\算法.csproj", "{0B28B5D9-ABCA-47D5-A3A3-47F61FF5834F}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -222,6 +224,15 @@ Global
 		{995A9784-295B-4696-A7BC-FD02AEC2FBFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{995A9784-295B-4696-A7BC-FD02AEC2FBFC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{995A9784-295B-4696-A7BC-FD02AEC2FBFC}.Release|x86.ActiveCfg = Release|Any CPU
+		{0B28B5D9-ABCA-47D5-A3A3-47F61FF5834F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B28B5D9-ABCA-47D5-A3A3-47F61FF5834F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B28B5D9-ABCA-47D5-A3A3-47F61FF5834F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0B28B5D9-ABCA-47D5-A3A3-47F61FF5834F}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B28B5D9-ABCA-47D5-A3A3-47F61FF5834F}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{0B28B5D9-ABCA-47D5-A3A3-47F61FF5834F}.Default|x86.ActiveCfg = Debug|Any CPU
+		{0B28B5D9-ABCA-47D5-A3A3-47F61FF5834F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B28B5D9-ABCA-47D5-A3A3-47F61FF5834F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B28B5D9-ABCA-47D5-A3A3-47F61FF5834F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
