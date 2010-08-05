@@ -54,6 +54,7 @@
     <None Include="1.柳永法的SQL模板\URL.sql" />
     <None Include="1.柳永法的SQL模板\while.sql" />
     <None Include="1.柳永法的SQL模板\假执行.sql" />
+    <None Include="1.柳永法的SQL模板\面试用SQL.sql" />
     <None Include="1.柳永法的SQL模板\学习\CASE_WHEN.sql" />
     <None Include="1.柳永法的SQL模板\学习\CTE.sql" />
     <None Include="1.柳永法的SQL模板\学习\SCOPE_IDENTITY.sql" />
