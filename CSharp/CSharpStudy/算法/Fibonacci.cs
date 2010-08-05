@@ -18,12 +18,12 @@ namespace 算法
         /// <param name="index">默认为3</param>
         /// <param name="count">要取第多少位的值</param>
         /// <returns></returns>
-        public static long Fun1(long n_1, long n_2, int index, int count)
+        public static long Foo1(long n_1, long n_2, int index, int count)
         {
             long result = n_1 + n_2;
             if (index < count)
             {
-                return Fun1(n_2, result, ++index, count);
+                return Foo1(n_2, result, ++index, count);
             }
             return result;
         }
@@ -33,13 +33,13 @@ namespace 算法
         /// </summary>
         /// <param name="n"></param>
         /// <returns></returns>
-        public static long Fun2(long n)
+        public static long Foo2(long n)
         {
             if (n < 3)
             {
                 return 1;
             }
-            return (Fun2(n - 1) + Fun2(n - 2));
+            return Foo2(n - 1) + Foo2(n - 2);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace 算法
         /// </summary>
         /// <param name="n"></param>
         /// <returns></returns>
-        public static long Fun3(long n)
+        public static long Foo3(long n)
         {
             long a, b, temp;
             a = b = 1;
@@ -65,7 +65,7 @@ namespace 算法
         /// </summary>
         /// <param name="n"></param>
         /// <returns></returns>
-        public static long Fun4(long n)
+        public static long Foo4(long n)
         {
             long[] temp = new long[n];
             temp[0] = temp[1] = 1;
