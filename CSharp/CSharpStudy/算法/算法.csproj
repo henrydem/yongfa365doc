@@ -48,6 +48,7 @@
     <Compile Include="AboutSort.cs" />
     <Compile Include="Fibonacci.cs" />
     <Compile Include="Operator.cs" />
+    <Compile Include="Other.cs" />
     <Compile Include="Prime.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
