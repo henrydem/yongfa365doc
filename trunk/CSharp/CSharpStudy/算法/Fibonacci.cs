@@ -11,7 +11,7 @@ namespace 算法
     class Fibonacci
     {
         /// <summary>
-        /// 快速递归 Fun1(1, 1, 3, 50)
+        /// 快速递归 Foo1(1, 1, 3, 50)
         /// </summary>
         /// <param name="n_1">默认为1</param>
         /// <param name="n_2">默认为1</param>
