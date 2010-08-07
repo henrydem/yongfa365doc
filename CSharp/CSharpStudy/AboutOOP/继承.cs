@@ -250,4 +250,41 @@ namespace AboutOOP
 
 
 
+
+    //using System;
+
+    //public class Test
+    //{
+    //    static void Main(string[] args)
+    //    {
+    //        Child child = new Child();
+    //    }
+    //}
+
+    //class Parent
+    //{
+    //    public Parent()
+    //    {
+    //        Console.WriteLine("to construct Parent.");
+    //    }
+    //}
+
+    //class Child : Parent
+    //{
+    //    public Child()
+    //    {
+    //        Console.WriteLine("to construct Child.");
+    //    }
+
+    //    MyClass delegatee = new MyClass();//是变量，所以先执行他
+    //}
+
+    //class MyClass
+    //{
+    //    public MyClass()
+    //    {
+    //        Console.WriteLine("to construct MyClass.");
+    //    }
+    //}
+
 }
