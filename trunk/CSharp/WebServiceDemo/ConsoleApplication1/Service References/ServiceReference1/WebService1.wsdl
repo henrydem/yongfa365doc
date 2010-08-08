@@ -29,6 +29,20 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="HelloWorld2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="str" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="HelloWorld2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="HelloWorld2Result" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="Swap">
         <s:complexType>
           <s:sequence>
@@ -112,6 +126,12 @@
   <wsdl:message name="HelloWorldSoapOut">
     <wsdl:part name="parameters" element="tns:HelloWorldResponse" />
   </wsdl:message>
+  <wsdl:message name="HelloWorld2SoapIn">
+    <wsdl:part name="parameters" element="tns:HelloWorld2" />
+  </wsdl:message>
+  <wsdl:message name="HelloWorld2SoapOut">
+    <wsdl:part name="parameters" element="tns:HelloWorld2Response" />
+  </wsdl:message>
   <wsdl:message name="SwapSoapIn">
     <wsdl:part name="parameters" element="tns:Swap" />
   </wsdl:message>
@@ -138,6 +158,15 @@
   </wsdl:message>
   <wsdl:portType name="WebService1Soap">
     <wsdl:operation name="OnlyShow">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+如果只是string，那么一个方法会多出四个类似这样的类：&lt;br /&gt;
+HelloWorldRequest&lt;br /&gt;
+HelloWorldRequestBody&lt;br /&gt;
+HelloWorldResponse&lt;br /&gt;
+HelloWorldResponseBody&lt;br /&gt;
+如果有10个方法就会生成4*10个上面这样的情况，郁闷要死，&lt;br /&gt;
+加了这个用到DataTable的方法就不会出现这些类了，研究很久才试出来
+</wsdl:documentation>
       <wsdl:input message="tns:OnlyShowSoapIn" />
       <wsdl:output message="tns:OnlyShowSoapOut" />
     </wsdl:operation>
@@ -145,7 +174,13 @@
       <wsdl:input message="tns:HelloWorldSoapIn" />
       <wsdl:output message="tns:HelloWorldSoapOut" />
     </wsdl:operation>
+    <wsdl:operation name="HelloWorld">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">如果有重载要使用MessageName改变名称</wsdl:documentation>
+      <wsdl:input name="HelloWorld2" message="tns:HelloWorld2SoapIn" />
+      <wsdl:output name="HelloWorld2" message="tns:HelloWorld2SoapOut" />
+    </wsdl:operation>
     <wsdl:operation name="Swap">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">一行语句，不使用中间变量交换两个int的值</wsdl:documentation>
       <wsdl:input message="tns:SwapSoapIn" />
       <wsdl:output message="tns:SwapSoapOut" />
     </wsdl:operation>
@@ -154,6 +189,7 @@
       <wsdl:output message="tns:GetListSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetDataTable">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">DataTable是可以序列化的，加上TableName</wsdl:documentation>
       <wsdl:input message="tns:GetDataTableSoapIn" />
       <wsdl:output message="tns:GetDataTableSoapOut" />
     </wsdl:operation>
@@ -179,6 +215,15 @@
         <soap:body use="literal" />
       </wsdl:input>
       <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="HelloWorld">
+      <soap:operation soapAction="http://www.yongfa365.com/HelloWorld2" style="document" />
+      <wsdl:input name="HelloWorld2">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="HelloWorld2">
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
@@ -236,6 +281,15 @@
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="HelloWorld">
+      <soap12:operation soapAction="http://www.yongfa365.com/HelloWorld2" style="document" />
+      <wsdl:input name="HelloWorld2">
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="HelloWorld2">
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>

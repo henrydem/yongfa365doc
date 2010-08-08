@@ -24,6 +24,11 @@ namespace ConsoleApplication1.ServiceReference1 {
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         string HelloWorld();
         
+        // CODEGEN: 消息 HelloWorld2 的包装名称(HelloWorld2)以后生成的消息协定与默认值(HelloWorld1)不匹配
+        [System.ServiceModel.OperationContractAttribute(Action="http://www.yongfa365.com/HelloWorld2", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        ConsoleApplication1.ServiceReference1.HelloWorld21 HelloWorld1(ConsoleApplication1.ServiceReference1.HelloWorld2 request);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://www.yongfa365.com/Swap", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         void Swap(ref int a, ref int b);
@@ -39,6 +44,40 @@ namespace ConsoleApplication1.ServiceReference1 {
         [System.ServiceModel.OperationContractAttribute(Action="http://www.yongfa365.com/GetListMyClass", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         MyClass[] GetListMyClass();
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="HelloWorld2", WrapperNamespace="http://www.yongfa365.com/", IsWrapped=true)]
+    public partial class HelloWorld2 {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.yongfa365.com/", Order=0)]
+        public string str;
+        
+        public HelloWorld2() {
+        }
+        
+        public HelloWorld2(string str) {
+            this.str = str;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="HelloWorld2Response", WrapperNamespace="http://www.yongfa365.com/", IsWrapped=true)]
+    public partial class HelloWorld21 {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://www.yongfa365.com/", Order=0)]
+        public string HelloWorld2Result;
+        
+        public HelloWorld21() {
+        }
+        
+        public HelloWorld21(string HelloWorld2Result) {
+            this.HelloWorld2Result = HelloWorld2Result;
+        }
     }
     
     /// <remarks/>
@@ -120,6 +159,18 @@ namespace ConsoleApplication1.ServiceReference1 {
         
         public string HelloWorld() {
             return base.Channel.HelloWorld();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        ConsoleApplication1.ServiceReference1.HelloWorld21 ConsoleApplication1.ServiceReference1.WebService1Soap.HelloWorld1(ConsoleApplication1.ServiceReference1.HelloWorld2 request) {
+            return base.Channel.HelloWorld1(request);
+        }
+        
+        public string HelloWorld1(string str) {
+            ConsoleApplication1.ServiceReference1.HelloWorld2 inValue = new ConsoleApplication1.ServiceReference1.HelloWorld2();
+            inValue.str = str;
+            ConsoleApplication1.ServiceReference1.HelloWorld21 retVal = ((ConsoleApplication1.ServiceReference1.WebService1Soap)(this)).HelloWorld1(inValue);
+            return retVal.HelloWorld2Result;
         }
         
         public void Swap(ref int a, ref int b) {
