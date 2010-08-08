@@ -112,49 +112,49 @@ namespace AboutOOP
     //new的时候（实例化一个类时），先创建变量，再执行构造函数。
     //子类变量-->父类变量-->...顶级父类变量-->顶级父类构造函数-->子类构造函数...-->最终类构造函数
 
-    using System;
-    public class A
-    {
-        public string s = "";
-        public A()
-        {
-            Console.WriteLine("A");
-        }
-        public virtual void Fun1(int i)
-        {
-            Console.WriteLine(i);
-        }
-        public virtual void Fun2(A a)
-        {
-            a.Fun1(1);
-            Fun1(3);
-        }
-    }
+    //using System;
+    //public class A
+    //{
+    //    public string s = "";
+    //    public A()
+    //    {
+    //        Console.WriteLine("A");
+    //    }
+    //    public virtual void Fun1(int i)
+    //    {
+    //        Console.WriteLine(i);
+    //    }
+    //    public virtual void Fun2(A a)
+    //    {
+    //        a.Fun1(1);
+    //        Fun1(3);
+    //    }
+    //}
 
-    public class B : A
-    {
-        public B()
-        {
-            Console.WriteLine("B");
-        }
-        public override void Fun1(int i)
-        {
-            base.Fun1(i + 1);
-        }
-        public new void Fun2(A a)
-        {
-            a.Fun1(2);
-            Fun1(5);
-        }
-        public static void Main()
-        {
-            A b = new B();
-            A a = new A();
-            a.Fun2(b);
-            b.Fun2(a);
-            Console.ReadKey();
-        }
-    }
+    //public class B : A
+    //{
+    //    public B()
+    //    {
+    //        Console.WriteLine("B");
+    //    }
+    //    public override void Fun1(int i)
+    //    {
+    //        base.Fun1(i + 1);
+    //    }
+    //    public new void Fun2(A a)
+    //    {
+    //        a.Fun1(2);
+    //        Fun1(5);
+    //    }
+    //    public static void Main()
+    //    {
+    //        A b = new B();
+    //        A a = new A();
+    //        a.Fun2(b);
+    //        b.Fun2(a);
+    //        Console.ReadKey();
+    //    }
+    //}
 
 
 
@@ -215,43 +215,66 @@ namespace AboutOOP
 
 
 
+    //Main放在类里与放在类外，执行A.X或B.Y结果是不一样的
+    //Main放在类里，先执行类里的静态变量，
+    //Main放在类外，谁在前先执行谁
+    //静态字段及静态构造函数，及相关调用同样，先静态变量，再静态方法,
 
-    //静态字段及静态构造函数，及相关调用同样，先静态变量，再静态方法
-    //using System;
+    public class A
+    {
+        public static int X = 0;
+        static A()
+        {
+            X = B.Y + 1;
+        }
+    }
 
 
-    //public class A
+    public class B
+    {
+        public static int Y = A.X + 1;
+        static B()
+        {
+        }
+    }
+
+
+    class MyClass
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine(String.Format("A.X:{0} ,B.Y{1}\t\n", A.X, B.Y));
+           // Console.WriteLine(String.Format("A.X:{1} ,B.Y{0}\t\n", B.Y, A.X));
+            Console.ReadKey();
+        }
+    }
+
+    ////////////////////////////////////////////////
+    //如果Main在其中一个类里，就一定先执行这个类里的静态字段
+
+    //class A
     //{
-    //    public static int X = 0;
+    //    public static int X = 0;//2
     //    static A()
     //    {
-    //        X = B.Y + 1;
+    //        X = B.Y + 1;//3
     //    }
     //}
-
-
-    //public class B
+    //class B
     //{
-    //    public static int Y = A.X + 1;
-    //    static B()
+    //    public static int Y = A.X + 1;//1
+    //    static B() 
     //    {
+    //        //4
+    //    }
+    //    static void Main()
+    //    {
+    //        //不论先A.X还是先B.Y都先执行Main所在的类里的字段
+    //        Console.WriteLine("X={0},Y={1}", A.X, B.Y);
     //    }
     //}
 
 
-    //class MyClass
-    //{
-    //    static void Main(string[] args)
-    //    {
-    //        Console.WriteLine(String.Format("{0} ,{1}\t\n", B.Y, A.X));
-    //        Console.ReadKey();
-    //    }
-    //}
-
-
-
-
-    //using System;
 
     //public class Test
     //{
