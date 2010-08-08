@@ -50,13 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\MyXls\MyXls.SL2.dll" />
-    <Content Include="Lib\NPOI\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="Lib\NPOI\NPOI.DDF.dll" />
+    <Content Include="Lib\NPOI\Ionic.Zip.dll" />
     <Content Include="Lib\NPOI\NPOI.dll" />
-    <Content Include="Lib\NPOI\NPOI.HPSF.dll" />
-    <Content Include="Lib\NPOI\NPOI.HSSF.dll" />
-    <Content Include="Lib\NPOI\NPOI.POIFS.dll" />
-    <Content Include="Lib\NPOI\NPOI.Util.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

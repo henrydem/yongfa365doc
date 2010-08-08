@@ -31,33 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=028265cbccdfa80d, processorArchitecture=MSIL">
+    <Reference Include="Ionic.Zip, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ClassLibrary1\Lib\NPOI\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\ClassLibrary1\Lib\NPOI\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI, Version=1.2.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+    <Reference Include="NPOI, Version=1.2.3.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ClassLibrary1\Lib\NPOI\NPOI.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.DDF, Version=1.2.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ClassLibrary1\Lib\NPOI\NPOI.DDF.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.HPSF, Version=1.2.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ClassLibrary1\Lib\NPOI\NPOI.HPSF.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.HSSF, Version=1.2.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ClassLibrary1\Lib\NPOI\NPOI.HSSF.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.POIFS, Version=1.2.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ClassLibrary1\Lib\NPOI\NPOI.POIFS.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.Util, Version=1.2.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ClassLibrary1\Lib\NPOI\NPOI.Util.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
