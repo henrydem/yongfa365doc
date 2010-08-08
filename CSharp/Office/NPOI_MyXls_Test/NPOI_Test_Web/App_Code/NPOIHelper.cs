@@ -4,13 +4,13 @@ using System.Data;
 using System.IO;
 using System.Text;
 using System.Web;
-using NPOI;
-using NPOI.HPSF;
-using NPOI.HSSF;
 using NPOI.HSSF.UserModel;
-using NPOI.HSSF.Util;
-using NPOI.POIFS;
-using NPOI.Util;
+using NPOI.HPSF;
+using NPOI.POIFS.FileSystem;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+
+
 
 
 public class ExcelHelper
@@ -21,13 +21,14 @@ public class ExcelHelper
     /// <param name="dtSource"></param>
     /// <param name="strFileName"></param>
     /// <remarks>NPOI认为Excel的第一个单元格是：(0，0)</remarks>
+    /// <Author>柳永法 http://www.yongfa365.com/ 2010-5-8 22:21:41</Author>
     public static void ExportEasy(DataTable dtSource, string strFileName)
     {
         HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.CreateSheet();
+        Sheet sheet = workbook.CreateSheet();
 
         //填充表头
-        HSSFRow dataRow = sheet.CreateRow(0);
+        Row dataRow = sheet.CreateRow(0);
         foreach (DataColumn column in dtSource.Columns)
         {
             dataRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
@@ -58,30 +59,7 @@ public class ExcelHelper
                 fs.Flush();
             }
         }
-        sheet.Dispose();
         workbook.Dispose();
-    }
-
-    /// <summary>
-    /// 用于Web导出
-    /// </summary>
-    /// <param name="dtSource"></param>
-    /// <param name="strHeaderText"></param>
-    /// <param name="strFileName"></param>
-    public static void ExportByWeb(DataTable dtSource, string strHeaderText, string strFileName)
-    {
-
-        HttpContext curContext = HttpContext.Current;
-
-        // 设置编码和附件格式
-        curContext.Response.ContentType = "application/vnd.ms-excel";
-        curContext.Response.ContentEncoding = Encoding.UTF8;
-        curContext.Response.Charset = "";
-        curContext.Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(strFileName,Encoding.UTF8));
-
-        curContext.Response.BinaryWrite(Export(dtSource, strHeaderText).GetBuffer());
-        curContext.Response.End();
-    
     }
 
 
@@ -90,11 +68,11 @@ public class ExcelHelper
     /// </summary>
     /// <param name="dtSource">源DataTable</param>
     /// <param name="strHeaderText">表头文本</param>
-    /// <returns></returns>
+    /// <Author>柳永法 http://www.yongfa365.com/ 2010-5-8 22:21:41</Author>
     public static MemoryStream Export(DataTable dtSource, string strHeaderText)
     {
         HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.CreateSheet();
+        Sheet sheet = workbook.CreateSheet();
 
         #region 右击文件 属性信息
         {
@@ -114,8 +92,8 @@ public class ExcelHelper
         }
         #endregion
 
-        HSSFCellStyle dateStyle = workbook.CreateCellStyle();
-        HSSFDataFormat format = workbook.CreateDataFormat();
+        CellStyle dateStyle = workbook.CreateCellStyle();
+        DataFormat format = workbook.CreateDataFormat();
         dateStyle.DataFormat = format.GetFormat("yyyy-mm-dd");
 
         //取得列宽
@@ -152,33 +130,33 @@ public class ExcelHelper
 
                 #region 表头及样式
                 {
-                    HSSFRow headerRow = sheet.CreateRow(0);
+                    Row headerRow = sheet.CreateRow(0);
                     headerRow.HeightInPoints = 25;
                     headerRow.CreateCell(0).SetCellValue(strHeaderText);
 
-                    HSSFCellStyle headStyle = workbook.CreateCellStyle();
-                    headStyle.Alignment = CellHorizontalAlignment.CENTER;
-                    HSSFFont font = workbook.CreateFont();
+                    CellStyle headStyle = workbook.CreateCellStyle();
+                    headStyle.Alignment = HorizontalAlignment.CENTER;
+                    Font font = workbook.CreateFont();
                     font.FontHeightInPoints = 20;
                     font.Boldweight = 700;
                     headStyle.SetFont(font);
 
                     headerRow.GetCell(0).CellStyle = headStyle;
 
-                    sheet.AddMergedRegion(new Region(0, 0, 0, dtSource.Columns.Count - 1));
-                    headerRow.Dispose();
+                    sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, dtSource.Columns.Count - 1));
+
                 }
                 #endregion
 
 
                 #region 列头及样式
                 {
-                    HSSFRow headerRow = sheet.CreateRow(1);
+                    Row headerRow = sheet.CreateRow(1);
 
 
-                    HSSFCellStyle headStyle = workbook.CreateCellStyle();
-                    headStyle.Alignment = CellHorizontalAlignment.CENTER;
-                    HSSFFont font = workbook.CreateFont();
+                    CellStyle headStyle = workbook.CreateCellStyle();
+                    headStyle.Alignment = HorizontalAlignment.CENTER;
+                    Font font = workbook.CreateFont();
                     font.FontHeightInPoints = 10;
                     font.Boldweight = 700;
                     headStyle.SetFont(font);
@@ -193,7 +171,7 @@ public class ExcelHelper
                         sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256);
 
                     }
-                    headerRow.Dispose();
+
                 }
                 #endregion
 
@@ -203,10 +181,10 @@ public class ExcelHelper
 
 
             #region 填充内容
+            Row dataRow = sheet.CreateRow(rowIndex);
             foreach (DataColumn column in dtSource.Columns)
             {
-                HSSFRow dataRow = sheet.CreateRow(rowIndex);
-                HSSFCell newCell = dataRow.CreateCell(column.Ordinal);
+                Cell newCell = dataRow.CreateCell(column.Ordinal);
 
                 string drValue = row[column].ToString();
 
@@ -262,7 +240,6 @@ public class ExcelHelper
             ms.Flush();
             ms.Position = 0;
 
-            sheet.Dispose();
             workbook.Dispose();
 
             return ms;
@@ -271,7 +248,7 @@ public class ExcelHelper
 
 
     }
-   
+
 
     /// <summary>
     /// DataTable导出到Excel文件
@@ -279,6 +256,7 @@ public class ExcelHelper
     /// <param name="dtSource">源DataTable</param>
     /// <param name="strHeaderText">表头文本</param>
     /// <param name="strFileName">保存位置</param>
+    /// <Author>柳永法 http://www.yongfa365.com/ 2010-5-8 22:21:41</Author>
     public static void Export(DataTable dtSource, string strHeaderText, string strFileName)
     {
         using (MemoryStream ms = Export(dtSource, strHeaderText))
@@ -292,6 +270,30 @@ public class ExcelHelper
         }
     }
 
+
+    /// <summary>
+    /// 用于Web导出
+    /// </summary>
+    /// <param name="dtSource">源DataTable</param>
+    /// <param name="strHeaderText">表头文本</param>
+    /// <param name="strFileName">文件名</param>
+    /// <Author>柳永法 http://www.yongfa365.com/ 2010-5-8 22:21:41</Author>
+    public static void ExportByWeb(DataTable dtSource, string strHeaderText, string strFileName)
+    {
+
+        HttpContext curContext = HttpContext.Current;
+
+        // 设置编码和附件格式
+        curContext.Response.ContentType = "application/vnd.ms-excel";
+        curContext.Response.ContentEncoding = Encoding.UTF8;
+        curContext.Response.Charset = "";
+        curContext.Response.AppendHeader("Content-Disposition",
+            "attachment;filename=" + HttpUtility.UrlEncode(strFileName, Encoding.UTF8));
+
+        curContext.Response.BinaryWrite(Export(dtSource, strHeaderText).GetBuffer());
+        curContext.Response.End();
+
+    }
 
 
     /// <summary>读取excel
@@ -308,21 +310,21 @@ public class ExcelHelper
         {
             hssfworkbook = new HSSFWorkbook(file);
         }
-        HSSFSheet sheet = hssfworkbook.GetSheetAt(0);
+        Sheet sheet = hssfworkbook.GetSheetAt(0);
         System.Collections.IEnumerator rows = sheet.GetRowEnumerator();
 
-        HSSFRow headerRow = sheet.GetRow(0);
+        Row headerRow = sheet.GetRow(0);
         int cellCount = headerRow.LastCellNum;
 
         for (int j = 0; j < cellCount; j++)
         {
-            HSSFCell cell = headerRow.GetCell(j);
+            Cell cell = headerRow.GetCell(j);
             dt.Columns.Add(cell.ToString());
         }
 
         for (int i = (sheet.FirstRowNum + 1); i <= sheet.LastRowNum; i++)
         {
-            HSSFRow row = sheet.GetRow(i);
+            Row row = sheet.GetRow(i);
             DataRow dataRow = dt.NewRow();
 
             for (int j = row.FirstCellNum; j < cellCount; j++)
@@ -362,11 +364,11 @@ public class ExcelHelper
     public static DataTable Import(Stream ExcelFileStream, string SheetName, int HeaderRowIndex)
     {
         HSSFWorkbook workbook = new HSSFWorkbook(ExcelFileStream);
-        HSSFSheet sheet = workbook.GetSheet(SheetName);
+        Sheet sheet = workbook.GetSheet(SheetName);
 
         DataTable table = new DataTable();
 
-        HSSFRow headerRow = sheet.GetRow(HeaderRowIndex);
+        Row headerRow = sheet.GetRow(HeaderRowIndex);
         int cellCount = headerRow.LastCellNum;
 
         for (int i = headerRow.FirstCellNum; i < cellCount; i++)
@@ -379,7 +381,7 @@ public class ExcelHelper
 
         for (int i = (sheet.FirstRowNum + 1); i < sheet.LastRowNum; i++)
         {
-            HSSFRow row = sheet.GetRow(i);
+            Row row = sheet.GetRow(i);
             DataRow dataRow = table.NewRow();
 
             for (int j = row.FirstCellNum; j < cellCount; j++)
@@ -387,19 +389,18 @@ public class ExcelHelper
         }
 
         ExcelFileStream.Close();
-        workbook = null;
-        sheet = null;
+        workbook.Dispose();
         return table;
     }
 
     public static DataTable Import(Stream ExcelFileStream, int SheetIndex, int HeaderRowIndex)
     {
         HSSFWorkbook workbook = new HSSFWorkbook(ExcelFileStream);
-        HSSFSheet sheet = workbook.GetSheetAt(SheetIndex);
+        Sheet sheet = workbook.GetSheetAt(SheetIndex);
 
         DataTable table = new DataTable();
 
-        HSSFRow headerRow = sheet.GetRow(HeaderRowIndex);
+        Row headerRow = sheet.GetRow(HeaderRowIndex);
         int cellCount = headerRow.LastCellNum;
 
         for (int i = headerRow.FirstCellNum; i < cellCount; i++)
@@ -412,7 +413,7 @@ public class ExcelHelper
 
         for (int i = (sheet.FirstRowNum + 1); i < sheet.LastRowNum; i++)
         {
-            HSSFRow row = sheet.GetRow(i);
+            Row row = sheet.GetRow(i);
             DataRow dataRow = table.NewRow();
 
             for (int j = row.FirstCellNum; j < cellCount; j++)
