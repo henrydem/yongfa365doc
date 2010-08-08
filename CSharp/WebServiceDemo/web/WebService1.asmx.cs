@@ -11,7 +11,7 @@ namespace web
     /// <summary>
     /// WebService1 的摘要说明
     /// </summary>
-    [WebService(Namespace = "http://www.yongfa365.com/")]
+    [WebService(Namespace = "http://www.yongfa365.com/",Name="柳永法的WebServiceDemo", Description = "仅仅是测试一下，看他显示在哪里,我是<a href='http://www.yongfa365.com'>柳永法</a>")]
     // 默认是这个，但有重载时，会出错，所以改下
     // [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [WebServiceBinding(ConformsTo = WsiProfiles.None)]
