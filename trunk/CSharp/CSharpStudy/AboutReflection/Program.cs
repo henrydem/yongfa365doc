@@ -17,6 +17,10 @@ namespace AboutReflection
                 Console.WriteLine(item.Name);
             }
 
+            //////////////typeof//////////////
+            Type t = typeof(System.String);
+            Console.WriteLine("Listing all the public constructors of the {0} type", t);
+
             //////////////Assembly.Load 程序集名//////////////
             {
                 object obj = Assembly.Load("AboutReflection").CreateInstance("AboutReflection.Class1");//反射创建
