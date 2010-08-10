@@ -6,28 +6,59 @@ namespace AboutSort
 {
     class AboutSort
     {
-        public static void MaoPaoSort()
+        /// <summary>
+        /// 冒泡排序
+        /// </summary>
+        /// <param name="input"></param>
+        public static void MaoPaoSort(ref int[] input)
         {
-            int[] arrInt = new Int32[] { 2, 4, 1, 8, 9, 3, 12, 34, 234, 234234, 12, 6 };
-            for (int i = 0; i < arrInt.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
-                for (int j = i + 1; j < arrInt.Length; j++)
+                for (int j = i + 1; j < input.Length; j++)
                 {
-                    if (arrInt[i] > arrInt[j])
+                    if (input[i] > input[j])
                     {
-                        int intTemp = arrInt[i];
-                        arrInt[i] = arrInt[j];
-                        arrInt[j] = intTemp;
+                        int intTemp = input[i];
+                        input[i] = input[j];
+                        input[j] = intTemp;
                     }
                 }
             }
 
-            foreach (int item in arrInt)
+            //foreach (int item in input)
+            //{
+            //    Console.Write("{0}-->", item);
+            //}
+
+        }
+
+        /// <summary>
+        /// 冒泡排序。改进版本
+        /// </summary>
+        /// <param name="a"></param>
+        public static void BubbleSort(ref int[] input)
+        {
+            int bound = input.Length - 1;
+            while (bound > 0)
             {
-                Console.Write("{0}-->", item);
+                int t = 0; // this variable records the bound of the next loop
+                for (int j = 0; j < bound; j++)
+                {
+                    if (input[j + 1] < input[j])
+                    {
+                        int temp = input[j];
+                        input[j] = input[j + 1];
+                        input[j + 1] = temp;
+                        t = j;
+                    }
+                }
+                bound = t;
             }
 
         }
+
+
+
         public static void BubbleSort()
         {
             int[] list = new Int32[] { 2, 4, 1, 8, 9, 3, 12, 34, 234, 234234, 12, 6 };
