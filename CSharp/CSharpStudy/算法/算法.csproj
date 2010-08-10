@@ -53,6 +53,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringReverse.cs" />
+    <Compile Include="所有经典排序算法.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="各种数字类型精度.htm" />
