@@ -9,6 +9,8 @@ namespace 算法
     {
         static void Main(string[] args)
         {
+            Console.WriteLine(Other.从1加到N的值(100));
+
             int a = 123;
             int b = 234;
             Other.Swap(ref a,ref b);
