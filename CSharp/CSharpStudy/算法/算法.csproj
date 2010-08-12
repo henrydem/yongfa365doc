@@ -53,6 +53,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringReverse.cs" />
+    <Compile Include="二进制，8进制，10进制，16进制.cs" />
     <Compile Include="所有经典排序算法.cs" />
   </ItemGroup>
   <ItemGroup>
