@@ -18,13 +18,26 @@ namespace SqlFullQuerys
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        void FillConn()
         {
-            sqlconnectionstring = "Data Source =" +
+            if (checkBox2.Checked)
+            {
+                sqlconnectionstring = "Data Source="+textBox1.Text+";Initial Catalog=master;Integrated Security=True";
+            }
+            else
+            {
+        sqlconnectionstring = "Data Source =" +
                 this.textBox1.Text + ";User ID=" +
                 this.textBox2.Text + ";Password=" +
                 this.textBox3.Text + ";initial Catalog=" +
                 "master" ;
+            }
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            FillConn();
             this.comboBox1.Items.Clear();
             try
             {
@@ -52,11 +65,7 @@ namespace SqlFullQuerys
         private void button2_Click(object sender, EventArgs e)
         {
             int commandcount = 0;
-            sqlconnectionstring = "Data Source =" +
-                this.textBox1.Text + ";User ID=" +
-                this.textBox2.Text + ";Password=" +
-                this.textBox3.Text + ";initial Catalog=" +
-                this.comboBox1.Text;
+            FillConn();
 
             string ftext = this.textBox4.Text;
 
