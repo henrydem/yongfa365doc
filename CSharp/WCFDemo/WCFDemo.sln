@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCF_JQuery_JSON_Service", "WCF_JQuery_JSON_Service\WCF_JQuery_JSON_Service.csproj", "{E4449977-B87C-4605-A25B-ECD15C0481EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{446422A6-2E76-4C06-BEC5-8E0FE3E08BCF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4449977-B87C-4605-A25B-ECD15C0481EB} = {E4449977-B87C-4605-A25B-ECD15C0481EB}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E4449977-B87C-4605-A25B-ECD15C0481EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4449977-B87C-4605-A25B-ECD15C0481EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4449977-B87C-4605-A25B-ECD15C0481EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4449977-B87C-4605-A25B-ECD15C0481EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{446422A6-2E76-4C06-BEC5-8E0FE3E08BCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{446422A6-2E76-4C06-BEC5-8E0FE3E08BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{446422A6-2E76-4C06-BEC5-8E0FE3E08BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{446422A6-2E76-4C06-BEC5-8E0FE3E08BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
