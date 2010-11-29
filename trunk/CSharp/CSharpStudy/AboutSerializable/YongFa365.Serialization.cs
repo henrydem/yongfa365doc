@@ -23,6 +23,40 @@ namespace YongFa365.Serialization
             }
         }
 
+        /// <summary>
+        /// 在XML序列化时去除默认命名空间xmlns:xsd和xmlns:xsi
+        /// </summary>
+        public string ToXml2<T>(T item)
+        {
+            XmlSerializer serializer = new XmlSerializer(item.GetType());
+
+            //在XML序列化时去除默认命名空间xmlns:xsd和xmlns:xsi
+            XmlSerializerNamespaces xmlns = new XmlSerializerNamespaces();
+            xmlns.Add("", "");
+
+            StringBuilder sb = new StringBuilder();
+            using (XmlWriter writer = XmlWriter.Create(sb))
+            {
+                serializer.Serialize(writer, item, xmlns);
+                return sb.ToString();
+            }
+        }
+
+        /// <summary>
+        /// 在XML序列化后 xml代码更好看
+        /// </summary>
+        public string ToXml3<T>(T item)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                XmlSerializer serializer = new XmlSerializer(item.GetType());
+                XmlSerializerNamespaces xmlns = new XmlSerializerNamespaces();
+                xmlns.Add("", "");
+                serializer.Serialize(stream, item, xmlns);
+                return Encoding.UTF8.GetString(stream.GetBuffer());
+            }
+        }
+
         public T FromXml<T>(string str)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
