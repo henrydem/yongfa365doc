@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPOI_Test", "NPOI_Test\NPOI_Test.csproj", "{F619A2E2-40CA-4E6C-8C29-7363C066F060}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9D41A976-118D-4156-820D-D07DF8034064} = {9D41A976-118D-4156-820D-D07DF8034064}
@@ -17,7 +17,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "NPOI_Test_Web", "NPOI_Test_
 		SccAuxPath = "Svn"
 		SccLocalPath = "Svn"
 		SccProvider = "SubversionScc"
-		TargetFramework = "3.5"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		ProjectReferences = "{9D41A976-118D-4156-820D-D07DF8034064}|ClassLibrary1.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/NPOI_Test_Web"
 		Debug.AspNetCompiler.PhysicalPath = "NPOI_Test_Web\"
