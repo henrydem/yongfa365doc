@@ -15,6 +15,8 @@ using System.Runtime.Serialization.Formatters.Soap;
 using System.Runtime.Serialization.Json;
 using System.Diagnostics;
 
+using YongFa365.Serialization;
+
 
 namespace AboutSerializable
 {
@@ -27,23 +29,24 @@ namespace AboutSerializable
 
         private void button1_Click(object sender, EventArgs e)
         {
-            CodeTimer.Time("JSON", 100, new TestJSON());
-            CodeTimer.Time("XML", 10000, new TestXML());
-            CodeTimer.Time("Bin", 10000, new TestBin());
-            CodeTimer.Time("TestSoap", 10000, new TestSoap());
-            //StringBuilder strBuilder = new StringBuilder();
-            //XmlSerializer xmlSerler = new XmlSerializer(typeof(Users));
+            //CodeTimer.Time("JSON", 100, new TestJSON());
+            //CodeTimer.Time("XML", 10000, new TestXML());
+            //CodeTimer.Time("Bin", 10000, new TestBin());
+            //CodeTimer.Time("TestSoap", 10000, new TestSoap());
 
-            //XmlWriter sw = XmlWriter.Create(strBuilder);
+            //在相关位置设置断点看效果
+        }
 
-            ////序列化
-            //xmlSerler.Serialize(sw, users);
-            //MessageBox.Show(strBuilder.ToString());
+        private void btnXML_Click(object sender, EventArgs e)
+        {
+            SerializeXmlNoAttribute serial = new SerializeXmlNoAttribute();
+            serial.Test();
+        }
 
-            ////反序列化
-            //Users user2 = xmlSerler.Deserialize(new StringReader(strBuilder.ToString())) as Users;
-
-            //MessageBox.Show(string.Format("Id{0},username{1},islive{2}", user2.Id, user2.UserName, user2.IsLive));
+        private void btnXML2_Click(object sender, EventArgs e)
+        {
+            SerializeXmlWithAttribute serial = new SerializeXmlWithAttribute();
+            serial.Test();
 
         }
     }
