@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace YongFa365.String
 {
@@ -72,7 +73,13 @@ namespace YongFa365.String
             return dict;
         }
 
-
+        /// <summary>
+        /// 按字节截取字符串，双字节取一半时用"."替换
+        /// 光速截取，速度惊人
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="length">字节数</param>
+        /// <returns></returns>
         public static string Truncate(this string input, int length)
         {
             int len = input.Length;
@@ -88,70 +95,24 @@ namespace YongFa365.String
 
             if (length < i)
             {
-                length = i;
-            }
-            else if (length > len)
-            {
-                length = len;
-            }
-
-            return input.Substring(0, length);
-        }
-
-        public static string ToSafeFileName(this string input)
-        {
-            return input.Replace('/', '.')
-                        .Replace(':', '.')
-                        .Replace('*', '.')
-                        .Replace('?', '.')
-                        .Replace('"', '.')
-                        .Replace('<', '.')
-                        .Replace('>', '.')
-                        .Replace('|', '.')
-                        .Replace('\\', '.')
-                        .Replace('\r', '.')
-                        .Replace('\n', '.');
-        }
-
-        #region ToMd5
-
-        /// <summary>
-        /// 16位，低8位
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static string To16bitMd5(this string input)
-        {
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            string result = BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)), 4, 8);
-            return result.Replace("-", "");
-        }
-
-        /// <summary>
-        /// 32位
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static string To32bitMd5(this string input)
-        {
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            string result = BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
-            return result.Replace("-", "");
-        }
-
-        #endregion
-
-        public static Guid ToGuid(this string input)
-        {
-            Guid temp;
-            if (Guid.TryParse(input, out temp))
-            {
-                return temp;
+                return input.Substring(0, length) + ".";
             }
             else
             {
-                return Guid.Empty;
+                return input.Substring(0, length);
             }
+        }
+
+        /// <summary>
+        /// 调用正则表达式替换
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="pattern">正则表达式</param>
+        /// <param name="replacement">替换成什么，可使用后向引用等，如$1</param>
+        /// <returns></returns>
+        public static string RegexReplace(this string input, string pattern, string replacement)
+        {
+            return Regex.Replace(input, pattern, replacement);
         }
 
 
@@ -279,14 +240,27 @@ namespace YongFa365.String
         }
 
         #endregion
+
+
+        public static string DateTimeString
+        {
+            get
+            {
+                return System.DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            }
+        }
+
+
+
     }
 
 
     /// <summary>
     /// String转成别的类型
     /// </summary>
-    public static class 字符串转换
+    public static class 字符串转换及判断相关
     {
+
         #region String转换为Int
 
         /// <summary>
@@ -372,7 +346,7 @@ namespace YongFa365.String
 
         #endregion
 
-        #region String转换为DateTime 或 DateTime输出为 yyyy-MM-dd String
+        #region String转换为DateTime
 
         /// <summary>
         /// 转为DateTime如果不成功则返回1970-1-1 ,
@@ -410,16 +384,6 @@ namespace YongFa365.String
             {
                 return null;
             }
-        }
-
-        /// <summary>
-        /// 转成一般常用格式 yyyy-MM-dd
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static string ToStringNormal(this DateTime input)
-        {
-            return input.ToString("yyyy-MM-dd");
         }
 
         #endregion
@@ -464,35 +428,215 @@ namespace YongFa365.String
 
         #endregion
 
-    }
+        #region OtherTransform
 
-
-    public static class 字符串其它
-    {
-        public static string DateTimeString
+        /// <summary>
+        /// 用指定连接符连接字符串列表所有元素
+        /// </summary>
+        /// <param name="input">字符串列表</param>
+        /// <param name="separator">连接符</param>
+        /// <returns></returns>
+        public static string ToString(this List<string> input, string separator)
         {
-            get
+            if (input == null)
             {
-                return System.DateTime.Now.ToString("yyyyMMddHHmmssfff");
+                return string.Empty;
+            }
+            return string.Join(separator, input);
+        }
+
+        /// <summary>
+        /// 转成一般常用格式 yyyy-MM-dd
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ToStringNormal(this DateTime input)
+        {
+            return input.ToString("yyyy-MM-dd");
+        }
+
+        /// <summary>
+        /// 16位，低8位
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string To16bitMd5(this string input)
+        {
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            string result = BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)), 4, 8);
+            return result.Replace("-", "");
+        }
+
+        /// <summary>
+        /// 32位
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string To32bitMd5(this string input)
+        {
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            string result = BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
+            return result.Replace("-", "");
+        }
+
+
+        /// <summary>
+        /// 转为了Guid,失败时转为Guid.Empty
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static Guid ToGuid(this string input)
+        {
+            Guid temp;
+            if (Guid.TryParse(input, out temp))
+            {
+                return temp;
+            }
+            else
+            {
+                return Guid.Empty;
             }
         }
 
+        /// <summary>
+        /// 转成合法文件名，替换非法文件名字符为空
+        /// TODO:此算法效率不高，每次都产生新的字符串，但目前够用。
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ToSafeFileName(this string input)
+        {
+            return input.Replace('/', '.')
+                        .Replace(':', '.')
+                        .Replace('*', '.')
+                        .Replace('?', '.')
+                        .Replace('"', '.')
+                        .Replace('<', '.')
+                        .Replace('>', '.')
+                        .Replace('|', '.')
+                        .Replace('\\', '.')
+                        .Replace('\r', '.')
+                        .Replace('\n', '.');
+        }
+
+        /// <summary>
+        /// 首字母小写
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ToCamel(this string input)
+        {
+            return string.IsNullOrWhiteSpace(input) ? "" : input[0].ToString().ToLower() + input.Substring(1);
+        }
+
+        /// <summary>
+        /// 首字母大写
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ToPascal(this string input)
+        {
+            return string.IsNullOrWhiteSpace(input) ? "" : input[0].ToString().ToUpper() + input.Substring(1);
+        }
+
+        #endregion
+
+        #region Is系列
+
+        /// <summary>
+        /// 指示指定的字符串是 null、空还是仅由空白字符组成。
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static bool IsNullOrWhiteSpace(this string input)
         {
-            if (input != null)
-            {
-                for (int i = 0; i < input.Length; i++)
-                {
-                    if (!char.IsWhiteSpace(input[i]))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(input);
         }
 
+        /// <summary>
+        /// 指示指定的字符串是 null 还是 System.String.Empty 字符串。
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsNullOrEmpty(this string input)
+        {
+            return string.IsNullOrEmpty(input);
+        }
+
+
+        public static bool IsInt(this string input)
+        {
+            int temp;
+            return int.TryParse(input, out temp);
+        }
+
+        public static bool IsDecimal(this string input)
+        {
+            Decimal temp;
+            return Decimal.TryParse(input, out temp);
+        }
+
+
+        public static bool IsDateTime(this string input)
+        {
+            DateTime temp;
+            return DateTime.TryParse(input, out temp);
+        }
+
+
+        public static bool IsByte(this string input)
+        {
+            Byte temp;
+            return Byte.TryParse(input, out temp);
+        }
+
+        /// <summary>
+        /// 正则表达式判断，效率要求较高时甚用
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="pattern">正则表达式</param>
+        /// <returns></returns>
+        public static bool IsMatch(this string input, string pattern)
+        {
+            return input == null ? false : Regex.IsMatch(input, pattern);
+        }
+
+
+        #endregion
     }
 
+    public static class ChineseStringUtility
+    {
+        //http://www.cnblogs.com/fmxyw/archive/2010/02/26/1674447.html
+        internal const int LOCALE_SYSTEM_DEFAULT = 0x0800;
+        internal const int LCMAP_SIMPLIFIED_CHINESE = 0x02000000;
+        internal const int LCMAP_TRADITIONAL_CHINESE = 0x04000000;
 
+        [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern int LCMapString(int Locale, int dwMapFlags, string lpSrcStr, int cchSrc, [Out] string lpDestStr, int cchDest);
+
+        /// <summary>
+        /// 转为简体
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ToSimplified(this string input)
+        {
+            string target = new string(' ', input.Length);
+            int ret = LCMapString(LOCALE_SYSTEM_DEFAULT, LCMAP_SIMPLIFIED_CHINESE, input, input.Length, target, input.Length);
+            return target;
+        }
+
+        /// <summary>
+        /// 转为繁体
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ToTraditional(this string input)
+        {
+            string target = new string(' ', input.Length);
+            int ret = LCMapString(LOCALE_SYSTEM_DEFAULT, LCMAP_TRADITIONAL_CHINESE, input, input.Length, target, input.Length);
+            return target;
+        }
+    }
 }
