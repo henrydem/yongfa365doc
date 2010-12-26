@@ -460,7 +460,7 @@ namespace YongFa365.String
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static string To16bitMd5(this string input)
+        public static string To16bitMD5(this string input)
         {
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
             string result = BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)), 4, 8);
@@ -472,10 +472,18 @@ namespace YongFa365.String
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static string To32bitMd5(this string input)
+        public static string To32bitMD5(this string input)
         {
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
             string result = BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
+            return result.Replace("-", "");
+        }
+
+
+        public static string ToSHA1(this string input)
+        {
+            SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider();
+            string result = BitConverter.ToString(sha1.ComputeHash(Encoding.UTF8.GetBytes(input)));
             return result.Replace("-", "");
         }
 

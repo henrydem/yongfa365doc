@@ -10,7 +10,10 @@ namespace AboutExtensions
     {
         static void Main(string[] args)
         {
-            string a = "admin".To32bitMd5();
+            string a = "admin";
+            Console.WriteLine(a.To16bitMD5());
+            Console.WriteLine(a.To32bitMD5());
+            Console.WriteLine(a.ToSHA1());
         }
     }
 }
