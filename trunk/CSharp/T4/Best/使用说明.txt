@@ -1,0 +1,7 @@
+同事从SubSonic里提取改造的，http://subsonicproject.com
+StoredProcedure.tt	生成存储过程的
+Entity.tt		生成数据表实体的
+Settings.ttinclude	设置生成文件的命名空间及连接哪个数据库的
+SQLServer.ttinclude	SQLServer相关处理类
+
+

@@ -1,0 +1,113 @@
+﻿<#@ include file="SQLServer.ttinclude" #>
+<#@ output extension=".txt" #>
+<#
+
+var manager = Manager.Create(Host, GenerationEnvironment);
+
+var sps = GetSPs();
+if(sps.Count>0){ 
+    foreach(var sp in sps){
+		manager.StartNewFile(sp.CleanName + ".cs");
+#>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+using System.Collections;
+using System.ComponentModel;
+using System.Data.SqlClient;
+using Microsoft.Practices.EnterpriseLibrary.Data;
+    
+namespace <#=Namespace #> {
+	/// <summary>
+	/// 调用存储过程生成SqlCommand
+	/// 如果改了存储过程字段顺序，需要关注相关调用
+	///</summary>
+    public partial class SPs {
+	
+		/// <summary>
+		/// <#= sp.Desc #> 
+		/// </summary>
+<# if(sp.Parameters.Count > 0){ #>
+		/// <param name="db"></param>
+<# } 
+	foreach(var par in sp.Parameters){
+#>
+		/// <param name="<#= par.ParamName  #>"></param>
+<#
+	}
+#>
+		/// <returns></returns>
+	<# if(sp.Parameters.Count > 0){ #>
+	public static SqlCommand <#=sp.CleanName#>(<#=sp.ArgList#>){	
+
+	<# }else{ #>
+	public static SqlCommand <#=sp.CleanName#>(){
+	<# } #>
+			SqlCommand cmd = new SqlCommand("<#=sp.Name#>");
+			cmd.CommandType = CommandType.StoredProcedure;
+		<# 
+		foreach(var par in sp.Parameters){
+			
+			string direction = "Input";
+			if(par.ParameterMode == "IN")
+				direction = "Input";
+			else if(par.ParameterMode == "INOUT")
+				direction = "InputOutput"; //sqlserver 不支持 INOUT, 但是 OUTPUT 即可以用来传出，也可用来传入
+			else if(par.ParameterMode == "OUT")
+				direction = "Output";
+			else
+				direction = "ReturnValue";
+			
+			
+			if(par.Size.Trim() == "") par.Size = "0";
+#>
+			cmd.Parameters.Add(new SqlParameter("@<#=par.Name#>" , SqlDbType.<#=par.DbType#> , <#=par.Size#> , ParameterDirection.<#= direction#> , true , 0 , 0 , String.Empty , DataRowVersion.Default , <#=par.ParamName== "operator" ? "@operator" : par.ParamName#>));
+<#
+
+		}
+		#>
+
+			return cmd;
+		}
+	}
+
+<#   
+		
+		var outPars = (from outPar in sp.Parameters 
+								where outPar.ParameterMode == "INOUT" || outPar.ParameterMode == "OUT"
+								select outPar).ToList();
+		
+		if(outPars.Count > 0){
+#>
+
+
+	/// <summary>
+	/// <#=sp.CleanName#> 的 OUTPUT 参数
+	/// </summary>
+	public class <#=sp.CleanName#>OutParameters{
+<#
+	foreach(var par in outPars){
+#>
+		/// <summary>
+		/// @<#= par.Name #> DbType : <#= par.DbType #>
+		/// </summary>
+		public static readonly string <#=par.CleanName#> = "@<#=par.Name#>";
+<#
+	}
+#>
+	}
+<#
+		}
+#>
+}
+<#
+		
+		
+		manager.EndBlock();
+    }
+
+	manager.Process(true); 
+}
+#>
