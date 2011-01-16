@@ -1,0 +1,70 @@
+﻿<#@ include file="SQLServer.ttinclude" #>
+<#@ output extension=".txt" #>
+<#
+
+	var manager = Manager.Create(Host, GenerationEnvironment);
+
+    var tables = LoadTables();
+    foreach(Table tbl in tables){
+	    if(!ExcludeTables.Contains(tbl.Name)){
+			manager.StartNewFile(CleanUp(tbl.Name) + "Entity.cs");
+#>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+using System.Collections;
+using System.ComponentModel;
+using System.Runtime.Serialization;
+    
+namespace <#=Namespace #> {    
+    /// <summary>
+    /// <#=tbl.TableOrView #> : <#= GetKey( tbl.Schema, tbl.Name, "" ) #>
+	/// <#= tbl.Description #>
+	/// 数据实体
+    /// </summary>
+	[DataContract,Serializable]
+    public class <#=tbl.ClassName#>Entity {
+	
+        #region 纯字段名，供编码时结合正则表达式用
+<#
+		foreach(Column col in tbl.Columns) {
+
+			if (tbl.ClassName == col.CleanName) {
+				col.CleanName += "X";
+			}
+#>
+        //<#=col.CleanName #>
+<#
+		}
+#>
+        #endregion
+	
+<#
+		foreach(Column col in tbl.Columns) {
+
+			if (tbl.ClassName == col.CleanName) {
+				col.CleanName += "X";
+			}
+#>
+
+        /// <summary>
+        /// <#= col.Description #>
+		///<#= GetKey( tbl.Schema, tbl.Name, col.Name ) #>
+        /// </summary>
+		[DataMember]
+        public <#=col.SysType #><#=CheckNullable(col)#> <#=col.CleanName #> { get; set; }
+		
+<#
+            }
+#>
+	}
+}
+<#   
+		manager.EndBlock();
+		}
+    }
+
+	manager.Process(true); 
+#>
