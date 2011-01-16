@@ -1,0 +1,281 @@
+﻿<#@ template language="C#" debug="True" hostspecific="True" #>
+<#@ assembly name="EnvDTE" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Configuration" #>
+
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Data.Common" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Globalization" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Configuration" #>
+
+<#@ import namespace="System"#>
+<#@ import namespace="System.CodeDom"#>
+<#@ import namespace="System.CodeDom.Compiler"#>
+<#@ import namespace="System.Reflection"#>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating"#>
+
+
+<#+
+	const string ConnectionString = @"Data Source=.;Initial Catalog=Tfs_Configuration;Integrated Security=True";
+
+	const string Base = @"
+WITH TV AS(
+SELECT
+	TABLE_SCHEMA AS [Schema], TABLE_NAME AS [Table] , 
+	CASE TABLE_TYPE
+		WHEN 'BASE TABLE' THEN 'Table'
+		WHEN 'VIEW' THEN 'View'
+		ELSE TABLE_TYPE
+	END AS [Type],
+	'' AS [Column] , 0 AS ColumnOrder, '' AS DataType 
+FROM
+	INFORMATION_SCHEMA.TABLES
+),
+
+COLS AS (
+	SELECT
+		TABLE_SCHEMA AS [Schema],
+		TABLE_NAME AS [Table], 
+		'COLUMN' AS [Type],
+		COLUMN_NAME AS [Column],
+		ORDINAL_POSITION AS ColumnOrder,
+		UPPER(DATA_TYPE) + 
+		( 
+			CASE WHEN CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN ' ( ' + 
+				CASE CHARACTER_MAXIMUM_LENGTH WHEN - 1 THEN 'MAX' ELSE CAST(CHARACTER_MAXIMUM_LENGTH AS VARCHAR(10)) END
+			 + ' ) ' 
+			ELSE ''
+			END
+		) + 
+		(
+			CASE WHEN COLUMN_DEFAULT IS NOT NULL THEN ' DEFAULT ' + COLUMN_DEFAULT
+			ELSE ''
+			END
+		) + 
+		(
+			CASE WHEN IS_NULLABLE = 'NO' THEN ' NOT NULL'
+			ELSE ''
+			END
+		) AS DataType
+	FROM
+		INFORMATION_SCHEMA.COLUMNS	
+),
+
+DESCS AS (
+	SELECT 
+		A.[Schema], COALESCE(A.[Table], A.[View]) AS [Table],
+		ISNULL(A.[Column],'') AS [Column], A.[Desc]
+	FROM (
+		SELECT 
+			T.name AS [Table], V.name AS [View],
+			c.name AS [Column], value AS [Desc],
+			S.name AS [Schema]
+		FROM 
+			sys.extended_properties AS EP LEFT JOIN 
+			sys.tables AS T ON EP.major_id = T.object_id LEFT JOIN 
+			sys.views AS V ON EP.major_id = V.object_id LEFT JOIN
+			sys.schemas AS S ON (T.schema_id = S.schema_id OR V.schema_id = S.schema_ID ) LEFT JOIN
+			sys.columns AS C ON EP.major_id = C.object_id AND EP.minor_id = C.column_id
+		WHERE ep.name = 'MS_Description'
+	) A
+)
+
+SELECT
+	ROW_NUMBER() OVER (PARTITION BY A.[Table] ORDER BY A.ColumnOrder) AS RN,
+	A.*,
+	DESCS.[Desc]
+FROM(
+	SELECT * FROM TV
+	UNION ALL 
+	SELECT * FROM COLS
+) 	A LEFT JOIN
+	DESCS ON A.[Schema] = DESCS.[Schema] AND A.[Table] = DESCS.[Table] AND A.[Column] = DESCS.[Column]
+ORDER BY
+	[Schema], [Table],[ColumnOrder]
+";
+	
+	const string ConstraintSql = @"
+--主键------------------------------
+WITH PK  AS(
+	SELECT 
+		DENSE_RANK() OVER (ORDER BY C.TABLE_SCHEMA, C.TABLE_NAME) AS GroupNo,
+		C.TABLE_SCHEMA AS [Schema],
+		C.TABLE_NAME AS [Table],
+		C.CONSTRAINT_NAME AS [Name],
+		U.COLUMN_NAME AS [Column]
+	FROM 
+		INFORMATION_SCHEMA.TABLE_CONSTRAINTS C LEFT JOIN
+		INFORMATION_SCHEMA.KEY_COLUMN_USAGE U 
+			ON U.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+			AND U.TABLE_NAME = C.TABLE_NAME
+	WHERE
+		C.CONSTRAINT_TYPE = 'PRIMARY KEY'
+),
+-- CHECK KEY -----------------------------
+CK AS (
+	SELECT
+		'CK' AS [Type],
+		S.Name AS [Schema],
+		o.Name AS [Table],
+		'CONSTRAINT ' + CC.[Name] + ' CHECK ' + CC.Definition AS Defin
+	FROM
+		sys.check_constraints CC LEFT JOIN
+		SYS.OBJECTS O ON CC.Parent_object_id = o.object_id LEFT JOIN
+		SYS.SCHEMAS S ON O.SCHEMA_ID = S.SCHEMA_ID
+),
+-- UNIQUE ----------------------------
+UK AS (
+	SELECT 
+		DENSE_RANK() OVER (ORDER BY T.SCHEMA_ID, OU.name) AS GroupNo,
+		SCHEMA_NAME(T.SCHEMA_ID) AS [Schema],
+		OT.NAME AS [Table],
+		OU.NAME,
+		C.NAME AS [COLUMN]
+	FROM 
+		SYS.SYSINDEXES I LEFT JOIN
+		SYS.SYSINDEXKEYS IK ON I.ID = IK.ID AND I.INDID = IK.INDID LEFT JOIN
+		SYS.SYSOBJECTS OT ON OT.ID = I.ID LEFT JOIN
+		SYS.SYSOBJECTS OU ON OU.PARENT_OBJ = I.ID AND OU.NAME = I.NAME LEFT JOIN
+		SYS.SYSCOLUMNS C ON C.ID = I.ID AND C.COLID = IK.COLID LEFT JOIN
+		SYS.TABLES T ON OT.ID = T.OBJECT_ID
+	WHERE
+		OT.XTYPE = 'U'
+		AND OU.XTYPE = 'UQ'
+)
+
+----------------------------------
+-- 主键
+SELECT
+	'PK' AS [Type] , [Schema],  [Table],
+	'CONSTRAINT ' + [Name] + ' PRIMARY KEY (' + Definition + ')' AS Defin
+FROM (
+SELECT 
+	ROW_NUMBER() OVER (PARTITION BY [Name] ORDER BY [Table]) AS RN,
+	* 
+FROM 
+	PK P1
+CROSS APPLY (
+		SELECT 
+			CASE ROW_NUMBER() OVER(PARTITION BY [Table] ORDER BY [Column]) 
+				WHEN 1 THEN ''
+				ELSE ','
+			END + [Column]
+		FROM 
+			PK P2
+		WHERE
+			P1.GroupNo = P2.GroupNo
+		FOR XML PATH('')	
+) P2(Definition)
+) A
+WHERE A.RN = 1
+-----------------------------------------------
+
+UNION ALL
+
+------------------------------------------------
+SELECT * FROM CK
+------------------------------------------------
+
+UNION ALL
+
+-----------------------------------------------
+-- UNIQUE
+SELECT 
+	'UK' AS [Type],
+	A.[Schema],
+	A.[Table],
+	'CONSTRAINT ' + A.[Name] + ' UNIQUE ( ' + Definition + ')' AS Defin
+FROM (
+	SELECT 
+		ROW_NUMBER() OVER (PARTITION BY [Schema],[Name] ORDER BY [Table]) AS RN,
+		* 
+	FROM UK AS C1
+	CROSS APPLY (
+		SELECT 
+			CASE ROW_NUMBER() OVER(PARTITION BY [Schema],[Table] ORDER BY [Column]) 
+				WHEN 1 THEN ''
+				ELSE ','
+			END + [Column]
+		FROM 
+			UK C2
+		WHERE
+			C1.GroupNo = C2.GroupNo
+		FOR XML PATH('')
+	) C2(Definition)
+) A 
+WHERE 
+	A.RN = 1
+--------------------------------------------
+
+UNION ALL
+
+-------------------------------------------
+-- FOREIGN KEY
+SELECT
+		'FK' AS [Type],
+		FK.TABLE_SCHEMA AS [Schema],
+        FK.TABLE_NAME AS [Table],
+		
+		'CONSTRAINT ' + C.CONSTRAINT_NAME + ' FOREIGN KEY ( ' + CU.COLUMN_NAME + ' ) REFERENCES ' + PK.TABLE_NAME + '( ' + PT.COLUMN_NAME + ' )' +
+		CASE WHEN C.UPDATE_RULE = 'CASCADE' THEN ' ON UPDATE CASCADE '
+		ELSE ''
+		END
+		+
+		CASE WHEN C.DELETE_RULE = 'CASCADE' THEN ' ON DELETE CASCADE'
+		ELSE ''
+		END
+		AS Define
+
+    FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
+    INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME
+    INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME
+    INNER JOIN
+        (	
+            SELECT i1.TABLE_NAME, i2.COLUMN_NAME
+            FROM  INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1
+            INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2 ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
+            WHERE i1.CONSTRAINT_TYPE = 'PRIMARY KEY'
+        ) 
+    PT ON PT.TABLE_NAME = PK.TABLE_NAME
+
+ORDER BY [Table], [Type]
+";
+	
+	IDataReader GetReader(string sql){
+		SqlConnection conn=new SqlConnection(ConnectionString);
+		SqlCommand cmd=new SqlCommand(sql,conn);
+		conn.Open();
+		return cmd.ExecuteReader();
+	}
+
+	class TableConstraint{
+		public string Schema{get;set;}
+		public string Table{get;set;}
+		public string Defin{get;set;}
+		public string Type{get;set;}
+	}
+	
+	List<TableConstraint> GetAllConstraint(){
+		IDataReader idr = GetReader(ConstraintSql);
+		List<TableConstraint> cs = new List<TableConstraint>();
+		while(idr.Read()){
+			TableConstraint c = new TableConstraint();
+			c.Schema = idr["Schema"].ToString();
+			c.Table = idr["Table"].ToString();
+			c.Defin = idr["Defin"].ToString();
+			c.Type = idr["Type"].ToString();
+			cs.Add(c);
+		}
+		return cs;
+	}
+#>
