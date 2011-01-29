@@ -547,6 +547,35 @@ namespace YongFa365.String
             return string.IsNullOrWhiteSpace(input) ? "" : input[0].ToString().ToUpper() + input.Substring(1);
         }
 
+
+        /// <summary>
+        /// 没值时返回null，有值时正常返回
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ToNull(this string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return null;
+            }
+            return input;
+        }
+
+        /// <summary>
+        /// 没值时返回string.Empty，有值时正常返回
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ToEmpty(this string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return string.Empty;
+            }
+            return input;
+        }
+
         #endregion
 
         #region Is系列
