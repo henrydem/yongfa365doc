@@ -245,5 +245,60 @@ namespace YongFa365.Web
             //}
         }
 
+
+        public static string SafeTrim(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return "";
+            }
+            else
+            {
+                return input.Trim();
+            }
+        }
+
+        /// <summary>
+        /// 取得网站的RootURL,结果有加"/"
+        /// 如：https://www.yongfa365.com:1234/abc.aspx?a=1b=2
+        /// 结果：https://www.yongfa365.com:1234/
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string GetRootURL(this Uri input)
+        {
+
+            return input.AbsoluteUri.Replace(input.PathAndQuery, "/");
+        }
+
+        /// <summary>
+        /// 取得网站根路径
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="hasPathChar"></param>
+        /// <returns></returns>
+        public static string GetSiteRootURL(this HttpRequest input, bool hasPathChar = true)
+        {
+            return input.Url.AbsoluteUri.Replace(
+                input.Url.PathAndQuery,
+                hasPathChar ? "/" : ""
+                );
+        }
+
+        /// <summary>
+        /// 取得应用程序根url 如：https://www.yongfa365.com/ApplicationName/
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="hasPathChar">是否在末尾带"/"</param>
+        /// <returns></returns>
+        public static string GetApplicationURL(this HttpRequest input, bool hasPathChar = true)
+        {
+            return input.Url.AbsoluteUri.Replace(
+                input.Url.PathAndQuery,
+                input.ApplicationPath + (hasPathChar ? "/" : "")
+                );
+
+        }
+
     }
 }
