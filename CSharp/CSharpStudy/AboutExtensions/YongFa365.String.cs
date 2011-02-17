@@ -104,6 +104,42 @@ namespace YongFa365.String
         }
 
         /// <summary>
+        /// 从右向左取length个字符
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static string Right(this string input, int length)
+        {
+            if (string.IsNullOrEmpty(input) || input.Length < length)
+            {
+                return input;
+            }
+            else
+            {
+                return input.Substring(input.Length - length);
+            }
+        }
+
+        /// <summary>
+        /// 从左向右取length个字符
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static string Left(this string input, int length)
+        {
+            if (string.IsNullOrEmpty(input) || input.Length < length)
+            {
+                return input;
+            }
+            else
+            {
+                return input.Substring(0, length);
+            }
+        }
+
+        /// <summary>
         /// 调用正则表达式替换
         /// </summary>
         /// <param name="input"></param>
