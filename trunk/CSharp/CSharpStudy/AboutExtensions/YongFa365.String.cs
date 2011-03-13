@@ -384,15 +384,10 @@ namespace YongFa365.String
 
         #region String转换为DateTime
 
-        /// <summary>
-        /// 转为DateTime如果不成功则返回1970-1-1 ,
-        /// 这个时间基本上是计算机开始流行的时间，很多系统初始时间都设置这个，所以这里也设置这个。
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+
         public static DateTime ToDateTime(this string input)
         {
-            return input.ToDateTime(new DateTime(1970, 1, 1));
+            return input.ToDateTime(new DateTime(1900, 1, 1));
         }
 
 
