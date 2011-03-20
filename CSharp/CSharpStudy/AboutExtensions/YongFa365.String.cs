@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -669,6 +671,57 @@ namespace YongFa365.String
             return input == null ? false : Regex.IsMatch(input, pattern);
         }
 
+
+        #endregion
+
+        #region In Between系列
+        //ScottGu In扩展
+        //public static bool In(this object o, IEnumerable c)
+        //{
+        //    foreach (object i in c)
+        //    {
+        //        if (i.Equals(o)) return true;
+        //    }
+        //    return false;
+        //}
+
+        //ScottGu In扩展 改进
+        public static bool In<T>(this T t, params T[] c)
+        {
+            return c.Any(i => i.Equals(t));
+        }
+
+        public static bool In<T>(this T t, IEnumerable<T> c)
+        {
+            return c.Any(i => i.Equals(t));
+        }
+
+
+        public static bool IsBetween<T>(this T input, T lowerBound, T upperBound, bool includeLowerBound = false, bool includeUpperBound = false) where T : IComparable<T>
+        {
+            if (null == input) throw new ArgumentNullException("input");
+
+            var lowerCompareResult = input.CompareTo(lowerBound);
+            var upperCompareResult = input.CompareTo(upperBound);
+
+            return
+                (includeLowerBound && lowerCompareResult == 0) ||
+                (includeUpperBound && upperCompareResult == 0) ||
+                (lowerCompareResult > 0 && upperCompareResult < 0);
+        }
+
+        public static bool IsBetween<T>(this T input, T lowerBound, T upperBound, IComparer<T> comparer, bool includeLowerBound = false, bool includeUpperBound = false)
+        {
+            if (null == input || null == comparer) throw new ArgumentNullException(null == input ? "input" : "comparer");
+
+            var lowerCompareResult = comparer.Compare(input, lowerBound);
+            var upperCompareResult = comparer.Compare(input, upperBound);
+
+            return
+                (includeLowerBound && lowerCompareResult == 0) ||
+                (includeUpperBound && upperCompareResult == 0) ||
+                (lowerCompareResult > 0 && upperCompareResult < 0);
+        }
 
         #endregion
     }
