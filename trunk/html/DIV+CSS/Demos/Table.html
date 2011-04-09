@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Table相关</title>
+    <style type="text/css">
+        .CommonTable { border: 1px green solid; border-collapse: collapse; line-height: 120%; width: 100%; }
+        .CommonTable td, .CommonTable th { border: 1px green solid; }
+        .CommonTable th { background: #CCCCCC; }
+        
+        .CommonTable2 { border: 1px green solid; border-collapse: collapse; line-height: 120%; width: 100%; }
+        .CommonTable2 caption {font-weight: bold; background-color: Gray; line-height:200%}
+        .CommonTable2 thead { background: #CCCCCC; }
+    </style>
+</head>
+<body>
+    <h1>colgroup</h1>
+    <div>colgroup、col 标签用来定义表格列的分组。<br />
+        如果一个表格前三列要垂直居上，后两列垂直居下，我们就可以用分组来进行设置。看起来是样式表可以代替的功能，但这的确不是多余的标签，和前面的标签一样，在 XHTML 1.0 Strict 中也是允许的标签。</div>
+    <table border="1" style="height: 100px;">
+        <colgroup span="3" valign="top"></colgroup>
+        <colgroup span="2" valign="bottom"></colgroup>
+        <tr>
+            <td>1垂直居上</td>
+            <td>2垂直居上</td>
+            <td>3垂直居上</td>
+            <td>4垂直居下</td>
+            <td>5垂直居下</td>
+        </tr>
+    </table>
+    <h1>col</h1>
+    <p>col 的作用是细化 colgroup，因为即使在一个组中，列与列之间也可能会出现一些差别，这时就得用到 col 了。 </p>
+    <table border="1" style="height: 100px;">
+        <colgroup span="3" valign="top">
+            <col width="200" />
+            <col align="center" />
+            <col valign="middle" />
+        </colgroup>
+        <tr>
+            <td>1垂直居上</td>
+            <td>2垂直居上</td>
+            <td>3垂直居上</td>
+            <td>4垂直居下</td>
+            <td>5垂直居下</td>
+        </tr>
+    </table>
+    <p>valign 覆盖了 colgroup 的 valign 设置。在这里 width、align、valign 都是符合 XHTML 1.0 Strict 的，不过要注意的是：没有 height 属性。</p>
+    <h1>1px表格</h1>
+    <table class="CommonTable">
+        <tr>
+            <th>编号</th>
+            <th>标题</th>
+            <th>日期</th>
+        </tr>
+        <tr>
+            <td>001</td>
+            <td>标题</td>
+            <td>2010-12-12</td>
+        </tr>
+        <tr>
+            <td>002</td>
+            <td>标题</td>
+            <td>2010-12-12</td>
+        </tr>
+        <tr>
+            <td>003</td>
+            <td>标题</td>
+            <td>2010-12-12</td>
+        </tr>
+    </table>
+    <br />
+    <table class="CommonTable2">
+        <tbody>
+            <tr>
+                <td>001</td>
+                <td>标题</td>
+                <td>2010-12-12</td>
+            </tr>
+            <tr>
+                <td>002</td>
+                <td>标题</td>
+                <td>2010-12-12</td>
+            </tr>
+            <tr>
+                <td>003</td>
+                <td>标题</td>
+                <td>2010-12-12</td>
+            </tr>
+        </tbody>
+        <caption>Table标题</caption>
+        <thead>
+            <tr>
+                <th>编号</th>
+                <th>标题</th>
+                <th>日期</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="3">不管tfoot,thead,显示时都会显示在尾或头 总共3条</td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>
