@@ -8,6 +8,10 @@ namespace AboutDelegate
     {
         static void Main(string[] args)
         {
+            AboutActionFunc.Run();
+
+
+
             CalculatorStatic.Test();
 
             Calculator calc = new Calculator();
