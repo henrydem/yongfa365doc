@@ -13,7 +13,9 @@ namespace AboutDelegate
             Action<int, int> ActionCalc = (a, b) => { Console.WriteLine(a + b); };
             ActionCalc(1, 2);
 
-
+            //Action既然是委托，那就可以使用 +=
+            //ActionCalc += (a, b) => { Console.WriteLine(a - b); };
+            //ActionCalc(1, 2);
 
             Func<int, int, int> FuncCalc = (a, b) => { return a + b; };
             Console.WriteLine(FuncCalc(1, 2));
