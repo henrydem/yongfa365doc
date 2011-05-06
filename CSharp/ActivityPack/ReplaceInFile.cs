@@ -23,7 +23,8 @@
         [RequiredArgument]
         public InArgument<string> FilePath
         {
-            get; set;
+            get;
+            set;
         }
 
         /// <summary>
@@ -33,7 +34,8 @@
         [RequiredArgument]
         public InArgument<string> RegularExpression
         {
-            get; set;
+            get;
+            set;
         }
 
         /// <summary>
@@ -42,7 +44,8 @@
         [RequiredArgument]
         public InArgument<string> Replacement
         {
-            get; set;
+            get;
+            set;
         }
 
         #endregion Properties
@@ -64,15 +67,13 @@
             // throw if the file path is null or empty
             if (String.IsNullOrEmpty(filePath))
             {
-                throw new ArgumentException(
-                    "Specify a path to replace text in", "FilePath");
+                throw new ArgumentException("Specify a path to replace text in", "FilePath");
             }
 
             // throw if the specified file path doesn't exist
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException(
-                    "File not found", filePath);
+                throw new FileNotFoundException("File not found", filePath);
             }
 
             // get the value of the RegularExpression in argument
@@ -81,11 +82,9 @@
             // throw if the regular expression is null or empty
             if (String.IsNullOrEmpty(regularExpression))
             {
-                throw new ArgumentException(
-                    "Specify an expression to replace", "RegularExpression");
+                throw new ArgumentException("Specify an expression to replace", "RegularExpression");
             }
 
-            var regex = new Regex(regularExpression);
             var replacement = Replacement.Get(context) ?? String.Empty;
 
             // ensure that the file is writeable
@@ -93,7 +92,7 @@
             File.SetAttributes(filePath, fileAttributes & ~FileAttributes.ReadOnly);
 
             // perform the actual replacement
-            String contents = regex.Replace(File.ReadAllText(filePath), replacement);
+            String contents = Regex.Replace(File.ReadAllText(filePath), regularExpression, replacement);
 
             File.WriteAllText(filePath, contents);
 
