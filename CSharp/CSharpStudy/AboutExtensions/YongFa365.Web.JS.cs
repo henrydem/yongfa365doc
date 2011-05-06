@@ -13,7 +13,7 @@ namespace YongFa365.Web.JS
     /// </summary>
     public static class JS
     {
-        public static void Alert(Page page, string csName, string csText)
+        public static void Alert(this Page page, string csName, string csText)
         {
             ClientScriptManager cs = page.ClientScript;
             Type cstype = page.GetType();
@@ -23,7 +23,7 @@ namespace YongFa365.Web.JS
                 cs.RegisterStartupScript(cstype, csName, csText, true);
             }
         }
-        public static void Alert(Page page, string csText)
+        public static void Alert(this Page page, string csText)
         {
             Alert(page, "csName", "alert('" + csText + "');");
         }
