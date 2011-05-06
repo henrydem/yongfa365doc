@@ -300,5 +300,63 @@ namespace YongFa365.Web
 
         }
 
+
+
+
+        /// <summary>
+        /// 让页面不缓存, 一般用于 Page.OnPreRender 中, 注意,如果在设置这个后,做了 Response.Redirect , 设置不起作用
+        /// </summary>
+        /// <param name="response"></param>
+        public static void NoCache(this HttpResponse response)
+        {
+            if (null == response) throw new ArgumentNullException("response");
+            response.Cache.SetExpires(DateTime.Now.AddDays(-1));
+            response.Cache.SetNoStore();
+            response.Cache.SetCacheability(HttpCacheability.NoCache);
+        }
+
+
+
+
+        ///// <summary>
+        ///// 消息類型
+        ///// </summary>
+        //public enum ShowMessageType
+        //{
+        //    /// <summary>
+        //    /// 一般
+        //    /// </summary>
+        //    Info,
+        //    /// <summary>
+        //    /// 錯誤
+        //    /// </summary>
+        //    Error,
+        //    /// <summary>
+        //    /// 警告
+        //    /// </summary>
+        //    Warnning
+        //}
+
+        //public static class ShowMessage
+        //{
+
+        //    /// <summary>
+        //    /// 顯示資訊頁面 Message.aspx， 並終止當前頁面
+        //    /// </summary>
+        //    /// <param name="msg"></param>
+        //    /// <param name="title"></param>
+        //    /// <param name="type"></param>
+        //    /// <param name="redirect">返回頁面</param>
+        //    public static void Message(this HttpResponse response, string msg, string title = "", ShowMessageType type = ShowMessageType.Info, string redirect = "")
+        //    {
+        //        response.Redirect(string.Format("~/Message.aspx?m={0}&tt={1}&t={2}&redirect={3}",
+        //            HttpUtility.UrlEncode(msg),
+        //            HttpUtility.UrlEncode(title),
+        //            type,
+        //            HttpUtility.UrlEncode(redirect)),
+        //        true);
+        //    }
+        //}
+
     }
 }

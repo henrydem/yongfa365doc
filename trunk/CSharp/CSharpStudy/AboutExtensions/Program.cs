@@ -3,9 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using YongFa365.String;
+using System.Diagnostics;
 
 namespace AboutExtensions
 {
+
+    class MyClass
+    {
+        public int sadfas { get; set; }
+        public string MyProperty { get; set; }
+    }
     class Program
     {
         static void Main(string[] args)
@@ -16,9 +23,20 @@ namespace AboutExtensions
             //Console.WriteLine(a.ToSHA1());
             //Example1();
             //Example2();
+           var a2= "2010-12-12".To<DateTime>(DateTime.Now);
+          
 
-            var a = true && 1>0;
+
+
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            Dictionary<string, string> dict2 = new Dictionary<string, string>();
+            dict2.Add("22222222", "");
+
+            dict.TryAdd("12", "").TryAdd("34","").AddOrReplace("34","").AddRange(dict2,false);
             var asdf = "123".CompareTo("1");
+
+
+
             List<string> lst = new List<string>() { "wer","dsfdsf","sad" };
             lst.ForEach((item) => { Console.WriteLine(item); });
 
