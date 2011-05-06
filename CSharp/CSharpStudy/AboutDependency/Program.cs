@@ -9,6 +9,7 @@ namespace AboutDependency
     {
         static void Main(string[] args)
         {
+            AboutFileSystemWatcher.Run();
         }
     }
 }
