@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
+  <Identifier Id="ca45914b-4959-408a-98cf-87e4f9e97815">
+    <Name>BatchRefactor</Name>
+    <Author>YongFa365</Author>
+    <Version>0.1</Version>
+    <Description xml:space="preserve">批量重构，可在解决方案或项目级进行：
+1.移除未使用的 using
+2.排序 using
+3.移除并排序 using
+4.格式化代码
+5.以上各种组合</Description>
+    <Locale>2052</Locale>
+    <MoreInfoUrl>http://www.yongfa365.com/</MoreInfoUrl>
+    <InstalledByMsi>false</InstalledByMsi>
+    <SupportedProducts>
+      <VisualStudio Version="10.0">
+        <Edition>Pro</Edition>
+      </VisualStudio>
+    </SupportedProducts>
+    <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.0" />
+  </Identifier>
+  <References>
+    <Reference Id="Microsoft.VisualStudio.MPF" MinVersion="10.0">
+      <Name>Visual Studio MPF</Name>
+    </Reference>
+  </References>
+  <Content>
+    <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
+  </Content>
+</Vsix>
