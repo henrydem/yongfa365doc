@@ -9,6 +9,7 @@
 功能：移除、排序using，格式化代码，及以上组合。</Description>
     <Locale>2052</Locale>
     <MoreInfoUrl>http://www.yongfa365.com/</MoreInfoUrl>
+    <GettingStartedGuide>http://visualstudiogallery.msdn.microsoft.com/a7f75c34-82b4-4357-9c66-c18e32b9393e</GettingStartedGuide>
     <Icon>Resources/Icon.png</Icon>
     <PreviewImage>Resources/Preview.png</PreviewImage>
     <InstalledByMsi>false</InstalledByMsi>
