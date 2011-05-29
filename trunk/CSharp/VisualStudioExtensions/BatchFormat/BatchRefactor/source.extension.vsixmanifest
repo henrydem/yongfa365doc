@@ -3,7 +3,7 @@
   <Identifier Id="ca45914b-4959-408a-98cf-87e4f9e97815">
     <Name>BatchFormat</Name>
     <Author>www.yongfa365.com</Author>
-    <Version>0.1</Version>
+    <Version>0.2</Version>
     <Description xml:space="preserve">代码批量格式化工具
 作用区域：解决方案、项目、文件夹 、文件等。
 功能：移除、排序using，格式化代码，及以上组合。</Description>

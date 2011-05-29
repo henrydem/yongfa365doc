@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 
 
@@ -17,21 +17,24 @@ namespace YongFa365.BatchFormat
     [Guid(GuidList.guidBatchFormatPkgString)]
     public sealed class BatchFormatPackage : Package
     {
-        private DTE dte = null;
+        private DTE2 dte = null;
         private PkgCmdIDList selectedMenu = PkgCmdIDList.Null;
-        private List<string> alreadyOpenFiles = new List<string>();
-
+        private List<string> lstAlreadyOpenFiles = new List<string>();
+        private List<string> lstBlackEndWith = new List<string> { "AssemblyInfo.cs", ".designer.cs", "Reference.cs" };
+        private OutputWindowPane myOutPane = null;
+        private int count;
 
         protected override void Initialize()
         {
             base.Initialize();
-            dte = (DTE)base.GetService(typeof(DTE));
 
-            // Add our command handlers for menu (commands must exist in the .vsct file)
+            dte = (DTE2)base.GetService(typeof(DTE));
+            myOutPane = dte.ToolWindows.OutputWindow.OutputWindowPanes.Add("BatchFormat");
+
+
             var mcs = GetService(typeof(IMenuCommandService)) as MenuCommandService;
             if (null != mcs)
             {
-                // Create the command for the menu item.
                 foreach (int item in Enum.GetValues(typeof(PkgCmdIDList)))
                 {
                     var menuCommandID = new CommandID(GuidList.guidBatchFormatCmdSet, item);
@@ -44,13 +47,17 @@ namespace YongFa365.BatchFormat
 
         private void Excute(object sender, EventArgs e)
         {
+            count = 0;
+            myOutPane.Activate();
+
             selectedMenu = (PkgCmdIDList)((MenuCommand)sender).CommandID.ID;
 
             var table = new RunningDocumentTable(this);
-            alreadyOpenFiles = (from info in table select info.Moniker).ToList<string>();
+            lstAlreadyOpenFiles = (from info in table select info.Moniker).ToList<string>();
 
             var selectedItem = dte.SelectedItems.Item(1);
-            dte.StatusBar.Text = "BatchFormat 处理中...";
+            WriteLog("开始处理：" + DateTime.Now.ToString());
+
             Stopwatch sp = new Stopwatch();
             sp.Start();
 
@@ -66,6 +73,7 @@ namespace YongFa365.BatchFormat
             {
                 if (selectedItem.ProjectItem.ProjectItems.Count > 0)
                 {
+                    ProcessProjectItem(selectedItem.ProjectItem);
                     ProcessProjectItems(selectedItem.ProjectItem.ProjectItems);
                 }
                 else
@@ -74,16 +82,18 @@ namespace YongFa365.BatchFormat
                 }
             }
             sp.Stop();
-            dte.StatusBar.Text = string.Format("BatchFormat 处理中完成 耗时：{0}s", sp.ElapsedMilliseconds / 1000);
 
+            WriteLog(string.Format("处理完成：{0} 耗时：{1}s  共处理文件{2}个", DateTime.Now.ToString(), sp.ElapsedMilliseconds / 1000, count - 1));
+            dte.ExecuteCommand("View.Output");
         }
+
 
         private void ProcessSolution()
         {
             if (dte.Solution != null)
             {
                 var projects = (from prj in new ProjectIterator(dte.Solution)
-                                where prj.Kind == GuidList.guidCsharpProjectString
+                                where prj.Kind == GuidList.guidCsharpProjectString //只处理C#项目
                                 select prj);
 
                 projects.ForEach(prj => ProcessProject(prj));
@@ -102,10 +112,7 @@ namespace YongFa365.BatchFormat
         {
             if (projectItems != null)
             {
-                var result = from item in new ProjectItemIterator(projectItems)
-                             where item.FileCodeModel != null
-                             select item;
-                result.ForEach(item => ProcessProjectItem(item));
+                new ProjectItemIterator(projectItems).ForEach(item => ProcessProjectItem(item));
             }
         }
 
@@ -115,7 +122,13 @@ namespace YongFa365.BatchFormat
             if (projectItem != null)
             {
                 fileName = projectItem.FileNames[1];
-                dte.StatusBar.Text = "BatchFormat 正在处理：" + fileName;
+                if (IsNotNeedProcess(projectItem))
+                {
+                    return;
+                }
+
+                WriteLog("正在处理：" + fileName);
+
                 Window window = dte.OpenFile("{7651A703-06E5-11D1-8EBD-00A0C90F26EA}", fileName);
                 window.Activate();
                 #region 执行命令
@@ -153,7 +166,7 @@ namespace YongFa365.BatchFormat
                 }
                 #endregion
 
-                if (alreadyOpenFiles.Exists(file => file.Equals(fileName, StringComparison.OrdinalIgnoreCase)))
+                if (lstAlreadyOpenFiles.Exists(file => file.Equals(fileName, StringComparison.OrdinalIgnoreCase)))
                 {
                     dte.ActiveDocument.Save(fileName);
                 }
@@ -162,6 +175,33 @@ namespace YongFa365.BatchFormat
                     window.Close(vsSaveChanges.vsSaveChangesYes);
                 }
             }
+        }
+
+        private bool IsNotNeedProcess(ProjectItem projectItem)
+        {
+            if (projectItem.FileCodeModel == null)
+            {
+                return true;
+            }
+
+            var input = projectItem.FileNames[0];
+
+            foreach (var item in lstBlackEndWith)
+            {
+                if (input.EndsWith(item, true, null))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+        private void WriteLog(string log)
+        {
+            dte.StatusBar.Text = "BatchFormat " + log;
+            myOutPane.OutputString(log + "\r\n");
+            count++;
         }
 
     }
