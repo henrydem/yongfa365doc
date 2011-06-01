@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatchFormat", "BatchRefactor\BatchFormat.csproj", "{A742CE8B-5E6E-462E-9399-01BC2A4CDC9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatchFormat", "BatchFormat\BatchFormat.csproj", "{A742CE8B-5E6E-462E-9399-01BC2A4CDC9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
