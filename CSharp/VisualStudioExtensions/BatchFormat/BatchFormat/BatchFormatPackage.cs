@@ -56,7 +56,7 @@ namespace YongFa365.BatchFormat
             lstAlreadyOpenFiles = (from info in table select info.Moniker).ToList<string>();
 
             var selectedItem = dte.SelectedItems.Item(1);
-            WriteLog("开始处理：" + DateTime.Now.ToString());
+            WriteLog("Start ：" + DateTime.Now.ToString());
 
             Stopwatch sp = new Stopwatch();
             sp.Start();
@@ -83,7 +83,7 @@ namespace YongFa365.BatchFormat
             }
             sp.Stop();
 
-            WriteLog(string.Format("处理完成：{0} 耗时：{1}s  共处理文件{2}个", DateTime.Now.ToString(), sp.ElapsedMilliseconds / 1000, count - 1));
+            WriteLog(string.Format("Finish：{0}  Times：{1}s  Files：{2}", DateTime.Now.ToString(), sp.ElapsedMilliseconds / 1000, count - 1));
             dte.ExecuteCommand("View.Output");
         }
 
@@ -127,7 +127,7 @@ namespace YongFa365.BatchFormat
                     return;
                 }
 
-                WriteLog("正在处理：" + fileName);
+                WriteLog("Doing ：" + fileName);
 
                 Window window = dte.OpenFile("{7651A703-06E5-11D1-8EBD-00A0C90F26EA}", fileName);
                 window.Activate();

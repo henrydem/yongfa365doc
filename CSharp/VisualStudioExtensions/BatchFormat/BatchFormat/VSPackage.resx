@@ -121,6 +121,8 @@
     <value>BatchFormat</value>
   </data>
   <data name="112" xml:space="preserve">
-    <value>批量格式化</value>
+    <value>Code Batch Format Tool
+Areas: Solution, Project, Folder, File.
+Function: Remove, Sort, Using, Format Document, and more combinations.</value>
   </data>
 </root>
