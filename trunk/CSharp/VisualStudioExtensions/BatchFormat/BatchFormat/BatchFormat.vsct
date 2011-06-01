@@ -40,28 +40,28 @@
         <Parent guid="guidBatchFormatCmdSet" id="SlnSubMemuGroup"/>
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>移除未使用的 using</ButtonText>
+          <ButtonText>Remove Unused Usings</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidBatchFormatCmdSet" id="cmdidSortUsings" priority="0x002" type="Button">
         <Parent guid="guidBatchFormatCmdSet" id="SlnSubMemuGroup"/>
         <Icon guid="guidImages" id="bmpPic2" />
         <Strings>
-          <ButtonText>对 using 排序</ButtonText>
+          <ButtonText>Sort Usings</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidBatchFormatCmdSet" id="cmdidRemoveAndSortUsings" priority="0x003" type="Button">
         <Parent guid="guidBatchFormatCmdSet" id="SlnSubMemuGroup"/>
         <Icon guid="guidImages" id="bmpPicSearch" />
         <Strings>
-          <ButtonText>移除和排序 using</ButtonText>
+          <ButtonText>Remove And Sort Usings</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidBatchFormatCmdSet" id="cmdidFormatDocument" priority="0x004" type="Button">
         <Parent guid="guidBatchFormatCmdSet"  id="SlnSubMemuGroup"  />
         <Icon guid="guidImages" id="bmpPicX" />
         <Strings>
-          <ButtonText>格式化代码</ButtonText>
+          <ButtonText>Format Document</ButtonText>
         </Strings>
       </Button>
 
@@ -69,14 +69,14 @@
         <Parent guid="guidBatchFormatCmdSet" id="SlnSubMemuGroup"/>
         <Icon guid="guidImages" id="bmpPicArrows" />
         <Strings>
-          <ButtonText>排序 using 及 格式化代码</ButtonText>
+          <ButtonText>Sort Usings And Format Document</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidBatchFormatCmdSet" id="cmdidRemoveAndSortUsingsAndFormatDocument" priority="0x006" type="Button">
         <Parent guid="guidBatchFormatCmdSet" id="SlnSubMemuGroup"/>
         <Icon guid="guidImages" id="bmpPicArrows" />
         <Strings>
-          <ButtonText>移除和排序 using 及 格式化代码</ButtonText>
+          <ButtonText>Remove And Sort Usings And Format Document</ButtonText>
         </Strings>
       </Button>
 
