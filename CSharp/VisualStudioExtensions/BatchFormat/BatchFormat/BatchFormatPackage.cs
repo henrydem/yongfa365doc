@@ -48,7 +48,6 @@ namespace YongFa365.BatchFormat
         private void Excute(object sender, EventArgs e)
         {
             count = 0;
-            myOutPane.Activate();
 
             selectedMenu = (PkgCmdIDList)((MenuCommand)sender).CommandID.ID;
 
@@ -56,6 +55,7 @@ namespace YongFa365.BatchFormat
             lstAlreadyOpenFiles = (from info in table select info.Moniker).ToList<string>();
 
             var selectedItem = dte.SelectedItems.Item(1);
+            WriteLog("\r\n====================================================================================");
             WriteLog("Start ：" + DateTime.Now.ToString());
 
             Stopwatch sp = new Stopwatch();
@@ -85,6 +85,8 @@ namespace YongFa365.BatchFormat
 
             WriteLog(string.Format("Finish：{0}  Times：{1}s  Files：{2}", DateTime.Now.ToString(), sp.ElapsedMilliseconds / 1000, count - 1));
             dte.ExecuteCommand("View.Output");
+            myOutPane.Activate();
+            
         }
 
 
