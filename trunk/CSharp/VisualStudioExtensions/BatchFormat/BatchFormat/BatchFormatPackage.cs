@@ -13,14 +13,15 @@ namespace YongFa365.BatchFormat
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
+    [ProvideOptionPageAttribute(typeof(OptionsPageGeneral), "BatchFormat", "General", 101, 106, true)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [Guid(GuidList.guidBatchFormatPkgString)]
+    [Guid(GuidList.GuidBatchFormatPkgString)]
     public sealed class BatchFormatPackage : Package
     {
         private DTE2 dte = null;
         private PkgCmdIDList selectedMenu = PkgCmdIDList.Null;
         private List<string> lstAlreadyOpenFiles = new List<string>();
-        private List<string> lstBlackEndWith = new List<string> { "AssemblyInfo.cs", ".designer.cs", "Reference.cs" };
+        private List<string> lstBlackEndWith = ConfigHelper.Load();
         private OutputWindowPane myOutPane = null;
         private int count;
 
@@ -31,13 +32,12 @@ namespace YongFa365.BatchFormat
             dte = (DTE2)base.GetService(typeof(DTE));
             myOutPane = dte.ToolWindows.OutputWindow.OutputWindowPanes.Add("BatchFormat");
 
-
             var mcs = GetService(typeof(IMenuCommandService)) as MenuCommandService;
             if (null != mcs)
             {
                 foreach (int item in Enum.GetValues(typeof(PkgCmdIDList)))
                 {
-                    var menuCommandID = new CommandID(GuidList.guidBatchFormatCmdSet, item);
+                    var menuCommandID = new CommandID(GuidList.GuidBatchFormatCmdSet, item);
                     var menuItem = new MenuCommand(Excute, menuCommandID);
                     mcs.AddCommand(menuItem);
                 }
@@ -86,7 +86,7 @@ namespace YongFa365.BatchFormat
             WriteLog(string.Format("Finish：{0}  Times：{1}s  Files：{2}", DateTime.Now.ToString(), sp.ElapsedMilliseconds / 1000, count - 1));
             dte.ExecuteCommand("View.Output");
             myOutPane.Activate();
-            
+
         }
 
 
@@ -95,7 +95,7 @@ namespace YongFa365.BatchFormat
             if (dte.Solution != null)
             {
                 var projects = (from prj in new ProjectIterator(dte.Solution)
-                                where prj.Kind == GuidList.guidCsharpProjectString //只处理C#项目
+                                where prj.Kind == GuidList.GuidCsharpProjectString //只处理C#项目
                                 select prj);
 
                 projects.ForEach(prj => ProcessProject(prj));

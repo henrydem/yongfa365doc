@@ -1,14 +1,81 @@
-﻿using EnvDTE;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Threading;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Xml.Serialization;
+using EnvDTE;
 
 namespace YongFa365.BatchFormat
 {
+    public static class ConfigHelper
+    {
+        private static string filePath = "BatchFormat.config";
+        private static List<string> lstEndsWith = new List<string> { "AssemblyInfo.cs", ".designer.cs", "Reference.cs" };
+
+        public static void Save(string[] item)
+        {
+            var result = item.ToList().FindAll(p => !string.IsNullOrWhiteSpace(p));
+
+            if (result.Count == 0)
+            {
+                result = lstEndsWith;
+            }
+            File.WriteAllText(filePath, ToXml<List<string>>(result));
+        }
+
+        public static List<string> Load()
+        {
+            List<string> endsWith = null;
+
+            try
+            {
+                endsWith = FromXml<List<string>>(File.ReadAllText(filePath));
+            }
+            catch
+            {
+            }
+
+
+            if (endsWith == null)
+            {
+                endsWith = lstEndsWith;
+            }
+
+            return endsWith;
+        }
+
+        public static string ToXml<T>(T item)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+                namespaces.Add("", "");
+                serializer.Serialize(stream, item, namespaces);
+                return Encoding.UTF8.GetString(stream.GetBuffer());
+            }
+        }
+
+
+        public static T FromXml<T>(string str)
+        {
+            MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(str));
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                return (T)serializer.Deserialize(stream);
+            }
+        }
+
+    }
+
+
+
+
+
+
+
     public static class IEnumerableExtensions
     {
         public static void ForEach<TItem>(this IEnumerable<TItem> source, Action<TItem> action)
