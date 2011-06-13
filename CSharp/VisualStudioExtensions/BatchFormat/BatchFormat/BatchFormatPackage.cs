@@ -21,7 +21,7 @@ namespace YongFa365.BatchFormat
         private DTE2 dte = null;
         private PkgCmdIDList selectedMenu = PkgCmdIDList.Null;
         private List<string> lstAlreadyOpenFiles = new List<string>();
-        private List<string> lstBlackEndWith = null;
+        private List<string> lstExcludeEndsWith = null;
         private OutputWindowPane myOutPane = null;
         private int count;
 
@@ -46,7 +46,7 @@ namespace YongFa365.BatchFormat
 
         private void Excute(object sender, EventArgs e)
         {
-            lstBlackEndWith = dte.GetValue("EndsWith");
+            lstExcludeEndsWith = dte.GetValue("ExcludeEndsWith");
             count = 0;
 
             selectedMenu = (PkgCmdIDList)((MenuCommand)sender).CommandID.ID;
@@ -188,7 +188,7 @@ namespace YongFa365.BatchFormat
 
             var input = projectItem.FileNames[0];
 
-            foreach (var item in lstBlackEndWith)
+            foreach (var item in lstExcludeEndsWith)
             {
                 if (input.EndsWith(item, true, null))
                 {
