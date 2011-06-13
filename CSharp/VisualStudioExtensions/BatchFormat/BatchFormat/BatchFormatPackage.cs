@@ -13,7 +13,7 @@ namespace YongFa365.BatchFormat
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
-    [ProvideOptionPageAttribute(typeof(OptionsPageGeneral), "BatchFormat", "General", 101, 106, true)]
+    [ProvideOptionPageAttribute(typeof(OptionPage), "BatchFormat", "General", 101, 106, true)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(GuidList.GuidBatchFormatPkgString)]
     public sealed class BatchFormatPackage : Package
@@ -21,14 +21,13 @@ namespace YongFa365.BatchFormat
         private DTE2 dte = null;
         private PkgCmdIDList selectedMenu = PkgCmdIDList.Null;
         private List<string> lstAlreadyOpenFiles = new List<string>();
-        private List<string> lstBlackEndWith = ConfigHelper.Load();
+        private List<string> lstBlackEndWith = null;
         private OutputWindowPane myOutPane = null;
         private int count;
 
         protected override void Initialize()
         {
             base.Initialize();
-
             dte = (DTE2)base.GetService(typeof(DTE));
             myOutPane = dte.ToolWindows.OutputWindow.OutputWindowPanes.Add("BatchFormat");
 
@@ -47,6 +46,7 @@ namespace YongFa365.BatchFormat
 
         private void Excute(object sender, EventArgs e)
         {
+            lstBlackEndWith = dte.GetValue("EndsWith");
             count = 0;
 
             selectedMenu = (PkgCmdIDList)((MenuCommand)sender).CommandID.ID;
@@ -83,7 +83,7 @@ namespace YongFa365.BatchFormat
             }
             sp.Stop();
 
-            WriteLog(string.Format("Finish：{0}  Times：{1}s  Files：{2}", DateTime.Now.ToString(), sp.ElapsedMilliseconds / 1000, count - 1));
+            WriteLog(string.Format("Finish：{0}  Times：{1}s  Files：{2}", DateTime.Now.ToString(), sp.ElapsedMilliseconds / 1000, count - 2));
             dte.ExecuteCommand("View.Output");
             myOutPane.Activate();
 

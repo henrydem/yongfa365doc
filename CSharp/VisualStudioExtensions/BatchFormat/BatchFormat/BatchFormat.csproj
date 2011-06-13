@@ -113,7 +113,7 @@
     <Compile Include="Guids.cs" />
     <Compile Include="BatchFormatPackage.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="OptionsPageGeneral.cs">
+    <Compile Include="OptionPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
