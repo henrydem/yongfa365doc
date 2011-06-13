@@ -13,7 +13,6 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
-using System.Collections.Generic;
 
 namespace YongFa365.BatchFormat
 {
@@ -30,7 +29,7 @@ namespace YongFa365.BatchFormat
             {
                 if (string.IsNullOrWhiteSpace(excludeEndsWith))
                 {
-                    return string.Join("|",ConfigHelper.ExcludeEndsWithList);
+                    return string.Join("|", ConfigHelper.ExcludeEndsWithList);
                 }
                 return excludeEndsWith;
             }
