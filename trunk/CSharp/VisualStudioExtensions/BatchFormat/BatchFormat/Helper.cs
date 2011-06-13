@@ -6,68 +6,27 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using EnvDTE;
+using EnvDTE80;
 
 namespace YongFa365.BatchFormat
 {
     public static class ConfigHelper
     {
-        private static string filePath = "BatchFormat.config";
-        private static List<string> lstEndsWith = new List<string> { "AssemblyInfo.cs", ".designer.cs", "Reference.cs" };
 
-        public static void Save(string[] item)
+        public static List<string> EndsWithList = new List<string> { "AssemblyInfo.cs", ".designer.cs", "Reference.cs" };
+
+        public static List<string> GetValue(this DTE2 input, string key)
         {
-            var result = item.ToList().FindAll(p => !string.IsNullOrWhiteSpace(p));
-
-            if (result.Count == 0)
+            var temp = input.Properties["BatchFormat", "General"].Item(key).Value;
+            if (temp == null || string.IsNullOrWhiteSpace(temp.ToString()))
             {
-                result = lstEndsWith;
+                return EndsWithList;
             }
-            File.WriteAllText(filePath, ToXml<List<string>>(result));
-        }
-
-        public static List<string> Load()
-        {
-            List<string> endsWith = null;
-
-            try
+            else
             {
-                endsWith = FromXml<List<string>>(File.ReadAllText(filePath));
-            }
-            catch
-            {
-            }
-
-
-            if (endsWith == null)
-            {
-                endsWith = lstEndsWith;
-            }
-
-            return endsWith;
-        }
-
-        public static string ToXml<T>(T item)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-                XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-                namespaces.Add("", "");
-                serializer.Serialize(stream, item, namespaces);
-                return Encoding.UTF8.GetString(stream.GetBuffer());
+                return temp.ToString().Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList();
             }
         }
-
-
-        public static T FromXml<T>(string str)
-        {
-            MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(str));
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-                return (T)serializer.Deserialize(stream);
-            }
-        }
-
     }
 
 
