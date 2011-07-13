@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+<!--
+.TabDefault{width:500px;}
+.TabDefault .tabs{width:100%;height:30px;line-height:30px;/*border-bottom:1px solid #cccccc;*/position:relative;overflow:visible;z-index:1;}
+
+.TabDefault .tabs .tab{position:relative;float:left;width:100px;height:100%;background:url(tab.gif) repeat-x 0 -100px;margin-right:5px;text-align:center;cursor:pointer;}
+.TabDefault .tabs .tab .tl, .TabDefault .tabs .tab .tr{position:absolute;background:url(tab.gif) no-repeat;width:6px;height:100%;font-size:0;}
+.TabDefault .tabs .tab .tl{top:0;left:0; background-position:top left;}
+.TabDefault .tabs .tab .tr{top:0;right:0;background-position:right -200px;}
+
+.TabDefault .tabs .active{background-position:left -400px;padding-bottom:1px;_top:1px;_padding-bottom:0;}
+.TabDefault .tabs .active .tl{background-position:left -300px;}
+.TabDefault .tabs .active .tr{background-position:right -500px;}
+
+.TabDefault .pageArea{border:1px solid #cccccc;/*border-top:none;*/width:100%;height:200px;position:relative;}
+.TabDefault .pageArea .bl, .TabDefault .pageArea .br{background:url(cornerBox.corner.gif) no-repeat;width:6px;height:6px;position:absolute;font-size:0;}
+.TabDefault .pageArea .bl{background-position:bottom left;bottom:-1px;left:-1px;}
+.TabDefault .pageArea .br{background-position:bottom right;bottom:-1px;right:-1px;}
+
+.TabDefault .pageArea .pages{overflow:hidden;height:100%;width:100%;}
+.TabDefault .pageArea .pages .page{width:100%;height:100%;padding:5px;}
+-->
+</style>
+</head>
+
+<body>
+
+<div class="TabDefault" id="tab1">
+	<div class="tabs">
+    	<div class="tab" onclick="showTab('tab1',0)">
+        	<span class="tl"></span>
+            <span class="tr"></span>
+            <span><a href="javascript:showTab('tab1',0)">Tab1</a></span>
+        </div>
+        
+    	<div class="tab active" onclick="showTab('tab1',1)">
+        	<span class="tl"></span>
+            <span class="tr"></span>
+            <span><a href="javascript:showTab('tab1',1)">Tab2</a></span>
+        </div>
+        
+    	<div class="tab" onclick="showTab('tab1',2)">
+        	<span class="tl"></span>
+            <span class="tr"></span>
+            <span><a href="javascript:showTab('tab1',2)">Tab3</a></span>
+        </div>
+        
+    	<div class="tab" onclick="showTab('tab1',3)">
+        	<span class="tl"></span>
+            <span class="tr"></span>
+            <span><a href="javascript:showTab('tab1',3)">Tab4</a></span>
+        </div>
+    </div>
+    
+    <div class="pageArea">
+		<span class="bl"></span>
+        <span class="br"></span>
+        
+        <div class="pages">
+        	<div class="page">page1</div>
+            <div class="page">page2</div>
+        	<div class="page">page3</div>
+            <div class="page">page4</div>            
+        </div>
+    </div>
+</div>
+
+<br /><br />
+
+
+<div class="TabDefault" id="tab2">
+	<div class="tabs">
+    	<div class="tab" onclick="showTab('tab2',0)">
+        	<span class="tl"></span>
+            <span class="tr"></span>
+            <span><a href="javascript:showTab('tab2',0)">Tab1</a></span>
+        </div>
+        
+    	<div class="tab active"  onclick="showTab('tab2',1)">
+        	<span class="tl"></span>
+            <span class="tr"></span>
+            <span><a href="javascript:showTab('tab2',1)">Tab2</a></span>
+        </div>
+        
+    	<div class="tab" onclick="showTab('tab2',2)">
+        	<span class="tl"></span>
+            <span class="tr"></span>
+            <span><a href="javascript:showTab('tab2',2)">Tab3</a></span>
+        </div>
+        
+    	<div class="tab" onclick="showTab('tab2',3)">
+        	<span class="tl"></span>
+            <span class="tr"></span>
+            <span><a href="javascript:showTab('tab2',3)">Tab4</a></span>
+        </div>
+    </div>
+    
+    <div class="pageArea">
+		<span class="bl"></span>
+        <span class="br"></span>
+        
+        <div class="pages">
+        	<div class="page">page1</div>
+            <div class="page">page2</div>
+        	<div class="page">page3</div>
+            <div class="page">page4</div>            
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+String.prototype.trim = function(){
+	return this.replace(/(^\s*)|(\s*$)/g, "");
+}
+
+var isObject = function(p) {return "object" == typeof(p)}
+var $ = function(p, doc) {return isObject(p) ? p : (doc || document).getElementById(p);}
+
+var getElementsByClassName = function(className,obj) {
+	obj = $(obj) || document;
+	var objs = obj.all || obj.getElementsByTagName("*");
+	var o,i,arr = [];
+	var classNames = "";
+	className = "," + className + ",";
+	for (i = 0; o = objs[i]; i++) {
+		classNames = "," + o.className.split(/\s+/).join(",") + ",";
+		if(classNames.indexOf(className) >= 0){
+			arr.push(o);
+		}
+	}
+	delete objs;
+	return arr;
+}
+
+function showTab( tab, idx ){
+	tab = $(tab);
+	var pages = getElementsByClassName("pages",tab)[0];
+	var page = pages.getElementsByTagName("DIV")[idx];
+	if(!page) return;
+	
+	pages.scrollTop = page.offsetTop;
+	
+	getElementsByClassName("active",tab)[0].className = "tab";
+	getElementsByClassName("tab",tab)[idx].className = "tab active";
+}
+</script>
+</body>
+</html>
