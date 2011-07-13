@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <title>tab选项卡</title>
+    <style type="text/css">
+        .box, .tabHead a { width: 300px; border: #b7c5d9 1px solid; background: #f0f6f9; }
+        
+        .tabHead { line-height: 26px; height: 26px; }
+        .tabHead a { text-decoration: none; text-align: center; width: 100px; margin-left: -1px; float: left; background-color: #fff; border-width: 0px 0px 1px 1px; }
+        .tabHead a.tabOpen { border-bottom: none; background-color: #f0f6f9; }
+        
+        .tabBody { padding: 15px; }
+        .hide { display: none; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="tabHead"><a class="tabOpen">今日空间排行</a> <a>72小时</a> <a>一周</a> </div>
+        <div class="tabBody">
+            <div>今日空间排行内容 </div>
+            <div class="hide">72小时空间排行内容 </div>
+            <div class="hide">一周空间排行内容 </div>
+        </div>
+    </div>
+</body>
+</html>
