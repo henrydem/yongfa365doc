@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>最简单页面布局</title>
+<style type="text/css">
+html,body{margin:0px; padding:0; font-size:12px; font-family:"宋体",Arial; color:#FFFFFF; background:#FFFFFF}
+
+#header,#main,#footer{ margin:0px auto;clear:both;width:960px}
+#header{ background-color:#99f; height:100px}
+#main{  height:400px}
+#footer{ background-color:#666; height:100px}
+
+#main #sidebar{float:left; background-color:#f93; width:20%; height:400px}
+#main #content{float:left; background-color:#ccc; width:80%; height:400px}
+</style>
+</head>
+<body>
+<div id="header">header</div>
+<div id="main" >
+  <div id="sidebar">sidebar</div>
+  <div id="content">content</div>
+</div>
+<div id="footer">footer</div>
+</body>
+</html>

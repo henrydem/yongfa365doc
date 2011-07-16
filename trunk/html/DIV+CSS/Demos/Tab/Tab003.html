@@ -4,18 +4,21 @@
     <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
     <title>tab选项卡</title>
     <style type="text/css">
+        html,body{margin:0px; padding:0; font-size:12px; font-family:"宋体",Arial; color:#000000; background:#FFFFFF}
+
+        #tabDemo{margin:20px auto; width:960px}
         .box, .tabHead a { width: 500px; border: #b7c5d9 1px solid; background: #f0f6f9; }
         
         .tabHead { padding-left:15px;line-height: 26px; height: 26px;}
         .tabHead a { float: left; margin-left:15px; text-decoration: none; text-align: center; width: 100px;   background-color: #fff; }
-        .tabHead a.tabOpen { border-bottom: none; background-color: #f0f6f9;height:27px }
+        .tabHead a.tabOpen { background-color: #f0f6f9; border-bottom-color:#f0f6f9 }
         
         .tabBody {margin-top:1px; padding: 15px; }
         .hide { display: none; }
     </style>
 </head>
 <body>
-    <div>
+    <div id="tabDemo">
         <div class="tabHead"><a>今日空间排行</a> <a class="tabOpen">72小时</a> <a>一周</a> </div>
         <div class="tabBody box">
             <div>今日空间排行内容 </div>
