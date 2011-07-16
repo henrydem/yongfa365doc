@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>最简单页面布局</title>
+<style type="text/css">
+#s { background-color:#CCCCCC;}
+
+#frm dt{float:left; text-align:right; font-weight:bold; width:60px; padding:5px;}
+#frm dd{padding:4px;}
+
+
+
+
+
+#piclst {clear:both; margin:auto; width:1024px}
+#piclst dl,#piclst dl dd,#piclst dl dt{ float:left; text-align:center;}
+#piclst dl{ width:160px; display:inline; overflow:hidden; height:120px;margin:5px 0px 0px 5px; }
+#piclst dl dd{ height:95px; overflow:hidden; margin-left:0}
+#piclst dl dt{ line-height:25px; width:160px; margin-left:0}
+
+#piclst dl.bigpic{width:329px; height:246px;}
+#piclst dl.bigpic dd{ height:219px; overflow:hidden;}
+#piclst dl.bigpic dt{ line-height:25px; width:329px;}
+
+
+
+
+
+
+
+#wrap {clear:both; margin:auto; width:800px}
+#wrap dl,#wrap dl dt,#wrap dl dd{ margin:5px; padding:0}
+#wrap dl {width:500px; margin-bottom:8px;border:2px solid green; height:160px}
+#wrap dl dt {float:right;width:280px;height:22px;}
+#wrap dl dd.pic {float:left;}
+#wrap dl dd.text {float:right;width:280px;text-indent:2em;}
+#wrap dl dd.links {float:right;width:280px;text-align:right;}
+</style>
+</head>
+<body>
+默认：
+  <dl id="s">
+    <dt>用户名:</dt>
+    <dd>
+      <input />
+    </dd>
+    <dt>密码:</dt>
+    <dd>
+      <input />
+    </dd>
+  </dl>
+
+加工后：
+
+
+  <dl id="frm">
+    <dt>用户名:</dt>
+    <dd>
+      <input />
+    </dd>
+    <dt>密码:</dt>
+    <dd>
+      <input />
+    </dd>
+  </dl>
+
+<div id="piclst">
+  <dl class="bigpic">
+    <dd><img src="car.jpg" height="219" width="329" /></dd>
+    <dt>这是一部会飞的车</dt>
+  </dl>
+  <dl>
+    <dd><img src="car.jpg" height="94" width="160"/></dd>
+    <dt>这是一部会飞的车</dt>
+  </dl>
+  <dl>
+    <dd><img src="car.jpg" height="94" width="160"/></dd>
+    <dt>这是一部会飞的车</dt>
+  </dl>
+  <dl>
+    <dd><img src="car.jpg" height="94" width="160" /></dd>
+    <dt>这是一部会飞的车</dt>
+  </dl>
+  <dl>
+    <dd><img src="car.jpg" height="94" width="160" /></dd>
+    <dt>这是一部会飞的车</dt>
+  </dl>
+  <dl>
+    <dd><img src="car.jpg" height="94" width="160" /></dd>
+    <dt>这是一部会飞的车</dt>
+  </dl>
+  <dl>
+    <dd><img src="car.jpg" height="94" width="160"/></dd>
+    <dt>这是一部会飞的车</dt>
+  </dl>
+  <dl>
+    <dd><img src="car.jpg" height="94" width="160" /></dd>
+    <dt>这是一部会飞的车</dt>
+  </dl>
+  <dl>
+    <dd><img src="car.jpg" height="94" width="160" /></dd>
+    <dt>这是一部会飞的车</dt>
+  </dl>
+</div>
+<div id="wrap">
+  <dl>
+    <dt><a href="#" target="_blank">图文并排好方法</a></dt>
+    <dd class="pic"><img src="car.jpg" width="200" /></dd>
+    <dd class="text"> 这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS</dd>
+    <dd class="links"><a href="#">查看详情</a></dd>
+  </dl>
+  <dl>
+    <dt><a href="#" target="_blank">图文并排好方法</a></dt>
+    <dd class="pic"><img src="car.jpg" width="200" /></dd>
+    <dd class="text"> 这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS</dd>
+    <dd class="links"><a href="#">查看详情</a></dd>
+  </dl>
+  <dl>
+    <dt><a href="#" target="_blank">图文并排好方法</a></dt>
+    <dd class="pic"><img src="car.jpg" width="200" /></dd>
+    <dd class="text"> 这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS</dd>
+    <dd class="links"><a href="#">查看详情</a></dd>
+  </dl>
+  <dl>
+    <dt><a href="#" target="_blank">图文并排好方法</a></dt>
+    <dd class="pic"><img src="car.jpg" width="200" /></dd>
+    <dd class="text"> 这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS这个方法确实不错,排版也很漂亮,本CSS代码来自52CSS</dd>
+    <dd class="links"><a href="#">查看详情</a></dd>
+  </dl>
+</div>
+</body>
+</html>
