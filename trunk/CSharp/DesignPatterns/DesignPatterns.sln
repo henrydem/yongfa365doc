@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singleton", "Singleton\Sing
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SingletonDemo", "SingletonDemo\SingletonDemo.csproj", "{DB14988D-C7AA-45B2-B10F-DACE393BFE7B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleFactory", "SimpleFactory", "{7282FFAB-0915-437A-8AF7-EEFD701AE114}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CreationalPatterns", "CreationalPatterns", "{79092A8C-3794-422C-82DC-39AFCEEE4E4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleFactory", "SimpleFactory\SimpleFactory.csproj", "{491109E2-D629-4CA7-849B-C5220161E890}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -25,6 +31,10 @@ Global
 		{DB14988D-C7AA-45B2-B10F-DACE393BFE7B}.Debug|x86.Build.0 = Debug|x86
 		{DB14988D-C7AA-45B2-B10F-DACE393BFE7B}.Release|x86.ActiveCfg = Release|x86
 		{DB14988D-C7AA-45B2-B10F-DACE393BFE7B}.Release|x86.Build.0 = Release|x86
+		{491109E2-D629-4CA7-849B-C5220161E890}.Debug|x86.ActiveCfg = Debug|x86
+		{491109E2-D629-4CA7-849B-C5220161E890}.Debug|x86.Build.0 = Debug|x86
+		{491109E2-D629-4CA7-849B-C5220161E890}.Release|x86.ActiveCfg = Release|x86
+		{491109E2-D629-4CA7-849B-C5220161E890}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,5 +42,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{26D2B633-3EBD-4B33-939D-9634BADED1B5} = {D8D749D1-BFA5-47B5-AB8B-CA242C77BC26}
 		{DB14988D-C7AA-45B2-B10F-DACE393BFE7B} = {D8D749D1-BFA5-47B5-AB8B-CA242C77BC26}
+		{491109E2-D629-4CA7-849B-C5220161E890} = {7282FFAB-0915-437A-8AF7-EEFD701AE114}
+		{D8D749D1-BFA5-47B5-AB8B-CA242C77BC26} = {79092A8C-3794-422C-82DC-39AFCEEE4E4F}
+		{7282FFAB-0915-437A-8AF7-EEFD701AE114} = {79092A8C-3794-422C-82DC-39AFCEEE4E4F}
 	EndGlobalSection
 EndGlobal
