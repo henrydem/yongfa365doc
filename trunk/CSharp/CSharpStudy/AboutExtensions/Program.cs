@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using YongFa365.String;
-using System.Diagnostics;
 
 namespace AboutExtensions
 {
@@ -23,8 +23,8 @@ namespace AboutExtensions
             //Console.WriteLine(a.ToSHA1());
             //Example1();
             //Example2();
-           var a2= "2010-12-12".To<DateTime>(DateTime.Now);
-          
+            var a2 = "2010-12-12".To<DateTime>(DateTime.Now);
+
 
 
 
@@ -32,12 +32,12 @@ namespace AboutExtensions
             Dictionary<string, string> dict2 = new Dictionary<string, string>();
             dict2.Add("22222222", "");
 
-            dict.TryAdd("12", "").TryAdd("34","").AddOrReplace("34","").AddRange(dict2,false);
+            dict.TryAdd("12", "").TryAdd("34", "").AddOrReplace("34", "").AddRange(dict2, false);
             var asdf = "123".CompareTo("1");
 
 
 
-            List<string> lst = new List<string>() { "wer","dsfdsf","sad" };
+            List<string> lst = new List<string>() { "wer", "dsfdsf", "sad" };
             lst.ForEach((item) => { Console.WriteLine(item); });
 
         }

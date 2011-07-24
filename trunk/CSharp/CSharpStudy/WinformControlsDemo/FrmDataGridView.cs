@@ -55,7 +55,7 @@ namespace WinformControlsDemo
             string str = string.Format("FormattedValue:{0}  Value:{1}\n\nFormattedValue:{2}  Value:{3}",
                 dgv1[0, 0].FormattedValue, dgv1[0, 0].Value,
                 dgv1[1, 0].FormattedValue, dgv1[1, 0].Value
-                
+
                 );
             MessageBox.Show(str);
         }

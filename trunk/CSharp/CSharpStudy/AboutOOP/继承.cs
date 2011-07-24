@@ -244,7 +244,7 @@ namespace AboutOOP
         static void Main(string[] args)
         {
             Console.WriteLine(String.Format("A.X:{0} ,B.Y{1}\t\n", A.X, B.Y));
-           // Console.WriteLine(String.Format("A.X:{1} ,B.Y{0}\t\n", B.Y, A.X));
+            // Console.WriteLine(String.Format("A.X:{1} ,B.Y{0}\t\n", B.Y, A.X));
             Console.ReadKey();
         }
     }

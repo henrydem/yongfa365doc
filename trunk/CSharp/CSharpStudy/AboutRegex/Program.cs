@@ -23,7 +23,7 @@ namespace AboutRegex
             }
             TimeSpan t2 = DateTime.Now - start;
             Console.WriteLine("未编译所花费时间：{0}\n编译后花费时间：{1}", t1.Milliseconds, t2.Milliseconds);
-            Console.ReadKey(); 
+            Console.ReadKey();
         }
     }
     static class CompiledRegex

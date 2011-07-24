@@ -11,7 +11,7 @@ namespace 算法
     /// </summary>
     class Prime
     {
-       public static bool IsPrime(int n)
+        public static bool IsPrime(int n)
         {
             if (n <= 1) return false;
             for (int i = 2; i <= n / 2; i++)
@@ -26,7 +26,7 @@ namespace 算法
             List<int> list = new List<int>();
             if (n <= 1) return list;
 
-            for (int i = 2; i < n ; i++)
+            for (int i = 2; i < n; i++)
             {
                 if (IsPrime(i))
                 {

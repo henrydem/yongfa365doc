@@ -5,9 +5,9 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Microsoft.ApplicationBlocks.Data;
-using System.Text.RegularExpressions;
 
 namespace WinformDemo
 {
@@ -20,7 +20,7 @@ namespace WinformDemo
 
         private void button1_Click(object sender, EventArgs e)
         {
-            dataGridView1.DataSource = SqlHelper.ExecuteDataset(SqlHelper.SqlConnection, CommandType.Text, "select * from ").Tables[0]; 
+            dataGridView1.DataSource = SqlHelper.ExecuteDataset(SqlHelper.SqlConnection, CommandType.Text, "select * from ").Tables[0];
         }
     }
 }

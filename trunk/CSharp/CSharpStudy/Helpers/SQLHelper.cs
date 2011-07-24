@@ -23,11 +23,11 @@
 // ==============================================================================
 
 using System;
-using System.Data;
-using System.Xml;
-using System.Data.SqlClient;
 using System.Collections;
 using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Xml;
 
 namespace Microsoft.ApplicationBlocks.Data
 {
