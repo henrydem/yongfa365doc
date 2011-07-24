@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
+using System.Text;
 
 namespace AboutReflection
 {
@@ -39,7 +39,7 @@ namespace AboutReflection
             {
                 string path = AppDomain.CurrentDomain.BaseDirectory + "\\AboutReflection.exe";
                 object obj = Assembly.LoadFile(path).CreateInstance("AboutReflection.Class1");//反射创建
-                
+
                 //使用反射执行静态方法
                 MethodInfo mi = obj.GetType().GetMethod("静态方法");
                 object result = mi.Invoke(null, new object[] { "柳永法", 23 });

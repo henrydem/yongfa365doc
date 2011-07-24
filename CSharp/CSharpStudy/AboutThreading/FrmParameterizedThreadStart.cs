@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
-using System.Diagnostics;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace AboutThreading
 {
@@ -39,7 +39,7 @@ namespace AboutThreading
 
             Thread t2 = new Thread(new ParameterizedThreadStart(Calc));
             t2.Start(cls);
-            
+
 
             t2 = new Thread(new ThreadStart(Calc));
             t2.Start();

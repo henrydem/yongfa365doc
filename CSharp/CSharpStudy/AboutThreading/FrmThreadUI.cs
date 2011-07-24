@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
 using System.Threading;
+using System.Windows.Forms;
 namespace AboutThreading
 {
     public partial class FrmThreadUI : Form
@@ -40,7 +40,7 @@ namespace AboutThreading
                     this.Invoke(updater, cls);
 
                 }
-                
+
                 Thread.Sleep(1000);
             }
 

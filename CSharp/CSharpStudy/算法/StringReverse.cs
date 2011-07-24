@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Diagnostics;
 //from:http://www.cnblogs.com/zhiyuanf/archive/2009/04/06/1430127.html
 
 namespace 算法

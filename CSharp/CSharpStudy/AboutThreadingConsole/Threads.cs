@@ -9,8 +9,8 @@ namespace AboutThreading
     class Threads
     {
         void Run()
-        { 
-            int count=10;
+        {
+            int count = 10;
             Thread[] threads = new Thread[count];
             for (int i = 0; i < count; i++)
             {
@@ -26,7 +26,7 @@ namespace AboutThreading
                 threads[i].Join();
             }
             Console.WriteLine("程序运行结束");
-            Console.ReadKey(); 
+            Console.ReadKey();
         }
 
         void Fun()

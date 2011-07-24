@@ -34,13 +34,13 @@ namespace AboutArray
 
             //定义一个2*2*3的三维string数组 
             string[, ,] mystringArr = new string[2, 2, 3];
-              
-//定义一个2*3的二维int数组，并初始化
+
+            //定义一个2*3的二维int数组，并初始化
             int[,] myIntArr2 = new int[,] { { 1, 2, 3 }, { -1, -2, -3 } };
-              
-//定义一个2*2的二维string数组，并初始化  
+
+            //定义一个2*2的二维string数组，并初始化  
             string[,] mystringArr2 = new string[,] { { "油", "盐" }, { "《围城》", "《晨露》" } };
-            
+
         }
 
         /// <summary> 
@@ -271,7 +271,7 @@ namespace AboutArray
             {
                 Console.Write("{0}->", v);
             }
-        
+
         }
     }
 

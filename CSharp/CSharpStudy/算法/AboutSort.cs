@@ -111,7 +111,7 @@ namespace AboutSort
             }
             Array.Sort(arrInt, arrChar);
             Console.WriteLine(new string(arrChar));
-        
+
         }
 
 

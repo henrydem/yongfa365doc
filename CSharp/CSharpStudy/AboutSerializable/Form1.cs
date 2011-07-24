@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-
 using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Runtime.Serialization.Json;
-using System.Diagnostics;
-
+using System.Text;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 using YongFa365.Serialization;
 
 

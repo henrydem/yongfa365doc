@@ -5,7 +5,7 @@ namespace AboutDelegate
 {
     delegate void 事件处理格式1();
     delegate void 事件处理格式2(int n);
-   
+
     class 遥控器 //事件引发者
     {
         public event 事件处理格式1 事件之按下开键; //遥控器上的开关
@@ -20,7 +20,7 @@ namespace AboutDelegate
 
         public void 关机()
         {
-            if(事件之按下关键 != null)
+            if (事件之按下关键 != null)
                 事件之按下关键();
         }
         public void 选台(int 频道)
@@ -43,13 +43,13 @@ namespace AboutDelegate
         }
         public void 转换频道(int n)
         {
-            Console.WriteLine("频道{0}播放",n);
+            Console.WriteLine("频道{0}播放", n);
         }
-    }    
+    }
     class 程序运行环境   //用于触发事件
     {
         static void Main(string[] args)
-        {           
+        {
             遥控器 我的遥控器 = new 遥控器();
             电视机 我的电视机 = new 电视机();
             //关联"引发者"和"响应者"
@@ -63,7 +63,7 @@ namespace AboutDelegate
             我的遥控器.选台(10);
             我的遥控器.选台(5);
             我的遥控器.关机();
-            Console.ReadKey(); 
+            Console.ReadKey();
         }
-    } 
+    }
 }

@@ -22,7 +22,7 @@ namespace 算法
                 byte bb = 12;
             }
             #endregion
-        
+
         }
 
         /// <summary>
