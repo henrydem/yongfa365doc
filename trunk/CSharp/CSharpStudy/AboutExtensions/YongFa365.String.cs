@@ -311,37 +311,20 @@ namespace YongFa365.String
             return input.ToInt(-110);
         }
 
-
-
         public static int ToInt(this string input, int defaultValue)
         {
             int temp;
-            if (int.TryParse(input, out temp))
-            {
-                return temp;
-            }
-            else
-            {
-                return defaultValue;
-            }
+            return int.TryParse(input, out temp) ? temp : defaultValue;
         }
-
-
 
         public static int? ToIntOrNull(this string input)
         {
             int temp;
-            if (int.TryParse(input, out temp))
-            {
-                return temp;
-            }
-            else
-            {
-                return null;
-            }
+            return int.TryParse(input, out temp) ? temp : default(int?);
         }
 
         #endregion
+
 
         #region String转换为Decimal
 
@@ -355,71 +338,101 @@ namespace YongFa365.String
             return input.ToDecimal(-110);
         }
 
-
         public static Decimal ToDecimal(this string input, Decimal defaultValue)
         {
             Decimal temp;
-            if (Decimal.TryParse(input, out temp))
-            {
-                return temp;
-            }
-            else
-            {
-                return defaultValue;
-            }
+            return Decimal.TryParse(input, out temp) ? temp : defaultValue;
         }
 
         public static Decimal? ToDecimalOrNull(this string input)
         {
             Decimal temp;
-            if (Decimal.TryParse(input, out temp))
-            {
-                return temp;
-            }
-            else
-            {
-                return null;
-            }
+            return Decimal.TryParse(input, out temp) ? temp : default(Decimal?);
         }
 
         #endregion
 
-        #region String转换为DateTime
 
+        #region String转换为long
 
-        public static DateTime ToDateTime(this string input)
+        /// <summary>
+        /// 转为long如果不成功则返回-110意思是“报警”
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static long Tolong(this string input)
         {
-            return input.ToDateTime(new DateTime(1900, 1, 1));
+            return input.Tolong(-110);
         }
 
-
-        public static DateTime ToDateTime(this string input, DateTime defaultValue)
+        public static long Tolong(this string input, long defaultValue)
         {
-            DateTime temp;
-            if (DateTime.TryParse(input, out temp))
-            {
-                return temp;
-            }
-            else
-            {
-                return defaultValue;
-            }
+            long temp;
+            return long.TryParse(input, out temp) ? temp : defaultValue;
         }
 
-        public static DateTime? ToDateTimeOrNull(this string input)
+        public static long? TolongOrNull(this string input)
         {
-            DateTime temp;
-            if (DateTime.TryParse(input, out temp))
-            {
-                return temp;
-            }
-            else
-            {
-                return null;
-            }
+            long temp;
+            return long.TryParse(input, out temp) ? temp : default(long?);
         }
 
         #endregion
+
+
+        #region String转换为float
+
+        /// <summary>
+        /// 转为float如果不成功则返回-110意思是“报警”
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static float Tofloat(this string input)
+        {
+            return input.Tofloat(-110);
+        }
+
+        public static float Tofloat(this string input, float defaultValue)
+        {
+            float temp;
+            return float.TryParse(input, out temp) ? temp : defaultValue;
+        }
+
+        public static float? TofloatOrNull(this string input)
+        {
+            float temp;
+            return float.TryParse(input, out temp) ? temp : default(float?);
+        }
+
+        #endregion
+
+
+        #region String转换为Double
+
+        /// <summary>
+        /// 转为Double如果不成功则返回-110意思是“报警”
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static Double ToDouble(this string input)
+        {
+            return input.ToDouble(-110);
+        }
+
+        public static Double ToDouble(this string input, Double defaultValue)
+        {
+            Double temp;
+            return Double.TryParse(input, out temp) ? temp : defaultValue;
+        }
+
+        public static Double? ToDoubleOrNull(this string input)
+        {
+            Double temp;
+            return Double.TryParse(input, out temp) ? temp : default(Double?);
+        }
+
+        #endregion
+
 
         #region String转换为Byte
 
@@ -436,30 +449,39 @@ namespace YongFa365.String
         public static Byte ToByte(this string input, Byte defaultValue)
         {
             Byte temp;
-            if (Byte.TryParse(input, out temp))
-            {
-                return temp;
-            }
-            else
-            {
-                return defaultValue;
-            }
+            return Byte.TryParse(input, out temp) ? temp : defaultValue;
         }
 
         public static Byte? ToByteOrNull(this string input)
         {
             Byte temp;
-            if (Byte.TryParse(input, out temp))
-            {
-                return temp;
-            }
-            else
-            {
-                return null;
-            }
+            return Byte.TryParse(input, out temp) ? temp : default(Byte?);
+        }
+        #endregion
+
+
+        #region String转换为DateTime
+
+
+        public static DateTime ToDateTime(this string input)
+        {
+            return input.ToDateTime(new DateTime(1900, 1, 1));
+        }
+
+        public static DateTime ToDateTime(this string input, DateTime defaultValue)
+        {
+            DateTime temp;
+            return DateTime.TryParse(input, out temp) ? temp : defaultValue;
+        }
+
+        public static DateTime? ToDateTimeOrNull(this string input)
+        {
+            DateTime temp;
+            return DateTime.TryParse(input, out temp) ? temp : default(DateTime?);
         }
 
         #endregion
+
 
         #region OtherTransform
 
@@ -529,14 +551,7 @@ namespace YongFa365.String
         public static Guid ToGuid(this string input)
         {
             Guid temp;
-            if (Guid.TryParse(input, out temp))
-            {
-                return temp;
-            }
-            else
-            {
-                return Guid.Empty;
-            }
+            return Guid.TryParse(input, out temp) ? temp : Guid.Empty;
         }
 
         /// <summary>
@@ -588,11 +603,7 @@ namespace YongFa365.String
         /// <returns></returns>
         public static string ToNull(this string input)
         {
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return null;
-            }
-            return input;
+            return string.IsNullOrWhiteSpace(input) ? null : input;
         }
 
         /// <summary>
@@ -602,11 +613,7 @@ namespace YongFa365.String
         /// <returns></returns>
         public static string ToEmpty(this string input)
         {
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return string.Empty;
-            }
-            return input;
+            return string.IsNullOrWhiteSpace(input) ? string.Empty : input;
         }
 
 
@@ -617,7 +624,7 @@ namespace YongFa365.String
             {
                 return defaultValue;
             }
-            var temp=Convert.ChangeType(input, typeof(T));
+            var temp = Convert.ChangeType(input, typeof(T));
             return temp is T ? (T)temp : defaultValue;
         }
 
@@ -632,6 +639,7 @@ namespace YongFa365.String
             return temp is T;
         }
         #endregion
+
 
         #region Is系列
 
@@ -696,6 +704,7 @@ namespace YongFa365.String
 
         #endregion
 
+
         #region In Between系列
         //ScottGu In扩展
         //public static bool In(this object o, IEnumerable c)
@@ -747,6 +756,7 @@ namespace YongFa365.String
 
 
         #endregion
+
 
         #region IDictionary
         /// <summary>
