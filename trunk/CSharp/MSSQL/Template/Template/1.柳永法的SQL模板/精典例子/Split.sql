@@ -18,3 +18,9 @@ BEGIN
     VALUES  (@c)   
     RETURN   
 END   
+
+
+--方法二
+--DECLARE @a NVARCHAR(max)
+--SET @a=REPLACE('1,2,3,5,6',',',' AS ID UNION Select ')
+--EXEC('select * from (Select '+ @a+') a')
