@@ -40,6 +40,17 @@ namespace AboutExtensions
             List<string> lst = new List<string>() { "wer", "dsfdsf", "sad" };
             lst.ForEach((item) => { Console.WriteLine(item); });
 
+            List<User> lstUser = new List<User> 
+            { 
+                new User{Id=1, Name="柳永法",Age=28,IsMan=true}, 
+                new User{Id=2, Name="柳永法1",Age=28,IsMan=true}, 
+                new User{Id=3, Name="柳永法",Age=29,IsMan=true}, 
+                new User{Id=4, Name="柳永法1",Age=29,IsMan=true}, 
+            };
+
+            var result1 = lstUser.Distinct(p => p.Age);
+            var result2 = lstUser.Distinct((x, y) => x.Age == y.Age && x.IsMan == y.IsMan);
+
         }
 
         public static void Example1()
@@ -59,5 +70,16 @@ namespace AboutExtensions
             List<DateTime> lst = new List<DateTime>() { };
             DateTime.Now.In(lst);
         }
+
+
+
+    }
+
+    class User
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public bool IsMan { get; set; }
     }
 }

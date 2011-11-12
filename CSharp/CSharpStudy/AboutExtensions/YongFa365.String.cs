@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 
 namespace YongFa365.String
 {
+    #region 字符串处理
+
     /// <summary>
     /// 从字符串里按格式取出相关内容
     /// </summary>
@@ -292,6 +294,9 @@ namespace YongFa365.String
 
     }
 
+    #endregion
+
+    #region 字符串转换及判断相关
 
     /// <summary>
     /// String转成别的类型
@@ -500,15 +505,6 @@ namespace YongFa365.String
             return string.Join(separator, input);
         }
 
-        /// <summary>
-        /// 转成一般常用格式 yyyy-MM-dd
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static string ToStringNormal(this DateTime input)
-        {
-            return input.ToString("yyyy-MM-dd");
-        }
 
         /// <summary>
         /// 16位，低8位
@@ -705,7 +701,7 @@ namespace YongFa365.String
         #endregion
 
 
-        #region In Between系列
+        #region In、Between系列
         //ScottGu In扩展
         //public static bool In(this object o, IEnumerable c)
         //{
@@ -801,6 +797,9 @@ namespace YongFa365.String
 
     }
 
+    #endregion
+
+    #region 简繁转换
     public static class ChineseStringUtility
     {
         //http://www.cnblogs.com/fmxyw/archive/2010/02/26/1674447.html
@@ -835,4 +834,164 @@ namespace YongFa365.String
             return target;
         }
     }
+    #endregion
+
+    #region 比较类
+
+    //http://www.cnblogs.com/ldp615/archive/2011/08/01/distinct-entension.html
+    //http://www.cnblogs.com/ldp615/archive/2011/08/02/quickly-create-instance-of-iequalitycomparer-and-icomparer.html
+
+    public static class 比较类
+    {
+
+        class CommonEqualityComparer<T, V> : IEqualityComparer<T>
+        {
+            private Func<T, V> keySelector;
+            private IEqualityComparer<V> comparer;
+            public CommonEqualityComparer(Func<T, V> keySelector,
+                IEqualityComparer<V> comparer = null)
+            {
+                this.keySelector = keySelector;
+                this.comparer = comparer ?? EqualityComparer<V>.Default;
+            }
+            public bool Equals(T x, T y)
+            {
+                return comparer.Equals(keySelector(x), keySelector(y));
+            }
+            public int GetHashCode(T obj)
+            {
+                return comparer.GetHashCode(keySelector(obj));
+            }
+        }
+
+        public static IEnumerable<T> Distinct<T, V>(this IEnumerable<T> source, Func<T, V> keySelector, IEqualityComparer<V> comparer = null)
+        {
+            return source.Distinct(new CommonEqualityComparer<T, V>(keySelector, comparer));
+        }
+
+
+
+        class PredicateEqualityComparer<T> : EqualityComparer<T>
+        {
+            private Func<T, T, bool> predicate;
+
+            public PredicateEqualityComparer(Func<T, T, bool> predicate)
+                : base()
+            {
+                this.predicate = predicate;
+            }
+
+            public override bool Equals(T x, T y)
+            {
+                if (x != null)
+                {
+                    return ((y != null) && this.predicate(x, y));
+                }
+
+                if (y != null)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            public override int GetHashCode(T obj)
+            {
+                // Always return the same value to force the call to IEqualityComparer<T>.Equals
+                return 0;
+            }
+        }
+
+        //扩展方法
+        public static IEnumerable<TSource> Distinct<TSource>(this IEnumerable<TSource> source, Func<TSource, TSource, bool> predicate)
+        {
+            return source.Distinct(new PredicateEqualityComparer<TSource>(predicate));
+        }
+    }
+
+    //以下两个类用于生成IEqualityComparer<T>  IComparer<T>
+
+    //var equalityComparer1 = Equality<Person>.CreateComparer(p => p.ID);
+    //var equalityComparer2 = Equality<Person>.CreateComparer(p => p.Name);
+    //var equalityComparer3 = Equality<Person>.CreateComparer(p => p.Birthday.Year);
+    //var equalityComparer4 = Equality<Person>.CreateComparer(p => p.Name, StringComparer.CurrentCultureIgnoreCase);
+
+    public static class Equality<T>
+    {
+        public static IEqualityComparer<T> CreateComparer<V>(Func<T, V> keySelector)
+        {
+            return new CommonEqualityComparer<V>(keySelector);
+        }
+        public static IEqualityComparer<T> CreateComparer<V>(Func<T, V> keySelector, IEqualityComparer<V> comparer)
+        {
+            return new CommonEqualityComparer<V>(keySelector, comparer);
+        }
+
+        class CommonEqualityComparer<V> : IEqualityComparer<T>
+        {
+            private Func<T, V> keySelector;
+            private IEqualityComparer<V> comparer;
+
+            public CommonEqualityComparer(Func<T, V> keySelector, IEqualityComparer<V> comparer)
+            {
+                this.keySelector = keySelector;
+                this.comparer = comparer;
+            }
+            public CommonEqualityComparer(Func<T, V> keySelector)
+                : this(keySelector, EqualityComparer<V>.Default)
+            { }
+
+            public bool Equals(T x, T y)
+            {
+                return comparer.Equals(keySelector(x), keySelector(y));
+            }
+            public int GetHashCode(T obj)
+            {
+                return comparer.GetHashCode(keySelector(obj));
+            }
+        }
+    }
+
+
+
+    //var comparer1 = Comparison<Person>.CreateComparer(p => p.ID);
+    //var comparer2 = Comparison<Person>.CreateComparer(p => p.Name);
+    //var comparer3 = Comparison<Person>.CreateComparer(p => p.Birthday.Year);
+    //var comparer4 = Comparison<Person>.CreateComparer(p => p.Name, StringComparer.CurrentCultureIgnoreCase);
+
+    public static class Comparison<T>
+    {
+        public static IComparer<T> CreateComparer<V>(Func<T, V> keySelector)
+        {
+            return new CommonComparer<V>(keySelector);
+        }
+        public static IComparer<T> CreateComparer<V>(Func<T, V> keySelector, IComparer<V> comparer)
+        {
+            return new CommonComparer<V>(keySelector, comparer);
+        }
+
+        class CommonComparer<V> : IComparer<T>
+        {
+            private Func<T, V> keySelector;
+            private IComparer<V> comparer;
+
+            public CommonComparer(Func<T, V> keySelector, IComparer<V> comparer)
+            {
+                this.keySelector = keySelector;
+                this.comparer = comparer;
+            }
+            public CommonComparer(Func<T, V> keySelector)
+                : this(keySelector, Comparer<V>.Default)
+            { }
+
+            public int Compare(T x, T y)
+            {
+                return comparer.Compare(keySelector(x), keySelector(y));
+            }
+        }
+    }
+
+
+    #endregion
 }
