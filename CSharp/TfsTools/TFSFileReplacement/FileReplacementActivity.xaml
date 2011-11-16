@@ -1,0 +1,43 @@
+﻿<Activity mc:Ignorable="sap" x:Class="TFSFileReplacement.FileReplacementActivity" local:FileReplacementActivity.Rules="\.aspx;\.ascx-_-(.+\.js)-_-$1?pkg=$(Date:yyyyMMddHHmmss)@_@\.master-_-(.+\.js)-_-$1?pkg=$(Date:yyyyMMddHHmmss)" local:FileReplacementActivity.Extensions=".aspx;.ascx;.master;.html" local:FileReplacementActivity.SourcesDirectory="[SourcesDirectory]" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:local="clr-namespace:TFSFileReplacement" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mtbc="clr-namespace:Microsoft.TeamFoundation.Build.Client;assembly=Microsoft.TeamFoundation.Build.Client, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" xmlns:mtbc1="clr-namespace:Microsoft.TeamFoundation.Build.Client;assembly=Microsoft.TeamFoundation.Build.Client" xmlns:mtbwa="clr-namespace:Microsoft.TeamFoundation.Build.Workflow.Activities;assembly=Microsoft.TeamFoundation.Build.Workflow" xmlns:mv="clr-namespace:Microsoft.VisualBasic;assembly=System" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:s1="clr-namespace:System;assembly=System" xmlns:s2="clr-namespace:System;assembly=System.Xml" xmlns:s3="clr-namespace:System;assembly=System.Core" xmlns:s4="clr-namespace:System;assembly=System.ServiceModel" xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities" xmlns:sad="clr-namespace:System.Activities.Debugger;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System" xmlns:scg1="clr-namespace:System.Collections.Generic;assembly=System.ServiceModel" xmlns:scg2="clr-namespace:System.Collections.Generic;assembly=System.Core" xmlns:scg3="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:sl="clr-namespace:System.Linq;assembly=System.Core" xmlns:st="clr-namespace:System.Text;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="Rules" Type="InArgument(x:String)" />
+    <x:Property Name="Extensions" Type="InArgument(x:String)" />
+    <x:Property Name="SourcesDirectory" Type="InArgument(x:String)" />
+  </x:Members>
+  <sap:VirtualizedContainerService.HintSize>576,643</sap:VirtualizedContainerService.HintSize>
+  <mva:VisualBasic.Settings>Assembly references and imported namespaces for internal implementation</mva:VisualBasic.Settings>
+  <Sequence DisplayName="替換匹配文件" sad:XamlDebuggerXmlReader.FileName="C:\360高速下载\TFSFileReplacement\TFSFileReplacement\TFSFileReplacement\FileReplacementActivity.xaml" sap:VirtualizedContainerService.HintSize="536,603">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="scg3:IEnumerable(x:String)" Name="MatchingFiles" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg3:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg3:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <mtbwa:FindMatchingFiles DisplayName="查找匹配的文件" sap:VirtualizedContainerService.HintSize="514,22" MatchPattern="[String.Format(&quot;{0}\**\*&quot; &amp; Extensions.Replace(&quot;;&quot;, &quot;;{0}\**\*&quot;), SourcesDirectory)]" Result="[MatchingFiles]" />
+    <If Condition="[Not (MatchingFiles Is Nothing) And MatchingFiles.Count() &gt; 0]" sap:VirtualizedContainerService.HintSize="514,417">
+      <If.Then>
+        <ParallelForEach x:TypeArguments="x:String" DisplayName="ParallelForEach&lt;String&gt;" sap:VirtualizedContainerService.HintSize="289,313" Values="[MatchingFiles]">
+          <ActivityAction x:TypeArguments="x:String">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="x:String" Name="path" />
+            </ActivityAction.Argument>
+            <Sequence DisplayName="" sap:VirtualizedContainerService.HintSize="259,208">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg3:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg3:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <mtbwa:WriteBuildMessage sap:VirtualizedContainerService.HintSize="200,22" Message="[&quot;Now Processing &quot; &amp; path]" mva:VisualBasic.Settings="Assembly references and imported namespaces serialized as XML namespaces" />
+              <local:ReplaceActionActivity FilePath="[path]" sap:VirtualizedContainerService.HintSize="200,22" Rules="[Rules]" />
+            </Sequence>
+          </ActivityAction>
+        </ParallelForEach>
+      </If.Then>
+      <If.Else>
+        <mtbwa:WriteBuildMessage sap:VirtualizedContainerService.HintSize="200,313" Message="NO Item Match" mva:VisualBasic.Settings="Assembly references and imported namespaces serialized as XML namespaces" />
+      </If.Else>
+    </If>
+  </Sequence>
+</Activity>
