@@ -26,7 +26,7 @@
 <#+
 
     const string Namespace = "Hotel.Data";
-    const string ConnectionString = @"Data Source=HP580DBSZ\DEVDBINSTANCE;Initial Catalog=HotelDB;Integrated Security=True";
+    const string ConnectionString = @"Data Source=.\DEVDBINSTANCE;Initial Catalog=HotelDB;Integrated Security=True";
    
 	
     const bool TreatTinyint1AsBool = false;
