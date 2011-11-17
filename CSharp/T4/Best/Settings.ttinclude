@@ -25,9 +25,10 @@
 
 <#+
 
-    const string Namespace = "YongFa365.OA.Entity.Database";
-    const string ConnectionString =  @"Data Source=.\DevDBInstance;Initial Catalog=OA;Integrated Security=True";
-    
+    const string Namespace = "Hotel.Data";
+    const string ConnectionString = @"Data Source=HP580DBSZ\DEVDBINSTANCE;Initial Catalog=HotelDB;Integrated Security=True";
+   
+	
     const bool TreatTinyint1AsBool = false;
 
     //this is a list of tables you don't want generated
@@ -42,85 +43,67 @@
 	    string result=tableName;
     	
 	    //strip blanks
-	    result=result.Replace(" ","");
-		int idx = result.IndexOf('_');
-		if(idx >= 0)
-		{
-			result = result.Substring(idx+1);
-		}
-    	
+	    //result=result.Replace(" ","");
+		
+            result = Regex.Replace( result , @"((?<a>^[a-z])|[\W_]+(?<a>\w)|\W+$)" , (ma) => {
+                if( ma.Success ) {
+                    return ma.Groups[2].Value.ToUpper();
+                }
+                return ma.Groups[0].Value;
+            });		
+    		int idx = result.IndexOf('_');
+			if(idx >= 0)
+			{
+				result = result.Substring(idx+1);
+			}
 	    //put your logic here...
     	
 	    return result;
     }
-    
-    string CheckNullable(Column col){
-        string result="";
-        if(col.IsNullable && col.SysType !="byte[]" && col.SysType !="string")
-            result="?";
-        return result;
-    }
-
-    public class Table{
-   
-        public List<Column> Columns;
+	
+	public static string CleanParam(string str){
+		return Regex.Replace(str , @"([A-Z]{1,4})(\w*)" , (ma) => {
+			if( ma.Success ) {
+				return ma.Groups[1].Value.ToLower() + ma.Groups[2].Value;
+			}
+			return ma.Groups[0].Value;
+		});	
+	}
+	
+    public class SP{
+		public string Schema;
         public string Name;
-		public string Description;
+		public string Desc;
         public string CleanName;
         public string ClassName;
-        public string PrimaryKey;
-        public string Schema;
-        public string QueryableName;
-		public string TableOrView;
-        
-        public bool HasLogicalDelete(){
-            return this.Columns.Any(x=>x.Name.ToLower()=="deleted" || x.Name.ToLower()=="isdeleted");
-        }
-        public Column DeleteColumn{
+        public List<SPParam> Parameters;
+        public SP(){
+            Parameters=new List<SPParam>();
+        }        
+        public string ArgList{
             get{
-                Column result=null;
-                if(this.Columns.Any(x=>x.Name.ToLower()=="deleted"))
-                    result=this.Columns.Single(x=>x.Name.ToLower()=="deleted");
-                if(this.Columns.Any(x=>x.Name.ToLower()=="isdeleted"))
-                    result=this.Columns.Single(x=>x.Name.ToLower()=="isdeleted");
-                return result;
-            }
-        }
-        public Column PK{
-            get{
-                return this.Columns.FirstOrDefault(x=>x.IsPK) ?? this.Columns[0];
-            }
-        }
-        public Column Descriptor{
-            get{
-                if(this.Columns.Count==1){
-                    return this.Columns[0];
-                }else{
-                    //get the first string column
-                    Column result=null;
-                    result=this.Columns.FirstOrDefault(x=>x.SysType.ToLower().Trim()=="string");
-                    if(result==null)
-                        result=this.Columns[1];
-                    return result;
+                StringBuilder sb=new StringBuilder();
+                int loopCount=1;
+                foreach(var par in Parameters){	
+                    sb.AppendFormat("{0}{1} {2}",  par.SysType, par.CanNull? "?" : "" , par.ParamName == "operator" ? "@operator" : par.ParamName);
+                    if(loopCount<Parameters.Count)
+                        sb.Append(" , ");
+                    loopCount++;
                 }
+                return sb.ToString();
             }
         }
     }
-
-    public class Column{
+    public class SPParam{
         public string Name;
-		public string Description;
         public string CleanName;
+		public string ParamName;
         public string SysType;
-        public string DataType;
-        public DbType DbType;
-        public bool AutoIncrement;
-        public bool IsPK;
-        public int MaxLength;
-        public bool IsNullable;
-        public bool IsForeignKey;
-        public bool IsUnsigned;
-    }   
+		public bool CanNull;
+        public string DbType;
+		public string ParameterMode;
+		public string Size;
+    } 
 
 /*
  * SubSonic - http://subsonicproject.com
@@ -546,7 +529,7 @@ class Manager {
         protected override void CreateFile(String fileName, String content) {
             if (IsFileContentDifferent(fileName, content)) {
                 CheckoutFileIfRequired(fileName);
-                File.WriteAllText(fileName, content);
+                File.WriteAllText(fileName, content,Encoding.UTF8);
             }
         }
 

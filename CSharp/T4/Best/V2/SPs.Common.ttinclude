@@ -1,0 +1,563 @@
+﻿<#@ template language="C#" debug="True" hostspecific="True" #>
+<#@ assembly name="EnvDTE" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Configuration" #>
+
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Data.Common" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Globalization" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Configuration" #>
+
+<#@ import namespace="System"#>
+<#@ import namespace="System.CodeDom"#>
+<#@ import namespace="System.CodeDom.Compiler"#>
+<#@ import namespace="System.Reflection"#>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating"#>
+<#+ 
+
+const string Namespace = "Package.DB";
+const string ConnectionString =  @"Data Source=HP580DBSZ\DEVDBINSTANCE;Initial Catalog=PackageDB;Persist Security Info=True;User ID=sa;Password=Ctrip.sz.hp580tfssz.30c";
+
+public class Helper{
+		
+    public static string CleanUp(string str){
+		
+		if(string.IsNullOrWhiteSpace(str))
+			return str;
+		
+		str = Regex.Replace(str, @"^(Usp_|Pusp_)", "", RegexOptions.IgnoreCase);
+		
+		// 以空格或符号拆分，并把符号后的第一个字母变大写
+		str = Regex.Replace(str , @"((?<first>^[a-z])|([^a-z\d]+(?<first>[a-z])?))", (ma) => {
+                return ma.Groups["first"].Value.ToUpper();
+            }, RegexOptions.IgnoreCase);
+		
+		// 将开头的数字前加下划线
+		return Regex.Replace(str, @"^(?<d>\d)",(ma)=>{
+			return "_" + ma.Groups["d"].Value;
+		});
+    }
+	
+	public static string AsParameter( string str ){
+		str = Helper.CleanUp(str);
+		return Regex.Replace(str, @"(?<f>^[A-Z])", (ma)=>{
+			return ma.Groups["f"].Value.ToLower();
+		});
+	}
+	
+	
+	public static IDataReader GetReader(string sql){
+		SqlConnection conn=new SqlConnection(ConnectionString);
+		SqlCommand cmd=new SqlCommand(sql,conn);
+		conn.Open();
+		return cmd.ExecuteReader(CommandBehavior.CloseConnection);
+	}
+
+	public static SqlCommand GetCommand(string sql){
+		SqlConnection conn=new SqlConnection(ConnectionString);
+		SqlCommand cmd=new SqlCommand(sql,conn);
+		conn.Open();
+		return cmd;
+	}
+	
+	
+    public static List<T> ToList<T>(IDataReader idr, int count = 0) where T : new(){
+        if (idr == null)
+            throw new ArgumentNullException("idr");
+
+        if (idr.IsClosed){
+            throw new ArgumentException("IDataReader is closed.");
+        }
+
+        Type businessEntityType = typeof(T);
+        List<T> entitys = new List<T>();
+        Hashtable hashtable = new Hashtable();
+        PropertyInfo[] properties = businessEntityType.GetProperties();
+
+        int idx = 0;
+
+        foreach (PropertyInfo info in properties){
+            hashtable[info.Name.ToUpper()] = info;
+        }
+
+        while (idr.Read()){
+
+            if (count > 0)
+                idx++;
+
+            T newObject = new T();
+            for (int index = 0; index < idr.FieldCount; index++) {
+                PropertyInfo info = (PropertyInfo)hashtable[idr.GetName(index).ToUpper()];
+                if ((info != null) && info.CanWrite){
+                    try{
+                        info.SetValue(newObject, idr.GetValue(index), null);
+                    }catch{
+                    }
+                }
+            }
+            entitys.Add(newObject);
+
+            if (idx > count)
+                break;
+        }
+        return entitys;
+    }
+	
+	
+	public static void GetSysType(string sqlType, bool isTableType , out string sysType, out bool canNull ){
+		sysType="string";
+		canNull = true;
+		if(isTableType){
+			sysType = "List<" + Helper.CleanUp(sqlType) + "Entity>";
+			canNull = false;
+			return;
+		}
+		switch (sqlType) {
+			case "bigint":
+				sysType = "long";
+				break;
+			case "smallint":
+				sysType= "short";
+				break;
+			case "int":
+				sysType= "int";
+				break;
+			case "uniqueidentifier":
+				sysType=  "Guid";
+				break;
+			case "smalldatetime":
+			case "datetime":
+			case "date":
+				sysType=  "DateTime";
+				break;
+			case "float":
+				sysType="double";
+				break;
+			case "real":
+			case "numeric":
+			case "smallmoney":
+			case "decimal":
+			case "money":
+				sysType=  "decimal";
+				break;
+			case "tinyint":
+				sysType = "byte";
+				break;
+			case "bit":
+				sysType=  "bool";
+				break;
+			case "image":
+			case "binary":
+			case "varbinary":
+			case "timestamp":
+				sysType=  "byte[]";
+				canNull = false;
+				break;
+		}
+		if(sysType == "string") canNull = false;
+	}
+
+	/*
+	public static DbType GetDbType(string sqlType, int isTableType){
+		switch(sqlType){
+			case "varchar":
+				return DbType.AnsiString;
+			case "nvarchar":
+				return DbType.String;
+			case "int":
+				return DbType.Int32;
+			case "uniqueidentifier":
+				return DbType.Guid;
+			case "datetime":
+				return DbType.DateTime;
+			case "bigint":
+				return DbType.Int64;
+			case "binary":
+				return DbType.Binary;
+			case "bit":
+				return DbType.Boolean;
+			case "char":
+				return DbType.AnsiStringFixedLength;
+			case "decimal":
+				return DbType.Decimal;
+			case "float":
+				return DbType.Double;
+			case "image":
+				return DbType.Binary;
+			case "money":
+				return DbType.Currency;
+			case "nchar":
+				return DbType.String;
+			case "ntext":
+				return DbType.String;
+			case "numeric":
+				return DbType.Decimal;
+			case "real":
+				return DbType.Single;
+			case "smalldatetime":
+				return DbType.DateTime;
+			case "smallint":
+				return DbType.Int16;
+			case "smallmoney":
+				return DbType.Currency;
+			case "sql_variant":
+				return DbType.String;
+			case "sysname":
+				return DbType.String;
+			case "text":
+				return DbType.AnsiString;
+			case "timestamp":
+				return DbType.Binary;
+			case "tinyint":
+				return DbType.Byte;
+			case "varbinary":
+				return DbType.Binary;
+			case "xml":
+				return DbType.Xml;
+		default:
+				if(isTableType == 0)
+					return DbType.AnsiString;
+				else
+					return DbType.Object;
+		}
+	}
+	*/
+	
+	public static SqlDbType GetDbType(string sqlType, bool isTableType){
+		switch(sqlType){
+			case "varchar":
+				return SqlDbType.VarChar;
+			case "nvarchar":
+				return SqlDbType.NVarChar;
+			case "int":
+				return SqlDbType.Int;
+			case "uniqueidentifier":
+				return SqlDbType.UniqueIdentifier;
+			case "datetime":
+				return SqlDbType.DateTime;
+			case "date":
+				return SqlDbType.Date;
+			case "bigint":
+				return SqlDbType.BigInt;
+			case "binary":
+				return SqlDbType.Binary;
+			case "bit":
+				return SqlDbType.Bit;
+			case "char":
+				return SqlDbType.Char;
+			case "decimal":
+				return SqlDbType.Decimal;
+			case "float":
+				return SqlDbType.Float;
+			case "image":
+				return SqlDbType.Image;
+			case "money":
+				return SqlDbType.Money;
+			case "nchar":
+				return SqlDbType.NChar;
+			case "ntext":
+				return SqlDbType.NText;
+			case "numeric":
+				return SqlDbType.Decimal;
+			case "real":
+				return SqlDbType.Real;
+			case "smalldatetime":
+				return SqlDbType.SmallDateTime;
+			case "smallint":
+				return SqlDbType.SmallInt;
+			case "smallmoney":
+				return SqlDbType.SmallMoney;
+			case "sql_variant":
+				return SqlDbType.Variant;
+
+				/*
+			case "sysname":
+				return SqlDbType.String;
+				*/
+				
+			case "text":
+				return SqlDbType.Text;
+			case "timestamp":
+				return SqlDbType.Timestamp;
+			case "tinyint":
+				return SqlDbType.TinyInt;
+			case "varbinary":
+				return SqlDbType.VarBinary;
+			case "xml":
+				return SqlDbType.Xml;
+			case "time":
+				return SqlDbType.Time;
+		default:
+				if(!isTableType)
+					throw new Exception("不能转换类型: " + sqlType);
+				else
+					return SqlDbType.Structured;
+		}
+	}	
+}
+
+public class SP{
+	public string Owner{get;set;}
+	public string Name{get;set;}
+	public string CleanName{
+		get{
+			return Helper.CleanUp(this.Name);
+		}
+	}
+	public string Desc{get;set;}
+	
+        public string ArgList{
+            get{
+                StringBuilder sb=new StringBuilder();
+                int loopCount=1;
+                foreach(Parameter par in this.Params){	
+                    sb.AppendFormat("{0}{1} {2}",  par.SysType, par.CanNull? "?" : "" , par.VarName);
+                    if(loopCount<this.Params.Count())
+                        sb.Append(" , ");
+                    loopCount++;
+                }
+                return sb.ToString();
+            }
+        }	
+	
+	public IEnumerable<Parameter> Params{
+		get;set;
+	}
+}
+
+public class Parameter{
+	public string Schema{get;set;}
+	public string Proc{get;set;}
+	public string Name{get;set;}
+	public string CleanName{
+		get{
+			return Helper.CleanUp(this.Name);
+		}
+	}
+	public string VarName{
+		get{
+			return Helper.AsParameter(this.Name);
+		}
+	}
+	
+	private string dataType = "";
+	public string DataType{
+		get{
+			return dataType;
+		}
+		set{
+			dataType = value;
+			string sysType;
+			bool canNull;
+			Helper.GetSysType(dataType, this.IsTableType , out sysType, out canNull);
+			this.SysType = sysType;
+			this.CanNull = canNull;
+			this.DbType = Helper.GetDbType(dataType, this.IsTableType);
+		}
+	}
+	public bool IsTableType{get;set;}
+	public bool CanNull{get;private set;}
+	public string SysType{get;private set;}
+	public SqlDbType DbType{get;private set;}
+	public int MaxLength{get;set;}
+	public int MaxLength2{get;set;}
+	public byte Precision{get;set;}
+	public byte Scale{get;set;}
+	public bool IsOutput{get;set;}
+	public string Desc{get;set;}
+	public int Size{
+		get{
+			return Math.Min(this.MaxLength, this.MaxLength2);
+		}
+	}
+}
+
+
+public class DBExporter{
+	public static List<SP> LoadSPs(){
+		var idr = Helper.GetReader( SPsSQL);
+		var sps = Helper.ToList<SP>(idr);
+		idr.Close();
+		idr = Helper.GetReader(ParamSQL);
+		var ps = Helper.ToList<Parameter>(idr);
+		idr.Close();
+		
+		sps.ForEach((s) => {
+			s.Params = ps.Where(p=>string.Format("{0}.{1}", p.Schema, p.Proc) == string.Format("{0}.{1}", s.Owner, s.Name));
+		});
+		
+		return sps;
+	}
+}
+
+
+public class Manager {
+    private class Block {
+        public String Name;
+        public int Start, Length;
+    }
+
+    private Block currentBlock;
+    private List<Block> files = new List<Block>();
+    private Block footer = new Block();
+    private Block header = new Block();
+    private ITextTemplatingEngineHost host;
+    private StringBuilder template;
+    protected List<String> generatedFileNames = new List<String>();
+
+    public static Manager Create(ITextTemplatingEngineHost host, StringBuilder template) {
+        return (host is IServiceProvider) ? new VSManager(host, template) : new Manager(host, template);
+    }
+
+    public void StartNewFile(String name) {
+        if (name == null)
+            throw new ArgumentNullException("name");
+        CurrentBlock = new Block { Name = name };
+    }
+
+    public void StartFooter() {
+        CurrentBlock = footer;
+    }
+
+    public void StartHeader() {
+        CurrentBlock = header;
+    }
+
+    public void EndBlock() {
+        if (CurrentBlock == null)
+            return;
+        CurrentBlock.Length = template.Length - CurrentBlock.Start;
+        if (CurrentBlock != header && CurrentBlock != footer)
+            files.Add(CurrentBlock);
+        currentBlock = null;
+    }
+
+    public virtual void Process(bool split) {
+        if (split) {
+            EndBlock();
+            String headerText = template.ToString(header.Start, header.Length);
+            String footerText = template.ToString(footer.Start, footer.Length);
+            String outputPath = Path.GetDirectoryName(host.TemplateFile);
+            files.Reverse();
+            foreach(Block block in files) {
+                String fileName = Path.Combine(outputPath, block.Name);
+                String content = headerText + template.ToString(block.Start, block.Length) + footerText;
+                generatedFileNames.Add(fileName);
+                CreateFile(fileName, content);
+                template.Remove(block.Start, block.Length);
+            }
+        }
+    }
+
+    protected virtual void CreateFile(String fileName, String content) {
+        if (IsFileContentDifferent(fileName, content))
+            File.WriteAllText(fileName, content);
+    }
+
+    public virtual String GetCustomToolNamespace(String fileName) {
+        return null;
+    }
+
+    public virtual String DefaultProjectNamespace {
+        get { return null; }
+    }
+
+    protected bool IsFileContentDifferent(String fileName, String newContent) {
+        return !(File.Exists(fileName) && File.ReadAllText(fileName) == newContent);
+    }
+
+    private Manager(ITextTemplatingEngineHost host, StringBuilder template) {
+        this.host = host;
+        this.template = template;
+    }
+
+    private Block CurrentBlock {
+        get { return currentBlock; }
+        set {
+            if (CurrentBlock != null)
+                EndBlock();
+            if (value != null)
+                value.Start = template.Length;
+            currentBlock = value;
+        }
+    }
+
+    private class VSManager: Manager {
+        private EnvDTE.ProjectItem templateProjectItem;
+        private EnvDTE.DTE dte;
+        private Action<String> checkOutAction;
+        private Action<IEnumerable<String>> projectSyncAction;
+
+        public override String DefaultProjectNamespace {
+            get {
+                return templateProjectItem.ContainingProject.Properties.Item("DefaultNamespace").Value.ToString();
+            }
+        }
+
+        public override String GetCustomToolNamespace(string fileName) {
+            return dte.Solution.FindProjectItem(fileName).Properties.Item("CustomToolNamespace").Value.ToString();
+        }
+
+        public override void Process(bool split) {
+            if (templateProjectItem.ProjectItems == null)
+                return;
+            base.Process(split);
+            projectSyncAction.EndInvoke(projectSyncAction.BeginInvoke(generatedFileNames, null, null));
+        }
+
+        protected override void CreateFile(String fileName, String content) {
+            if (IsFileContentDifferent(fileName, content)) {
+                CheckoutFileIfRequired(fileName);
+                File.WriteAllText(fileName, content);
+            }
+        }
+
+        internal VSManager(ITextTemplatingEngineHost host, StringBuilder template)
+            : base(host, template) {
+            var hostServiceProvider = (IServiceProvider) host;
+            if (hostServiceProvider == null)
+                throw new ArgumentNullException("Could not obtain IServiceProvider");
+            dte = (EnvDTE.DTE) hostServiceProvider.GetService(typeof(EnvDTE.DTE));
+            if (dte == null)
+                throw new ArgumentNullException("Could not obtain DTE from host");
+            templateProjectItem = dte.Solution.FindProjectItem(host.TemplateFile);
+            checkOutAction = (String fileName) => dte.SourceControl.CheckOutItem(fileName);
+            projectSyncAction = (IEnumerable<String> keepFileNames) => ProjectSync(templateProjectItem, keepFileNames);
+        }
+
+        private static void ProjectSync(EnvDTE.ProjectItem templateProjectItem, IEnumerable<String> keepFileNames) {
+            var keepFileNameSet = new HashSet<String>(keepFileNames);
+            var projectFiles = new Dictionary<String, EnvDTE.ProjectItem>();
+            var originalFilePrefix = Path.GetFileNameWithoutExtension(templateProjectItem.get_FileNames(0)) + ".";
+            foreach(EnvDTE.ProjectItem projectItem in templateProjectItem.ProjectItems)
+                projectFiles.Add(projectItem.get_FileNames(0), projectItem);
+
+            // Remove unused items from the project
+            foreach(var pair in projectFiles)
+                if (!keepFileNames.Contains(pair.Key) && !(Path.GetFileNameWithoutExtension(pair.Key) + ".").StartsWith(originalFilePrefix))
+                    pair.Value.Delete();
+
+            // Add missing files to the project
+            foreach(String fileName in keepFileNameSet)
+                if (!projectFiles.ContainsKey(fileName))
+                    templateProjectItem.ProjectItems.AddFromFile(fileName);
+        }
+
+        private void CheckoutFileIfRequired(String fileName) {
+            var sc = dte.SourceControl;
+            if (sc != null && sc.IsItemUnderSCC(fileName) && !sc.IsItemCheckedOut(fileName))
+                checkOutAction.EndInvoke(checkOutAction.BeginInvoke(fileName, null, null));
+        }
+    }	
+}
+#>

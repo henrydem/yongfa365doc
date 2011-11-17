@@ -1,0 +1,121 @@
+﻿<#@ include file="SPs.SQLServer.ttinclude" #>
+<#@ include file="SPs.Common.ttinclude" #>
+<#@ output extension=".txt" #>
+<#
+	var manager = Manager.Create(Host, GenerationEnvironment);
+    var entities = DBExporter.LoadSPs();
+	bool isFirstSp = true;
+    foreach(SP sp in entities){
+			manager.StartNewFile(Helper.CleanUp(sp.Name) + ".cs");
+#>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+using System.Collections;
+using System.ComponentModel;
+using System.Data.SqlClient;
+<# if(sp.Params.Count() > 0){ #>
+using Package.Entity.Database.SPParams;
+<# } 
+	if(sp.Params.Where(p=>p.IsTableType).Count() > 0){
+#>
+using Package.Entity.Database.TableType;
+using CtripSZ.Frameworks.Extends;
+<# } #>
+
+
+namespace <#=Namespace #> {
+	<# if(isFirstSp){#>
+	/// <summary>
+	///
+	///</summary>
+	<# 
+		isFirstSp = false;
+	} 
+	#>
+    public partial class SPs {
+	
+		/// <summary>
+		/// <#= sp.Desc??"" #>
+		/// </summary>
+		<# if(sp.Params.Count() > 0){ #>
+/// <param name="entity"></param>
+		<# } #>
+/// <returns></returns>
+		<# if(sp.Params.Count() > 0){ #>
+		
+		public static SqlCommand <#=sp.CleanName#>(<#= sp.CleanName #>ParamEntity entity){	
+			if(null == entity)
+				throw new ArgumentNullException("entity");
+
+			object value;
+		<# }else{#>public static SqlCommand <#=sp.CleanName#>(){	
+		<# } #>
+	
+			SqlCommand sc = new SqlCommand("<#=sp.Name#>");
+			sc.CommandType = CommandType.StoredProcedure;
+			
+			<# 
+				string direction = "";
+				foreach(Parameter p in sp.Params){ 
+					if(!p.IsOutput)
+						direction = "Input";
+					else
+						direction = "InputOutput";
+			#>
+
+			<# if(!p.IsTableType){ #>
+			
+			value = entity.<#= p.CleanName #>;
+			if(entity.<#= p.CleanName #> == null){
+				value = DBNull.Value;
+			}
+			<#}else{#>
+			
+			//表类型参数不能为 DBNull, null 会自动转换成 Sql 语句里的 default
+			value = entity.<#= p.CleanName#>.ToDataTable<<#=p.DataType#>Entity>();
+			<# } #>
+			
+			SqlParameter sp<#= p.CleanName #> = new SqlParameter("<#= p.Name #>", SqlDbType.<#=p.DbType#>, <#=p.Size#> , ParameterDirection.<#= direction#> , true, <#= p.Precision #> , <#= p.Scale #> , string.Empty, DataRowVersion.Default, value);
+			sc.Parameters.Add(sp<#= p.CleanName #>);
+			<# } #>
+			
+			SqlParameter sp = new SqlParameter("@ReturnValue", SqlDbType.Int);
+            sp.Direction = ParameterDirection.ReturnValue;
+            sc.Parameters.Add(sp);
+			return sc;
+		}
+	}
+	
+	<#   
+	var outPars = (from p in sp.Params
+								where p.IsOutput
+								select p).ToList();
+		
+		if(outPars.Count > 0){#>
+	
+	/// <summary>
+	/// <#=sp.CleanName#> 的 OUTPUT 参数
+	/// </summary>
+	public class <#=sp.CleanName#>OutParameters{	
+	<#
+		
+		foreach(var par in outPars){#>
+
+			/// <summary>
+			/// <#= par.Name #> DbType : <#= par.DbType #>
+			/// </summary>
+			public static readonly string <#=par.CleanName#> = "<#=par.Name#>";
+	<#}#>
+
+	}
+	<#}#>
+
+}
+<#     
+		manager.EndBlock();
+    }
+	manager.Process(true); 
+#>

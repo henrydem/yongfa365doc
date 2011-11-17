@@ -1,0 +1,124 @@
+﻿<#@ include file="DBEntity.Common.ttinclude" #>
+<#+
+
+const string EntitySQL= @"
+WITH Entities AS (
+	SELECT 
+		table_schema [Owner]
+		, table_name [Name]
+		, 'Table' [Type]
+		,OBJECT_ID(TABLE_SCHEMA + '.' + TABLE_NAME) ID
+	FROM  
+		INFORMATION_SCHEMA.TABLES
+	WHERE 
+		TABLE_TYPE='BASE TABLE'
+
+	UNION ALL
+
+	SELECT
+		table_schema
+		, table_name
+		, 'View'
+		, OBJECT_ID(TABLE_SCHEMA + '.' + TABLE_NAME) ID
+	FROM
+		information_schema.views
+		
+	
+	UNION ALL
+	
+	SELECT 
+		SCHEMA_NAME(schema_id)
+		, name
+		, 'TableType'
+		, user_type_id
+	FROM 
+		sys.table_types	
+
+	UNION
+
+	SELECT
+		SCHEMA_NAME(SCHEMA_ID)
+		, name + 'Param'
+		, 'SPParams'
+		, object_id
+	FROM
+		sys.procedures
+)		
+SELECT 
+	E.*
+	, P.value AS [DESC]
+FROM 
+	Entities E
+	LEFT JOIN sys.extended_properties P ON E.ID = P.major_id AND P.minor_id = 0
+";
+
+
+const string ColumnSQL = @"
+SELECT 
+	COALESCE( SCHEMA_NAME(T.Schema_id), OBJECT_SCHEMA_NAME(C.object_id)) AS Owner
+	,COALESCE( T.Name, OBJECT_NAME(c.OBJECT_ID)) AS Parent
+	,C.column_id AS OrdinalPosition	
+	,C.name AS Name
+	,TYPE_NAME(c.user_type_id) AS DataType
+	,D.definition AS DefaultSetting
+	, C.is_nullable AS IsNullable
+	, C.max_length AS MaxLength
+	, COLUMNPROPERTY( C.OBJECT_ID , C.Name ,'PRECISION') AS [Precision] -- 用于判断 NVARCHAR 实际长度的
+	, CAST(0 AS BIT) IsTableType
+	,P.Value AS [DESC]
+FROM 
+	sys.columns C
+	LEFT JOIN sys.table_types T ON T.type_table_object_id = C.object_ID
+	LEFT JOIN sys.default_constraints D ON C.object_id = D.parent_object_id AND D.parent_column_id = C.Column_id
+	LEFT JOIN sys.extended_properties P ON (P.major_id = C.OBJECT_ID OR P.major_id = T.User_type_id ) AND P.minor_id = C.COLUMN_ID AND P.name = 'MS_Description'
+WHERE
+	COALESCE( SCHEMA_NAME(T.Schema_id), OBJECT_SCHEMA_NAME(C.object_id)) = 'dbo'
+
+
+UNION ALL
+
+
+SELECT
+	SCHEMA_NAME( P.[schema_id] )
+	,P.Name + 'Param'
+	, PA.parameter_id
+	,PA.Name
+	,TYPE_NAME(PA.user_type_id) AS DataType
+	, CASE CAST( (SELECT COUNT(1) FROM sys.table_types WHERE user_type_id = PA.user_type_id) AS BIT)
+		WHEN 0 THEN NULL
+		ELSE 'List<' + TYPE_NAME(PA.user_type_id) + 'Entity>'
+	END
+	--,1
+	, TYPEPROPERTY(TYPE_NAME(PA.user_type_id), 'AllowsNull')
+	, PA.max_length AS MaxLength
+	, COLUMNPROPERTY( PA.OBJECT_ID , PA.Name ,'PRECISION') AS [Precision] -- 用于判断 NVARCHAR 实际长度的
+	, CAST( (SELECT COUNT(1) FROM sys.table_types WHERE user_type_id = PA.user_type_id) AS BIT) AS IsTableType
+	, PP.value AS [Desc]
+FROM
+	sys.procedures P 
+	INNER JOIN sys.parameters PA ON P.object_id = PA.object_id
+	LEFT JOIN sys.extended_properties PP ON PA.object_id = PP.major_id AND PA.parameter_id = PP.minor_id
+
+ORDER BY
+	Parent, OrdinalPosition
+";
+
+
+public class DBExporter : IDBExporter{
+	public List<Entity> LoadEntities(){
+		var idr = Helper.GetReader(EntitySQL);
+		var entities = Helper.ToList<Entity>(idr);
+		idr.Close();
+		idr = Helper.GetReader(ColumnSQL);
+		var columns = Helper.ToList<Column>(idr);
+		idr.Close();
+		
+		entities.ForEach((e) => {
+			e.Columns = columns.Where(c => string.Format("{0}.{1}", c.Owner, c.Parent) == string.Format("{0}.{1}", e.Owner, e.Name));
+		});
+		
+		return entities;
+	}
+}
+
+#>

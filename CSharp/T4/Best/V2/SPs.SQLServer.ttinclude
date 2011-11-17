@@ -1,0 +1,34 @@
+﻿<#+ 
+
+const string SPsSQL = @"
+SELECT
+	SCHEMA_NAME(P.schema_id) AS Owner
+	, P.Name
+	, PP.Value AS [Desc]
+FROM
+	sys.procedures	P
+	LEFT JOIN sys.extended_properties PP ON P.object_id = PP.major_id AND PP.minor_id = 0
+";
+
+const string ParamSQL = @"
+SELECT
+	SCHEMA_NAME( P.[schema_id] ) AS [Schema]
+	,P.Name AS [Proc]
+	,PA.Name
+	, CAST( (SELECT COUNT(1) FROM sys.table_types WHERE user_type_id = PA.user_type_id) AS BIT) AS IsTableType
+	,TYPE_NAME(PA.user_type_id) AS DataType
+	, PA.max_length AS MaxLength
+	, COLUMNPROPERTY( PA.OBJECT_ID , PA.Name ,'PRECISION') AS MaxLength2 -- 用于判断 NVARCHAR 实际长度的
+	, PA.Precision
+	, PA.Scale
+	, PA.is_output AS IsOutput
+	, PP.value AS [Desc]
+FROM
+	sys.procedures P 
+	INNER JOIN sys.parameters PA ON P.object_id = PA.object_id
+	LEFT JOIN sys.extended_properties PP ON PA.object_id = PP.major_id AND PA.parameter_id = PP.minor_id
+ORDER BY
+	PA.Object_id, PA.Parameter_id
+";
+
+#>
