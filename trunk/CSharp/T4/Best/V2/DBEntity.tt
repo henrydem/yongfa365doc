@@ -1,0 +1,74 @@
+﻿<#@ include file="DBEntity.SQLServer.ttinclude" #>
+<#@ output extension=".txt" #>
+<#
+
+	var manager = Manager.Create(Host, GenerationEnvironment);
+	var dbExporter = new DBExporter();
+    var entities = dbExporter.LoadEntities();
+    foreach(Entity tbl in entities){
+		if(tbl.Columns.Count() == 0)
+			continue;		
+		
+		manager.StartNewFile(string.Format("{0}.{1}{2}.cs", tbl.Type, Helper.CleanUp(tbl.Name), Suffix));
+#>
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using <#=Namespace #>.TableType;
+
+namespace <#=Namespace #><#= tbl.Type != "Table" && tbl.Type != "View" ? "." + tbl.Type : "" #>
+{
+	/// <summary>
+	/// <#= (tbl.Desc??"").Replace("\r\n", " ") #>
+	/// <#=tbl.Type #> : <#= tbl.Owner #>.<#= tbl.Name #>
+	/// </summary>
+	[DataContract,Serializable]
+    public partial class <#=tbl.CleanName #><#= Suffix #>
+	{
+	<#
+		foreach(Column col in tbl.Columns){
+	#>		
+		<# if(!col.HasDefault){ #>
+
+		/// <summary>
+		/// <#= (col.Desc??"").Replace("\r\n"," ") #>
+		/// <#= tbl.Owner #>.<#=tbl.Name#>.<#= col.Name #>
+<# if(col.DefaultSetting != null){ #>/// 默认值<#= col.DefaultSetting??"" #><# } #>
+		/// </summary>
+		[DataMember]
+		public <#= col.SysType#><#= Helper.CheckNullable(col) #> <#= col.CleanName #> { get; set; }
+		<# }else{ #>
+
+		private <#= col.SysType#><#= Helper.CheckNullable(col) #> <#= col.VarName #> = <#= col.DefaultValue #>;
+		
+		/// <summary>
+		/// <#= (col.Desc??"").Replace("\r\n"," ") #>
+		/// <#= tbl.Owner #>.<#=tbl.Name#>.<#= col.Name #>
+		/// 默认值 : <#= (col.DefaultValue??"").Replace("<","&lt;").Replace(">","&gt;") #>
+        /// </summary>
+		[DataMember]
+		public <#= col.SysType#><#= Helper.CheckNullable(col) #> <#= col.CleanName #>
+		{
+			get
+			{
+				return <#= col.VarName #>;
+			}
+			set
+			{
+				<#= col.VarName #> = value;
+			}
+		}
+		<# }#>
+	<#
+		}
+	#>
+
+	}
+}
+<#   
+		manager.EndBlock();
+		//}
+    }
+
+	manager.Process(true);
+#>

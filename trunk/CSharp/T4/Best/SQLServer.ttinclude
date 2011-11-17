@@ -1,5 +1,18 @@
 ﻿<#@ include file="Settings.ttinclude" #>
 <#+
+
+const string DESCRIPTION_SQL = @"
+SELECT
+    P.[name],
+    SCHEMA_NAME( P.[schema_id] ) AS [Schema],
+    EP.value
+FROM
+    sys.procedures P LEFT JOIN
+    sys.extended_properties EP ON P.[object_id] = EP.major_id
+WHERE
+    EP.Value IS NOT NULL
+";
+
 IDataReader GetReader(string sql){
 	SqlConnection conn=new SqlConnection(ConnectionString);
 	SqlCommand cmd=new SqlCommand(sql,conn);
@@ -14,88 +27,7 @@ SqlCommand GetCommand(string sql){
 	return cmd;
 }
 
-const string FKSql=@"SELECT
-		ThisTable  = FK.TABLE_NAME,
-		ThisColumn = CU.COLUMN_NAME,
-		OtherTable  = PK.TABLE_NAME,
-		OtherColumn = PT.COLUMN_NAME, 
-		Constraint_Name = C.CONSTRAINT_NAME,
-		Owner = FK.TABLE_SCHEMA
-	FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
-	INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME
-	INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME
-	INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME
-	INNER JOIN
-		(	
-			SELECT i1.TABLE_NAME, i2.COLUMN_NAME
-			FROM  INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1
-			INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2 ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
-			WHERE i1.CONSTRAINT_TYPE = 'PRIMARY KEY'
-		) 
-	PT ON PT.TABLE_NAME = PK.TABLE_NAME
-	WHERE FK.Table_NAME=@tableName OR PK.Table_NAME=@tableName";
 
-
-const string TABLE_SQL=@"
-	SELECT 
-		Table_catalog, table_schema, table_name, 'Table' AS TABLE_TYPE
-	FROM  
-		INFORMATION_SCHEMA.TABLES
-	WHERE 
-		TABLE_TYPE='BASE TABLE'
-
-	UNION
-
-	SELECT
-		Table_catalog, table_schema, table_name, 'View' TABLE_TYPE 
-	FROM
-		information_schema.views	
-";
-
-const string COLUMN_SQL=@"SELECT 
-		TABLE_CATALOG AS [Database],
-		TABLE_SCHEMA AS Owner, 
-		TABLE_NAME AS TableName, 
-		COLUMN_NAME AS ColumnName, 
-		ORDINAL_POSITION AS OrdinalPosition, 
-		COLUMN_DEFAULT AS DefaultSetting, 
-		IS_NULLABLE AS IsNullable, DATA_TYPE AS DataType, 
-		CHARACTER_MAXIMUM_LENGTH AS MaxLength, 
-		DATETIME_PRECISION AS DatePrecision,
-		COLUMNPROPERTY(object_id('[' + TABLE_SCHEMA + '].[' + TABLE_NAME + ']'), COLUMN_NAME, 'IsIdentity') AS IsIdentity,
-		COLUMNPROPERTY(object_id('[' + TABLE_SCHEMA + '].[' + TABLE_NAME + ']'), COLUMN_NAME, 'IsComputed') as IsComputed
-	FROM  INFORMATION_SCHEMA.COLUMNS
-	WHERE TABLE_NAME=@tableName
-	ORDER BY OrdinalPosition ASC";
-
-const string DESCRIPTION_SQL = @"
-SELECT 
-	A.[Schema], COALESCE(A.[Table], A.[View]) AS TV,
-	A.[Column], A.[Desc]
-FROM (
-	SELECT 
-		T.name AS [Table], V.name AS [View],
-		c.name AS [Column], value AS [Desc],
-		S.name AS [Schema]
-	FROM 
-		sys.extended_properties AS EP LEFT JOIN 
-		sys.tables AS T ON EP.major_id = T.object_id LEFT JOIN 
-		sys.views AS V ON EP.major_id = V.object_id LEFT JOIN
-		sys.schemas AS S ON (T.schema_id = S.schema_id OR V.schema_id = S.schema_ID ) LEFT JOIN
-		sys.columns AS C ON EP.major_id = C.object_id AND EP.minor_id = C.column_id
-	WHERE ep.name = 'MS_Description'
-) A
-";
-
-string GetKey(string schema, string tv, string column){
-	List<string> keys = new List<string>();
-	keys.Add(schema);
-	keys.Add(tv);
-	if(column != "")
-		keys.Add(column);
-	
-	return string.Join(".", keys.ToArray());	
-}
 
 void LoadDescs(){
 	if(Descs == null){
@@ -103,11 +35,10 @@ void LoadDescs(){
 		using(IDataReader idr = GetReader(DESCRIPTION_SQL)){
 			while(idr.Read()){
 				string schema = idr["Schema"].ToString();
-				string tv = idr["TV"].ToString();
-				string column = idr["Column"].ToString();
-				string desc = idr["Desc"].ToString();
+				string name = idr["name"].ToString();
+				string desc = idr["value"].ToString();
 				
-				string key = GetKey(schema, tv, column);
+				string key = string.Format("{0}.{1}", schema, name);
 
 				if(!Descs.ContainsKey(key))
 					Descs.Add(key, desc);
@@ -116,67 +47,79 @@ void LoadDescs(){
 	}
 }
 
-string FindDesc(string schema, string tabName, string column){
+
+string FindDesc(string schema, string name){
 	LoadDescs();
 	
-	string key = GetKey(schema, tabName, column);
+	string key = string.Format("{0}.{1}", schema, name);
 	if(Descs.ContainsKey(key))
 		return Descs[key];
 	else
 		return "";
 }
 
-List<Table> LoadTables(){
-	var result=new List<Table>();
-	   
-	//pull the tables in a reader
-	using(IDataReader rdr=GetReader(TABLE_SQL)){
-		while(rdr.Read()){
-			Table tbl=new Table();
-			tbl.Name=rdr["TABLE_NAME"].ToString();
-			tbl.Schema=rdr["TABLE_SCHEMA"].ToString();
-			tbl.Description = FindDesc(tbl.Schema, tbl.Name, "").Replace("\r\n"," ");
-			tbl.Columns=LoadColumns(tbl);
-			tbl.CleanName=CleanUp(tbl.Name);
-			tbl.ClassName=Inflector.MakeSingular(tbl.CleanName);
-			tbl.QueryableName=Inflector.MakePlural(tbl.ClassName);
-			tbl.TableOrView = rdr["TABLE_TYPE"].ToString();
-			
-			result.Add(tbl);
+
+
+List<SPParam> GetSPParams(string spName){
+    var result = new List<SPParam>();
+    string[] restrictions = new string[4] { null, null, spName, null };
+    using(SqlConnection conn = new SqlConnection(ConnectionString))	{
+        conn.Open();
+		var sprocs = conn.GetSchema("ProcedureParameters", restrictions);
+		conn.Close();
+
+		foreach(DataRow row in sprocs.Select(string.Empty, "ORDINAL_POSITION"))	{
+		    SPParam p = new SPParam();
+			string sysType;
+			bool canNull;
+			GetSysType(row["DATA_TYPE"].ToString(), out sysType, out canNull);
+			p.SysType = sysType ;//GetSysType(row["DATA_TYPE"].ToString());
+			p.CanNull = canNull;
+			p.DbType = GetDbType(row["DATA_TYPE"].ToString()).ToString();
+			p.Name = row["PARAMETER_NAME"].ToString().Replace("@", string.Empty);
+			p.CleanName = CleanUp(p.Name);
+			p.ParamName = CleanParam(p.CleanName);
+			p.ParameterMode = row["PARAMETER_MODE"].ToString();
+			p.Size = row["CHARACTER_MAXIMUM_LENGTH"].ToString();
+			result.Add(p);
 		}
 	}
-	
 	return result;
 }
 
-List<Column> LoadColumns(Table tbl){
-	var result=new List<Column>();
-	var cmd=GetCommand(COLUMN_SQL);
-	cmd.Parameters.AddWithValue("@tableName",tbl.Name);
-	
-	using(IDataReader rdr=cmd.ExecuteReader(CommandBehavior.CloseConnection)){
-		while(rdr.Read()){
-			Column col=new Column();
-			col.Name=rdr["ColumnName"].ToString();
-			col.Description = FindDesc(tbl.Schema, tbl.Name, col.Name).Replace("\r\n"," ");
-			col.CleanName=CleanUp(col.Name);
-			col.DataType=rdr["DataType"].ToString();
-			col.SysType=GetSysType(col.DataType);
-			col.DbType=GetDbType(col.DataType);
-			col.AutoIncrement=rdr["IsIdentity"].ToString()=="1";
-			col.IsNullable=rdr["IsNullable"].ToString()=="YES";
-			int.TryParse(rdr["MaxLength"].ToString(),out col.MaxLength);
-			
-			result.Add(col);
-		}
 
+List<SP> GetSPs(){
+    var result = new List<SP>();
+    //pull the SPs
+    
+    DataTable sprocs = null;
+    //DataTable parameters = null;
+    
+    using(SqlConnection conn = new SqlConnection(ConnectionString))	{
+        conn.Open();
+		sprocs = conn.GetSchema("Procedures");
+		conn.Close();
 	}
 	
-	return result;
+    foreach(DataRow row in sprocs.Rows)	{
+	    string spType = row["ROUTINE_TYPE"].ToString();
+        var sp = new SP();
+	    sp.Name = row["ROUTINE_NAME"].ToString();
+	    sp.Schema = row["ROUTINE_SCHEMA"].ToString();
+		sp.Desc = FindDesc(sp.Schema, sp.Name);
+        if(spType == "PROCEDURE" & !sp.Name.StartsWith("sp_"))
+		{
+    	    sp.CleanName = CleanUp(sp.Name);
+            sp.Parameters = GetSPParams(sp.Name);
+            result.Add(sp);        
+        }
+    }
+    return result;
 }
 
-string GetSysType(string sqlType){
-	string sysType="string";
+string GetSysType(string sqlType, out string sysType, out bool canNull ){
+	sysType="string";
+	canNull = true;
 	switch (sqlType) {
 		case "bigint":
 			sysType = "long";
@@ -218,71 +161,81 @@ string GetSysType(string sqlType){
 		case "varbinary":
 		case "timestamp":
 			sysType=  "byte[]";
+			canNull = false;
 			 break;
 	}
+	if(sqlType.StartsWith("T") && sqlType.Length > 1 && char.IsUpper(sqlType, 1))
+	{
+		sysType= "DataTable";
+		canNull = false;
+	}
+		
+	if(sysType == "string") canNull = false;
 	return sysType;
 }
 
-DbType GetDbType(string sqlType){
+  SqlDbType GetDbType(string sqlType){
 	switch(sqlType)
 	{
 		case "varchar":
-			return DbType.AnsiString;
+			return SqlDbType.VarChar;
 		case "nvarchar":
-			return DbType.String;
+			return SqlDbType.NVarChar;
 		case "int":
-			return DbType.Int32;
+			return SqlDbType.Int;
 		case "uniqueidentifier":
-			return DbType.Guid;
+			return SqlDbType.UniqueIdentifier;
 		case "datetime":
-			return DbType.DateTime;
+			return SqlDbType.DateTime;
 		case "bigint":
-			return DbType.Int64;
+			return SqlDbType.BigInt;
 		case "binary":
-			return DbType.Binary;
+			return SqlDbType.Binary;
 		case "bit":
-			return DbType.Boolean;
+			return SqlDbType.Bit;
 		case "char":
-			return DbType.AnsiStringFixedLength;
+			return SqlDbType.Char;
 		case "decimal":
-			return DbType.Decimal;
+			return SqlDbType.Decimal;
 		case "float":
-			return DbType.Double;
+			return SqlDbType.Float;
 		case "image":
-			return DbType.Binary;
+			return SqlDbType.Binary;
 		case "money":
-			return DbType.Currency;
+			return SqlDbType.Money;
 		case "nchar":
-			return DbType.String;
+			return SqlDbType.NChar;
 		case "ntext":
-			return DbType.String;
+			return SqlDbType.NText;
 		case "numeric":
-			return DbType.Decimal;
+			return SqlDbType.Decimal;
 		case "real":
-			return DbType.Single;
+			return SqlDbType.Real;
 		case "smalldatetime":
-			return DbType.DateTime;
+			return SqlDbType.DateTime;
 		case "smallint":
-			return DbType.Int16;
+			return SqlDbType.SmallInt;
 		case "smallmoney":
-			return DbType.Currency;
+			return SqlDbType.SmallMoney;
 		case "sql_variant":
-			return DbType.String;
+			return SqlDbType.NVarChar;
 		case "sysname":
-			return DbType.String;
+			return SqlDbType.NVarChar;
 		case "text":
-			return DbType.AnsiString;
+			return SqlDbType.Text;
 		case "timestamp":
-			return DbType.Binary;
+			return SqlDbType.Binary;
 		case "tinyint":
-			return DbType.Byte;
+			return SqlDbType.TinyInt;
 		case "varbinary":
-			return DbType.Binary;
+			return SqlDbType.Binary;
 		 case "xml":
-			return DbType.Xml;
-	   default:
-			return DbType.AnsiString;
+			return SqlDbType.Xml;
 	}
+	if(sqlType.StartsWith("T") && sqlType.Length > 1 && char.IsUpper(sqlType, 1))
+		return SqlDbType.Structured;
+	else
+		return SqlDbType.NVarChar;
 
 }
 
