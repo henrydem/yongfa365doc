@@ -19,34 +19,9 @@ namespace Singleton
 
     public sealed class Singleton
     {
-        private static readonly Singleton instance = new Singleton();
-
         private Singleton() { }
-
-        public static Singleton Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        public static readonly Singleton Instance = new Singleton();
     }
-
-
-
-    public sealed class SingletonLazyInit
-    {
-        private SingletonLazyInit() { }
-        public static SingletonLazyInit Instance { get { return Nested.instance; } }
-
-        private class Nested
-        {
-            static Nested() { }
-            internal static readonly SingletonLazyInit instance = new SingletonLazyInit();
-        }
-    }
-
-
 
     public sealed class SingletonDoubleLock
     {
@@ -77,6 +52,28 @@ namespace Singleton
 
 
 
+
+
+
+
+
+
+
+
+    public sealed class SingletonLazyInit
+    {
+        private SingletonLazyInit() { }
+        public static SingletonLazyInit Instance { get { return Nested.instance; } }
+
+        private class Nested
+        {
+            static Nested() { }
+            internal static readonly SingletonLazyInit instance = new SingletonLazyInit();
+        }
+    }
+
+
+
     public sealed class SingletonInNet4
     {
         private static readonly Lazy<SingletonInNet4> lazy =
@@ -86,19 +83,5 @@ namespace Singleton
 
         public static SingletonInNet4 Instance { get { return lazy.Value; } }
     }
-
-
-
-    //use Field
-    public sealed class Singleton001
-    {
-        private Singleton001() { }
-        public static readonly Singleton001 Instance = new Singleton001();
-    }
-
-
-
-
-
 
 }
