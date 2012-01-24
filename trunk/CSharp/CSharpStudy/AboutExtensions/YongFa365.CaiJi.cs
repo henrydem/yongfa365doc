@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
+using System.Security;
+using System.Security.Permissions;
 using System.Text;
 using System.Text.RegularExpressions;
-
 
 //TODO： System.Net.Cookie及System.Web.HttpCookie不一样，需要研究
 namespace YongFa365.CaiJi
 {
-    class HttpClient
+    public class HttpClient
     {
         public static string Get(string url)
         {
@@ -39,29 +42,25 @@ namespace YongFa365.CaiJi
             return Get(url, nowCharset, null, UserAgent.IE7, url);
         }
 
-        public static string Get(string url, Encoding encoding, CookieCollection cookies, UserAgent userAgent, string referer)
+        public static string Get(string url, Encoding encoding, string cookies, UserAgent userAgent, string referer)
         {
             HttpWebResponse response = null;
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "Get";
+                request.Accept = "text/html";
                 request.ContentType = "application/x-www-form-urlencoded";
                 request.UserAgent = dictUserAgent[userAgent];
-                request.Accept = "text/html";
                 request.Referer = referer;
                 request.KeepAlive = true;
-                if (cookies != null)
-                {
-                    request.CookieContainer = new CookieContainer();
-                    request.CookieContainer.Add(cookies);
-                }
+                request.Headers.Add("Cookie", cookies);
 
                 response = (HttpWebResponse)request.GetResponse();
                 return new StreamReader(response.GetResponseStream(), encoding).ReadToEnd();
-                //using (Stream stream = response.GetResponseStream())
+                //using (var stream = response.GetResponseStream())
                 //{
-                //    using (StreamReader reader = new StreamReader(stream, charset))
+                //    using (var reader = new StreamReader(stream, encoding))
                 //    {
                 //        return reader.ReadToEnd();
                 //    }
@@ -89,95 +88,95 @@ namespace YongFa365.CaiJi
         /// <param name="userAgent"></param>
         /// <param name="referer"></param>
         /// <param name="data">要提交的数据"username=yongfa365&password=12345" 如果有中文请先HttpUtility.UrlEncode下</param>
-        public static void Post(string url, Encoding encoding, CookieCollection cookies, UserAgent userAgent, string referer, string data)
+        public static string Post(string url, string data, Encoding encoding, string cookies, string referer = null, string userAgent = null)
         {
             try
             {
-                byte[] datas = encoding.GetBytes(data);
+                var datas = encoding.GetBytes(data);
 
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                var request = WebRequest.Create(url) as HttpWebRequest;
                 request.Method = "POST";
+                request.Accept = "*/*";
                 request.ContentType = "application/x-www-form-urlencoded";
-                request.UserAgent = dictUserAgent[userAgent];
-                request.Accept = "text/html";
+                request.UserAgent = userAgent;
                 request.Referer = referer;
                 request.KeepAlive = true;
-
-                if (cookies != null)
-                {
-                    request.CookieContainer = new CookieContainer();
-                    request.CookieContainer.Add(cookies);
-                }
+                request.Headers.Add("Cookie", cookies);
 
                 request.ContentLength = datas.Length;
                 request.GetRequestStream().Write(datas, 0, datas.Length);
 
-                request.GetResponse();
+                //request.GetResponse();
 
-                //return new StreamReader(((HttpWebResponse)request.GetResponse()).GetResponseStream(), encoding).ReadToEnd();
+                return new StreamReader(((HttpWebResponse)request.GetResponse()).GetResponseStream(), encoding).ReadToEnd();
             }
             catch
             {
+                return null;
             }
         }
 
-        public CookieCollection GetCookieCollection(string url, string cookie)
-        {
-            CookieCollection cookies = new CookieCollection();
-            string cookiedomain = null;
+        //public CookieCollection GetCookieCollection(string url, string cookie)
+        //{
+        //    CookieCollection cookies = new CookieCollection();
+        //    string cookiedomain = null;
 
-            Match match = Regex.Match(url, @"https*://([^\/]+)");
-            if (match.Success)
-            {
-                cookiedomain = match.Groups[1].Value;
-            }
-            else
-            {
-                return cookies;
-            }
+        //    Match match = Regex.Match(url, @"https*://([^\/]+)");
+        //    if (match.Success)
+        //    {
+        //        cookiedomain = match.Groups[1].Value;
+        //    }
+        //    else
+        //    {
+        //        return cookies;
+        //    }
 
 
-            string[] cookstr = cookie.Split(';');
-            foreach (string str in cookstr)
-            {
-                if (str.IndexOf("=") > 1)
-                {
-                    string[] cookieNameValue = str.Split('=');
-                    Cookie ck = new Cookie(cookieNameValue[0].Trim().ToString(), cookieNameValue[1].Trim().ToString());
-                    ck.Domain = cookiedomain;//必须写对 
-                    cookies.Add(ck);
-                }
-            }
+        //    string[] cookstr = cookie.Split(';');
+        //    foreach (string str in cookstr)
+        //    {
+        //        if (str.IndexOf("=") > 1)
+        //        {
+        //            string[] cookieNameValue = str.Split('=');
+        //            Cookie ck = new Cookie(cookieNameValue[0].Trim().ToString(), cookieNameValue[1].Trim().ToString());
+        //            ck.Domain = cookiedomain;//必须写对 
+        //            cookies.Add(ck);
+        //        }
+        //    }
 
-            return cookies;
-        }
+        //    return cookies;
+        //}
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="loginUrl">登录地址</param>
-        /// <param name="loginData">要提交的数据，可能会用到：HttpUtility.UrlEncode,str.Replace(" ","%20")</param>
+        /// <param name="url">登录地址</param>
+        /// <param name="data">要提交的数据，可能会用到：HttpUtility.UrlEncode,str.Replace(" ","%20")</param>
         /// <param name="encoding">数据要进行什么编码，以及用什么编码返回</param>
         /// <param name="cookies"></param>
         /// <returns></returns>
-        public static string Login(string loginUrl, string loginData, Encoding encoding, out CookieCollection cookies)
+        public static string Login(string url, string data, Encoding encoding, out string cookies, string referer = null, string userAgent = null)
         {
             HttpWebResponse response = null;
             try
             {
-                byte[] data = encoding.GetBytes(loginData);
+                var datas = encoding.GetBytes(data);
 
-                CookieContainer cookieContainer = new CookieContainer();
+                var cookieContainer = new CookieContainer();
 
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(loginUrl);
-                request.ContentType = "application/x-www-form-urlencoded";
-                request.ContentLength = data.Length;
+                var request = WebRequest.Create(url) as HttpWebRequest;
                 request.Method = "POST";
-                request.Referer = loginUrl;
+                request.Accept = "*/*";
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.UserAgent = userAgent;
+                request.Referer = referer;
+                request.KeepAlive = true;
                 request.CookieContainer = cookieContainer;
-                request.GetRequestStream().Write(data, 0, data.Length);
+                request.GetRequestStream().Write(datas, 0, datas.Length);
+
                 response = (HttpWebResponse)request.GetResponse();
-                cookies = cookieContainer.GetCookies(request.RequestUri);
+
+                cookies = cookieContainer.GetCookieHeader(request.RequestUri);
 
                 return new StreamReader(response.GetResponseStream(), encoding).ReadToEnd();
             }
@@ -295,4 +294,104 @@ namespace YongFa365.CaiJi
 
     }
 
+
+    #region 通过Uri取WebBrowser的完整Cookie,即包含HttpOnly的Cookie
+    internal sealed class NativeMethods
+    {
+        #region enums
+
+        public enum ErrorFlags
+        {
+            ERROR_INSUFFICIENT_BUFFER = 122,
+            ERROR_INVALID_PARAMETER = 87,
+            ERROR_NO_MORE_ITEMS = 259
+        }
+
+        public enum InternetFlags
+        {
+            INTERNET_COOKIE_HTTPONLY = 8192, //Requires IE 8 or higher
+            INTERNET_COOKIE_THIRD_PARTY = 131072,
+            INTERNET_FLAG_RESTRICTED_ZONE = 16
+        }
+
+        #endregion
+
+        #region DLL Imports
+
+        [SuppressUnmanagedCodeSecurity, SecurityCritical, DllImport("wininet.dll", EntryPoint = "InternetGetCookieExW", CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
+        internal static extern bool InternetGetCookieEx([In] string Url, [In] string cookieName, [Out] StringBuilder cookieData, [In, Out] ref uint pchCookieData, uint flags, IntPtr reserved);
+
+        #endregion
+    }
+
+
+    public class WebBrowserFullCookie
+    {
+
+        [SecurityCritical]
+        public static string GetCookieInternal(Uri uri, bool throwIfNoCookie)
+        {
+            uint pchCookieData = 0;
+
+            string url = UriToString(uri);
+
+            uint flag = (uint)NativeMethods.InternetFlags.INTERNET_COOKIE_HTTPONLY;
+
+            //Gets the size of the string builder
+            if (NativeMethods.InternetGetCookieEx(url, null, null, ref pchCookieData, flag, IntPtr.Zero))
+            {
+                pchCookieData++;
+
+                StringBuilder cookieData = new StringBuilder((int)pchCookieData);
+
+                //Read the cookie
+                if (NativeMethods.InternetGetCookieEx(url, null, cookieData, ref pchCookieData, flag, IntPtr.Zero))
+                {
+                    DemandWebPermission(uri);
+
+                    return cookieData.ToString();
+                }
+            }
+
+            int lastErrorCode = Marshal.GetLastWin32Error();
+
+            if (throwIfNoCookie || (lastErrorCode != (int)NativeMethods.ErrorFlags.ERROR_NO_MORE_ITEMS))
+            {
+                throw new Win32Exception(lastErrorCode);
+            }
+
+            return null;
+        }
+
+        private static void DemandWebPermission(Uri uri)
+        {
+            string uriString = UriToString(uri);
+
+            if (uri.IsFile)
+            {
+                string localPath = uri.LocalPath;
+
+                new FileIOPermission(FileIOPermissionAccess.Read, localPath).Demand();
+            }
+            else
+            {
+                new WebPermission(NetworkAccess.Connect, uriString).Demand();
+            }
+        }
+
+        private static string UriToString(Uri uri)
+        {
+            if (uri == null)
+            {
+                throw new ArgumentNullException("uri");
+            }
+
+            UriComponents components = (uri.IsAbsoluteUri ? UriComponents.AbsoluteUri : UriComponents.SerializationInfoString);
+
+            return new StringBuilder(uri.GetComponents(components, UriFormat.SafeUnescaped), 2083).ToString();
+        }
+    }
+
+
+    #endregion
 }
