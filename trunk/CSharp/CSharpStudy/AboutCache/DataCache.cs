@@ -23,7 +23,7 @@ namespace AboutCache
                 if (Cache["SmallCache.Has"] == null)
                 {
                     _BySmallCache = Fill();
-                    Cache.Insert("SmallCache.Has", true, null, DateTime.UtcNow.AddHours(1), TimeSpan.Zero);
+                    Cache.Insert("SmallCache.Has", true, null, DateTime.UtcNow.AddHours(1), Cache.NoSlidingExpiration);
                 }
                 return _BySmallCache;
             }
@@ -36,7 +36,7 @@ namespace AboutCache
             {
                 if (Cache["ByCacheAs"] == null)
                 {
-                    Cache.Insert("ByCacheAs", Fill(), null, DateTime.UtcNow.AddHours(1), TimeSpan.Zero);
+                    Cache.Insert("ByCacheAs", Fill(), null, DateTime.UtcNow.AddHours(1), Cache.NoSlidingExpiration);
                 }
                 return Cache["ByCacheAs"] as List<DateTime>;
             }
