@@ -5,8 +5,11 @@ using System.Text;
 
 namespace AboutReflection
 {
-    class Class1
+    class User
     {
+        public const bool IsPreson = true;
+        public const string Remark = "备注";
+
         public string 姓名 { get; set; }
         public int 年龄 { get; set; }
         public string 性别 { get; set; }
@@ -22,6 +25,11 @@ namespace AboutReflection
         public static string 静态方法(string XingMing, int Age)
         {
             return string.Format("static 姓名：{0},年龄:{1}", XingMing, Age);
+        }
+
+        private bool Clear()
+        {
+            return true;
         }
     }
 }
