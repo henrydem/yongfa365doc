@@ -10,7 +10,43 @@ namespace AboutReflection
     {
         static void Main(string[] args)
         {
-            Class1 cls = new Class1();
+            TestLoad();
+            TestGet();
+
+        }
+
+        private static void TestGet()
+        {
+            object o = 1;
+            Console.WriteLine(o.GetType().Name);//因为object并不知道里面都放了什么，所以有一个方法来判断他的类型
+
+
+            Console.WriteLine("\n列出字段：");
+            var fields = typeof(User).GetFields();
+            foreach (var item in fields)
+            {
+                Console.WriteLine("Field:{0}\tValue:{1}", item.Name, item.GetValue(item.Name));
+            }
+
+            Console.WriteLine("\n列出属性：");
+            var props = typeof(User).GetProperties();
+            foreach (var item in props)
+            {
+                Console.WriteLine("Property:{0}\tCanRead:{1}\tCanWrite:{2}", item.Name, item.CanRead, item.CanWrite);
+            }
+
+
+            Console.WriteLine("\n列出方法：");
+            var methods = typeof(User).GetMethods();
+            foreach (var item in methods)
+            {
+                Console.WriteLine("MethodName:{0}", item.Name);
+            }
+        }
+
+        private static void TestLoad()
+        {
+            User cls = new User();
             //得到所有属性
             foreach (var item in cls.GetType().GetProperties())
             {
@@ -23,22 +59,22 @@ namespace AboutReflection
 
             //////////////Assembly.Load 程序集名//////////////
             {
-                object obj = Assembly.Load("AboutReflection").CreateInstance("AboutReflection.Class1");//反射创建
-                Class1 cls2 = obj as Class1;
+                object obj = Assembly.Load("AboutReflection").CreateInstance("AboutReflection.User");//反射创建
+                User cls2 = obj as User;
                 Console.WriteLine(cls2.年龄);
             }
             //////////////Assembly.LoadFrom 相对路径//////////////
             {
 
-                object obj = Assembly.LoadFrom("AboutReflection.exe").CreateInstance("AboutReflection.Class1");//反射创建
-                Class1 cls2 = obj as Class1;
+                object obj = Assembly.LoadFrom("AboutReflection.exe").CreateInstance("AboutReflection.User");//反射创建
+                User cls2 = obj as User;
                 Console.WriteLine(cls2.年龄);
             }
 
             //////////////Assembly.LoadFile 绝对路径//////////////
             {
                 string path = AppDomain.CurrentDomain.BaseDirectory + "\\AboutReflection.exe";
-                object obj = Assembly.LoadFile(path).CreateInstance("AboutReflection.Class1");//反射创建
+                object obj = Assembly.LoadFile(path).CreateInstance("AboutReflection.User");//反射创建
 
                 //使用反射执行静态方法
                 MethodInfo mi = obj.GetType().GetMethod("静态方法");
@@ -51,8 +87,6 @@ namespace AboutReflection
                 Console.WriteLine(result2);
 
             }
-
-
         }
     }
 }
