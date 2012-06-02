@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace AboutReflection
 {
@@ -10,21 +11,25 @@ namespace AboutReflection
         public const bool IsPreson = true;
         public const string Remark = "备注";
 
-        public string 姓名 { get; set; }
-        public int 年龄 { get; set; }
-        public string 性别 { get; set; }
+        [Description("姓名")]
+        public string UserName { get; set; }
 
-        public string 普通方法(string XingMing, int Age)
+        [Description("年龄")]
+        public int Age { get; set; }
+
+        public string Sex { get; set; }
+
+        public string 普通方法(string userName, int age)
         {
-            姓名 = XingMing;
-            年龄 = Age;
-            return string.Format("姓名：{0},年龄:{1}", 姓名, 年龄);
+            UserName = userName;
+            Age = age;
+            return string.Format("姓名：{0},年龄:{1}", UserName, age);
         }
 
 
-        public static string 静态方法(string XingMing, int Age)
+        public static string 静态方法(string userName, int age)
         {
-            return string.Format("static 姓名：{0},年龄:{1}", XingMing, Age);
+            return string.Format("static 姓名：{0},年龄:{1}", userName, age);
         }
 
         private bool Clear()

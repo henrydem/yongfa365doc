@@ -3,32 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.ComponentModel;
 
 namespace AboutReflection
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {
-            TestLoad();
             TestGet();
+            TestDescription();
+            TestLoad();
+            Console.WriteLine();
+        }
 
+        private static void TestDescription()
+        {
+            ColorWriteLine("列出Description:");
+            var props = typeof(User).GetProperties();
+            foreach (var item in props)
+            {
+                var obj = item.GetCustomAttributes(false).FirstOrDefault(p => p is DescriptionAttribute);
+                var desc = obj == null ? "无Description" : (obj as DescriptionAttribute).Description;
+                Console.WriteLine("Property:{0}\tDescription:{1}", item.Name, desc);
+
+            }
         }
 
         private static void TestGet()
         {
-            object o = 1;
-            Console.WriteLine(o.GetType().Name);//因为object并不知道里面都放了什么，所以有一个方法来判断他的类型
 
-
-            Console.WriteLine("\n列出字段：");
+            ColorWriteLine("列出字段及默认值：");
             var fields = typeof(User).GetFields();
             foreach (var item in fields)
             {
                 Console.WriteLine("Field:{0}\tValue:{1}", item.Name, item.GetValue(item.Name));
             }
 
-            Console.WriteLine("\n列出属性：");
+            ColorWriteLine("列出属性：");
             var props = typeof(User).GetProperties();
             foreach (var item in props)
             {
@@ -36,7 +48,7 @@ namespace AboutReflection
             }
 
 
-            Console.WriteLine("\n列出方法：");
+            ColorWriteLine("列出方法：");
             var methods = typeof(User).GetMethods();
             foreach (var item in methods)
             {
@@ -47,31 +59,35 @@ namespace AboutReflection
         private static void TestLoad()
         {
             User cls = new User();
-            //得到所有属性
+            ColorWriteLine("列出属性：");
             foreach (var item in cls.GetType().GetProperties())
             {
                 Console.WriteLine(item.Name);
             }
 
-            //////////////typeof//////////////
+            ColorWriteLine("typeof");
             Type t = typeof(System.String);
-            Console.WriteLine("Listing all the public constructors of the {0} type", t);
+            Console.WriteLine(t);
 
-            //////////////Assembly.Load 程序集名//////////////
+
+            ColorWriteLine("Assembly.Load 程序集名");
             {
                 object obj = Assembly.Load("AboutReflection").CreateInstance("AboutReflection.User");//反射创建
                 User cls2 = obj as User;
-                Console.WriteLine(cls2.年龄);
+                Console.WriteLine(cls2.Age);
             }
-            //////////////Assembly.LoadFrom 相对路径//////////////
+  
+
+            ColorWriteLine("Assembly.LoadFrom 相对路径");
             {
 
                 object obj = Assembly.LoadFrom("AboutReflection.exe").CreateInstance("AboutReflection.User");//反射创建
                 User cls2 = obj as User;
-                Console.WriteLine(cls2.年龄);
+                Console.WriteLine(cls2.Age);
             }
 
-            //////////////Assembly.LoadFile 绝对路径//////////////
+            
+            ColorWriteLine("Assembly.LoadFile 绝对路径");
             {
                 string path = AppDomain.CurrentDomain.BaseDirectory + "\\AboutReflection.exe";
                 object obj = Assembly.LoadFile(path).CreateInstance("AboutReflection.User");//反射创建
@@ -87,6 +103,17 @@ namespace AboutReflection
                 Console.WriteLine(result2);
 
             }
+
+
+        }
+
+
+
+        static void ColorWriteLine(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\n" + msg);
+            Console.ResetColor();
         }
     }
 }
