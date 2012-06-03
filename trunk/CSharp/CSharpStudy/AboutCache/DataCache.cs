@@ -52,6 +52,7 @@ namespace AboutCache
                     var cacheInfo = new CacheInfo
                     {
                         Key = CacheKeys.OtherCache.GetName(),
+                        Desc = CacheKeys.OtherCache.GetDescription(),
                         Count = _ByOtherCache.Count,
                         CreateTime = DateTime.UtcNow,
                         ExpireTime = DateTime.UtcNow.AddSeconds(1),

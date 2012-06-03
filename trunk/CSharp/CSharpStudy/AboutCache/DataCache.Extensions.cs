@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Web;
 using System.Web.Caching;
 using System.Linq;
+using System.ComponentModel;
 
 namespace AboutCache
 {
 
     public enum CacheKeys
     {
+        [Description("正常Cache")]
         NormalCache,
+
+        [Description("小Cache")]
         SmallCache,
+
+        [Description("其它Cache")]
         OtherCache,
         OnlyTestCache
     }
@@ -18,6 +24,7 @@ namespace AboutCache
     public class CacheInfo
     {
         public string Key { get; set; }
+        public string Desc { get; set; }
         public int? Count { get; set; }
         public DateTime? CreateTime { get; set; }
         public DateTime? ExpireTime { get; set; }
@@ -41,20 +48,26 @@ namespace AboutCache
         public static IEnumerable<CacheInfo> GetCacheList()
         {
             var query = from item in AllKeyName
-                        let cache = item.Key.GetValue<CacheInfo>() ?? new CacheInfo() { Key = item.Key.GetName() }
+                        let cache = item.Key.GetValue<CacheInfo>() ?? new CacheInfo() { Key = item.Key.GetName(), Desc = item.Key.GetDescription() }
                         select cache;
 
             return query;
         }
 
         //第一次调用时便加载到静态变量里，以后不用再执行此操作，提速
-        public static readonly Dictionary<CacheKeys, string> AllKeyName = FillAllKeyName();
-        private static Dictionary<CacheKeys, string> FillAllKeyName()
+        public static readonly Dictionary<CacheKeys, Tuple<string, string>> AllKeyName = FillAllKeyName();
+        private static Dictionary<CacheKeys, Tuple<string, string>> FillAllKeyName()
         {
-            var dict = new Dictionary<CacheKeys, string>();
+            var dict = new Dictionary<CacheKeys, Tuple<string, string>>();
             foreach (var item in Enum.GetValues(typeof(CacheKeys)))
             {
-                dict.Add((CacheKeys)item, "DataCache_" + Enum.GetName(typeof(CacheKeys), item));
+                var key = (CacheKeys)item;
+                var keyName = Enum.GetName(typeof(CacheKeys), item);
+
+                var obj = Attribute.GetCustomAttribute(typeof(CacheKeys).GetField(keyName), typeof(DescriptionAttribute)) as DescriptionAttribute;
+                var desc = obj == null ? null : (obj as DescriptionAttribute).Description;
+
+                dict.Add(key, new Tuple<string, string>("DataCache_" + keyName, desc));
             }
             return dict;
         }
@@ -70,10 +83,13 @@ namespace AboutCache
 
         public static string GetName(this CacheKeys input)
         {
-            return AllKeyName[input];
+            return AllKeyName[input].Item1;
         }
 
-
+        public static string GetDescription(this CacheKeys input)
+        {
+            return AllKeyName[input].Item2;
+        }
 
         public static T GetValue<T>(this CacheKeys input)
         {
@@ -97,13 +113,14 @@ namespace AboutCache
                 var cacheInfo = new CacheInfo
                 {
                     Key = CacheKeys.SmallCache.GetName(),
+                    Desc = CacheKeys.SmallCache.GetDescription(),
                     Count = value.Count,
                     CreateTime = DateTime.UtcNow,
                     ExpireTime = DateTime.UtcNow.AddSeconds(expireSeconds),
                     BuildTime = (DateTime.Now - startTime)
                 };
 
-                HttpRuntime.Cache.Insert(cacheInfo.Key, cacheInfo, null, cacheInfo.ExpireTime.Value, Cache.NoSlidingExpiration); 
+                HttpRuntime.Cache.Insert(cacheInfo.Key, cacheInfo, null, cacheInfo.ExpireTime.Value, Cache.NoSlidingExpiration);
             }
             return value;
         }
@@ -118,7 +135,7 @@ namespace AboutCache
             {
                 foreach (var item in AllKeyName)
                 {
-                    HttpRuntime.Cache[item.Value] = null;
+                    HttpRuntime.Cache[item.Value.Item1] = null;
                 }
             }
 
