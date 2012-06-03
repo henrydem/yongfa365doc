@@ -34,11 +34,7 @@ namespace AboutCache
         {
             get
             {
-                if (CacheKeys.SmallCache.NoCache())
-                {
-                    DataCache.Insert<DateTime>(CacheKeys.SmallCache, () => { _BySmallCache = Fill(); }, ref _BySmallCache, 1);
-                }
-                return _BySmallCache;
+                return DataCache.Get<DateTime>(CacheKeys.SmallCache, () => { _BySmallCache = Fill(); }, ref _BySmallCache, 1);
             }
         }
 
