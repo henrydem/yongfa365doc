@@ -12,8 +12,12 @@ namespace AboutCache
 
             var a = DataCache.BySmallCache;
             var b = DataCache.ByNormalCache;
+            var c = DataCache.ByOtherCache;
             GridView2.DataSource = DataCache.GetCacheList();
             GridView2.DataBind();
+
+
+
 
         }
 
