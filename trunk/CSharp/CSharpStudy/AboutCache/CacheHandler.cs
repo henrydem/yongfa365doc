@@ -42,22 +42,19 @@ namespace AboutCache
             {
                 context.Response.Write(
                     string.Format("@{0}|{1}|{2}|{3}|{4}|{5}",
-                    item.Key, item.CreateTime, item.ExpireTime, item.BuildTime, item.Count, item.HasCache)
+                    item.Key, item.CreateTime, item.ExpireTime, item.BuildTime, item.Count, item.HasValue)
                     );
             }
         }
 
         private void Clear(string key)
         {
-            HttpRuntime.Cache[key] = null;
+            DataCache.Clear(key);
         }
 
         private void ClearAll()
         {
-            DataCache.AllKey.ForEach(item =>
-            {
-                HttpRuntime.Cache[item] = null;
-            });
+            DataCache.Clear(null, true);
         }
     }
 
