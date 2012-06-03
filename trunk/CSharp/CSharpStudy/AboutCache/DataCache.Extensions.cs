@@ -88,20 +88,24 @@ namespace AboutCache
 
         }
 
-        public static void Insert<T>(CacheKeys key, Action action, ref List<T> value, int expireSeconds)
+        public static List<T> Get<T>(CacheKeys key, Action action, ref List<T> value, int expireSeconds)
         {
-            var startTime = DateTime.Now;
-            action();
-            var cacheInfo = new CacheInfo
+            if (key.NoCache())
             {
-                Key = CacheKeys.SmallCache.GetName(),
-                Count = value.Count,
-                CreateTime = DateTime.UtcNow,
-                ExpireTime = DateTime.UtcNow.AddSeconds(expireSeconds),
-                BuildTime = (DateTime.Now - startTime)
-            };
+                var startTime = DateTime.Now;
+                action();
+                var cacheInfo = new CacheInfo
+                {
+                    Key = CacheKeys.SmallCache.GetName(),
+                    Count = value.Count,
+                    CreateTime = DateTime.UtcNow,
+                    ExpireTime = DateTime.UtcNow.AddSeconds(expireSeconds),
+                    BuildTime = (DateTime.Now - startTime)
+                };
 
-            HttpRuntime.Cache.Insert(cacheInfo.Key, cacheInfo, null, cacheInfo.ExpireTime.Value, Cache.NoSlidingExpiration);
+                HttpRuntime.Cache.Insert(cacheInfo.Key, cacheInfo, null, cacheInfo.ExpireTime.Value, Cache.NoSlidingExpiration); 
+            }
+            return value;
         }
 
         public static void Clear(string key = null, bool isClearAll = false)
