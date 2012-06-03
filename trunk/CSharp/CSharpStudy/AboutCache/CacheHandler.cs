@@ -41,8 +41,8 @@ namespace AboutCache
             foreach (var item in DataCache.GetCacheList())
             {
                 context.Response.Write(
-                    string.Format("@{0}|{1}|{2}|{3}|{4}|{5}",
-                    item.Key, item.CreateTime, item.ExpireTime, item.BuildTime, item.Count, item.HasValue)
+                    string.Format("@{0}|{1}|{2}|{3}|{4}|{5}|{6}",
+                    item.Key, item.Desc, item.Count, item.CreateTime, item.ExpireTime, item.BuildTime, item.HasValue)
                     );
             }
         }
