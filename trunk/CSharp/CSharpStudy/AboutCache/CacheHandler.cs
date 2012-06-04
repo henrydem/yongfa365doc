@@ -21,10 +21,10 @@ namespace AboutCache
             switch (type)
             {
                 case "Clear":
-                    Clear(context.Request["key"]);
+                    DataCache.Clear(context.Request["key"]);
                     break;
                 case "ClearAll":
-                    ClearAll();
+                    DataCache.Clear(null, true);
                     break;
                 case "GetList":
                     GetList(context);
@@ -47,15 +47,7 @@ namespace AboutCache
             }
         }
 
-        private void Clear(string key)
-        {
-            DataCache.Clear(key);
-        }
 
-        private void ClearAll()
-        {
-            DataCache.Clear(null, true);
-        }
     }
 
 

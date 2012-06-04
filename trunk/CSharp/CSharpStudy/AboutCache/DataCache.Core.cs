@@ -129,13 +129,13 @@ namespace AboutCache
         {
             if (!string.IsNullOrWhiteSpace(key))
             {
-                HttpRuntime.Cache[key] = null;
+                HttpRuntime.Cache.Remove(key);
             }
             if (isClearAll)
             {
                 foreach (var item in AllKeyName)
                 {
-                    HttpRuntime.Cache[item.Value.Item1] = null;
+                    HttpRuntime.Cache.Remove(item.Value.Item1);
                 }
             }
 
