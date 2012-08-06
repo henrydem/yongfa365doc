@@ -7,74 +7,90 @@ using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using System.Collections;
+using System.IO;
+using System.Linq;
+using System.Data.Linq;
+
 
 namespace SqlFullQuerys
 {
+
+
     public partial class Form1 : Form
     {
         string sqlconnectionstring = "";
+        List<Info> Data = new List<Info>();
+
+
         public Form1()
         {
             InitializeComponent();
         }
 
-        void FillConn()
+
+
+
+        private void SetProcess(int cur, int max)
         {
-            if (checkBox2.Checked)
+            if (cur > max)
+                max = cur;
+            this.progressBar1.Maximum = max;
+            this.progressBar1.Value = cur;
+
+        }
+
+        private void SetProcess2(int cur, int max)
+        {
+            if (cur > max)
+                max = cur;
+            this.progressBar2.Maximum = max;
+            this.progressBar2.Value = cur;
+
+        }
+
+        private void SetProcess(string msg, string dbname)
+        {
+            this.label7.Text = msg;
+            lblDBName.Text = dbname;
+        }
+
+
+
+
+        private void btnQuery_Click(object sender, EventArgs e)
+        {
+            TimeSpan t = DateTime.Now.TimeOfDay;
+
+
+            if (!cbxDBName.Text.StartsWith("0"))
             {
-                sqlconnectionstring = "Data Source="+textBox1.Text+";Initial Catalog=master;Integrated Security=True";
+                Run(cbxDBName.Text);
             }
             else
             {
-        sqlconnectionstring = "Data Source =" +
-                this.textBox1.Text + ";User ID=" +
-                this.textBox2.Text + ";Password=" +
-                this.textBox3.Text + ";initial Catalog=" +
-                "master" ;
+                var dbnames = cbxDBName.DataSource as List<string>;
+                Data.Clear();
+                dbnames.ForEach(p => Run(p));
             }
 
+
+            MessageBox.Show("Ok!" + (DateTime.Now.TimeOfDay - t));
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Run(string dbname)
         {
-            FillConn();
-            this.comboBox1.Items.Clear();
-            try
-            {
-                using (SqlConnection mycon = new SqlConnection(sqlconnectionstring))
-                {
-                    SqlCommand mycmd = mycon.CreateCommand();
-                    mycmd.CommandText = "select name from sys.databases ";
-                    SqlDataAdapter myda = new SqlDataAdapter(mycmd);
-                    DataTable dt = new DataTable();
-                    myda.Fill(dt);
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        this.comboBox1.Items.Add(dr[0].ToString());
-                    }
-                }
-
-                this.button1.Enabled = false;
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
+            txtLogs.Text = "";
             int commandcount = 0;
-            FillConn();
+            sqlconnectionstring = "Data Source=" + txtDbInstance.Text + ";Initial Catalog=" + dbname + ";Integrated Security=True";
 
-            string ftext = this.textBox4.Text;
+
+            string ftext = this.txtKey.Text;
 
             if (ftext == "")
                 return;
 
             string sqlcmdstring = "";
-            Hashtable htsqlcmds = new Hashtable();
-
+            Dictionary<int, Info> htsqlcmds = new Dictionary<int, Info>();
             DataTable dttables = new DataTable();
             DataTable dtcolumns = new DataTable();
 
@@ -110,10 +126,9 @@ namespace SqlFullQuerys
 
                 GC.Collect();
 
-                sqlcmdstring = "select name from sys.columns where object_id=(select object_id from sys.tables where name='"+dr[0].ToString()+"')";
+                sqlcmdstring = "select name from sys.columns where object_id=(select object_id from sys.tables where name='" + dr[0].ToString() + "')";
                 try
                 {
-                    //using (SqlConnection mycon = new SqlConnection(sqlconnectionstring))
                     mycmd.CommandText = sqlcmdstring;
                     SqlDataReader mydr = mycmd.ExecuteReader();
                     int rcount = 100;
@@ -127,17 +142,15 @@ namespace SqlFullQuerys
 
                         SetProcess2(cur1, rcount);
                         cur1++;
-                        SetProcess("收集SQL语句: 表[" + dr[0].ToString() + "] - 列[" + mydr[0].ToString() + "]");
+                        SetProcess("收集SQL语句: 表[" + dr[0].ToString() + "] - 列[" + mydr[0].ToString() + "]", dbname);
                         commandcount++;
                         string sqlcmd;
-                        if (!checkBox1.Checked)
-                            sqlcmd = "SELECT " + mydr[0].ToString() + " FROM [" + dr[0].ToString() +
-                                "] WHERE " + mydr[0].ToString() + " = N'" + ftext + "'";
+                        if (!chkLike.Checked)
+                            sqlcmd = string.Format("select [{0}] from [{1}].dbo.[{2}] where {0} = N'%{3}%'", mydr[0], dbname, dr[0], ftext);
                         else
-                            sqlcmd = "SELECT " + mydr[0].ToString() + " FROM [" + dr[0].ToString() +
-                                "] WHERE " + mydr[0].ToString() + " like N'%" + ftext + "%'";
+                            sqlcmd = string.Format("select [{0}] from [{1}].dbo.[{2}] where {0} like N'%{3}%'", mydr[0], dbname, dr[0], ftext);
 
-                        htsqlcmds.Add(commandcount, sqlcmd);
+                        htsqlcmds.Add(commandcount, new Info { FieldName = mydr[0].ToString(), Query = sqlcmd });
 
                     }
                     mydr.Close();
@@ -153,91 +166,115 @@ namespace SqlFullQuerys
 
             #region Excute commands
 
-            DataTable dtresult=new DataTable();
-            dtresult.Columns.Add("sqlcommand");
 
             cur = 1;
-            foreach (DictionaryEntry de in htsqlcmds)
+            txtLogs.Text += string.Format("========================{0}========================\r\n", dbname);
+            foreach (var item in htsqlcmds)
             {
                 Application.DoEvents();
                 GC.Collect();
 
                 SetProcess(cur, commandcount);
                 cur++;
-                SetProcess("执行SQL语句: "+de.Value.ToString());
-                try {
-                    //using (SqlConnection mycon = new SqlConnection(sqlcmdstring))
+                string msg = item.Value.Query;
+                SetProcess(msg, dbname);
+                txtLogs.Text+=string.Format("\r\n{0}", msg);
+
+                try
+                {
+
+                    mycmd.CommandText = item.Value.Query;
+
+                    SqlDataReader mydr = mycmd.ExecuteReader();
+
+                    if (mydr.HasRows)
                     {
-                        mycmd.CommandText = de.Value.ToString();
-
-                        SqlDataReader mydr = mycmd.ExecuteReader();
-
-                        //bool rb = mydr.Read();
-                        //if (rb)
-                        if(mydr.HasRows)
-                        {
-                            DataRow dnew = dtresult.NewRow();
-                            dnew[0] = de.Value.ToString();
-                            dtresult.Rows.Add(dnew);
-
-                            this.dataGridView1.DataSource = dtresult;
-
-                            this.dataGridView1.AutoResizeColumns();
-                            //for (int i = 0; i < this.dataGridView1.Rows.Count; i++)
-                            //{
-                            //    this.dataGridView1.Rows[i].Selected = false;
-                            //}
-                            //this.dataGridView1.Rows[this.dataGridView1.Rows.Count - 1].Selected = true;
-                    
-                        }
-
-                        mydr.Close();
+                        Data.Add(new Info { DBName = dbname, FieldName = item.Value.FieldName, Query = item.Value.Query });
+                        Fill();
                     }
+
+                    mydr.Close();
+
                 }
                 catch
                 {
                     continue;
                 }
             }
-            
+
             #endregion
 
             myconn.Close();
-
-            MessageBox.Show("Ok!");
         }
 
-        private void SetProcess(int cur, int max)
+        private void Fill()
         {
-            if (cur > max)
-                max = cur;
-            this.progressBar1.Maximum = max;
-            this.progressBar1.Value = cur;
-
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = Data;
+            dataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.AutoResizeColumns();
         }
 
-        private void SetProcess2(int cur, int max)
+
+
+        private void btnLogin_Click(object sender, EventArgs e)
         {
-            if (cur > max)
-                max = cur;
-            this.progressBar2.Maximum = max;
-            this.progressBar2.Value = cur;
+            if (chkUseWindows.Checked)
+            {
+                sqlconnectionstring = string.Format("Data Source={0};Initial Catalog=master;Integrated Security=True"
+                    , txtDbInstance.Text);
+            }
+            else
+            {
+                sqlconnectionstring = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3}"
+                    , txtDbInstance.Text.Trim()
+                    , txtDBName.Text.Trim()
+                    , txtUserName.Text.Trim()
+                    , txtPassword.Text.Trim()
+                    );
+            }
 
+            this.cbxDBName.Items.Clear();
+            try
+            {
+                using (SqlConnection mycon = new SqlConnection(sqlconnectionstring))
+                {
+                    SqlCommand mycmd = mycon.CreateCommand();
+                    mycmd.CommandText = "select name from sys.databases ";
+                    SqlDataAdapter myda = new SqlDataAdapter(mycmd);
+                    DataTable dt = new DataTable();
+                    myda.Fill(dt);
+                    List<string> lst = new List<string>();
+                    lst.Add("0.全部");
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        lst.Add(dr[0].ToString());
+
+                    }
+                    lst.Sort();
+                    this.cbxDBName.DataSource = lst;
+                }
+
+                this.btnLogin.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+            }
         }
 
-        private void SetProcess(string msg)
+        private void chkUseWindows_CheckedChanged(object sender, EventArgs e)
         {
-            this.label7.Text = msg;
+            var chk = sender as CheckBox;
+            txtUserName.ReadOnly = txtPassword.ReadOnly = txtDBName.ReadOnly = chk.Checked;
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
-            Environment.Exit(Environment.ExitCode);
-        }
-
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            button3_Click(sender, e);
-        }
     }
+    public class Info
+    {
+        public string DBName { get; set; }
+        public string FieldName { get; set; }
+        public string Query { get; set; }
+    }
+
 }
