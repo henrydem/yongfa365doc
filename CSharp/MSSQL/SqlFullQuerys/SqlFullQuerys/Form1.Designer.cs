@@ -50,8 +50,8 @@ namespace SqlFullQuerys
             this.txtUserName = new System.Windows.Forms.TextBox();
             this.txtDbInstance = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.txtLogs = new System.Windows.Forms.RichTextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -214,7 +214,7 @@ namespace SqlFullQuerys
             this.txtKey.Name = "txtKey";
             this.txtKey.Size = new System.Drawing.Size(207, 21);
             this.txtKey.TabIndex = 12;
-            this.txtKey.Text = "iwingon.com";
+            this.txtKey.Text = "keyword";
             // 
             // btnQuery
             // 
