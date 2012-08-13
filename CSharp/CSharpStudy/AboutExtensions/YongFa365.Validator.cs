@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 namespace YongFa365.Validator
 {
     /// <summary>
@@ -217,6 +218,21 @@ namespace YongFa365.Validator
             return Regex.IsMatch(input, @"[\w\d_]+", RegexOptions.IgnoreCase);
         }
         #endregion
+
+        /// <summary>
+        /// input==null || input.Count==0时返回false
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool HasItem<T>(List<T> input)
+        {
+            if (input == null || input.Count == 0)
+            {
+                return false;
+            }
+            return true;
+        }
 
     }
 }
