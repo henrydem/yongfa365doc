@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightDemos", "Silverl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightDB", "SilverlightDB\SilverlightDB.csproj", "{D3187C78-C21D-49EB-9EF4-BE05492F07DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightExtensions", "SilverlightExtensions\SilverlightExtensions.csproj", "{A7C38A0C-78A1-4D7C-8513-2990831002CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{D3187C78-C21D-49EB-9EF4-BE05492F07DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3187C78-C21D-49EB-9EF4-BE05492F07DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3187C78-C21D-49EB-9EF4-BE05492F07DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7C38A0C-78A1-4D7C-8513-2990831002CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7C38A0C-78A1-4D7C-8513-2990831002CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7C38A0C-78A1-4D7C-8513-2990831002CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7C38A0C-78A1-4D7C-8513-2990831002CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
