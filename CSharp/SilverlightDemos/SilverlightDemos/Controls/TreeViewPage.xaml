@@ -1,0 +1,40 @@
+﻿<UserControl xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"  x:Class="SilverlightDemos.Controls.TreeViewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              xmlns:common="clr-namespace:System.Windows;assembly=System.Windows.Controls" 
+             xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="200">
+    
+    <Grid x:Name="LayoutRoot" Background="White">
+        <StackPanel>
+            <StackPanel.Resources>
+                <!-- HierarchicalDataTemplates -->
+                <common:HierarchicalDataTemplate x:Key="cityEntry">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontStyle="Italic" Text="{Binding Path=CityName}"/>
+                    </StackPanel>
+                </common:HierarchicalDataTemplate>
+
+                <common:HierarchicalDataTemplate x:Key="provinceEntry" ItemsSource="{Binding Path=CityList}" ItemTemplate="{StaticResource cityEntry}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="10" Height="10" Background="Green" />
+                        <TextBlock Text="{Binding Path=ProvinceName}"/>
+                    </StackPanel>
+                </common:HierarchicalDataTemplate>
+
+                <common:HierarchicalDataTemplate x:Key="countryEntry" ItemsSource="{Binding Path=ProvinceList}" ItemTemplate="{StaticResource provinceEntry}">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox />
+                        <TextBlock FontWeight="Bold" Text="{Binding Path=CountryName}"/>
+                    </StackPanel>
+                </common:HierarchicalDataTemplate>
+            </StackPanel.Resources>
+
+         
+            <sdk:TreeView x:Name="countryTree" ItemTemplate="{StaticResource countryEntry}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

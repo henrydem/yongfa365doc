@@ -1,0 +1,9 @@
+<OutOfBrowserSettings ShortName="SilverlightDemos 应用程序" EnableGPUAcceleration="True" ShowInstallMenuItem="True">
+  <OutOfBrowserSettings.Blurb>您的桌面上的 SilverlightDemos 应用程序；在家、工作或旅途中均可使用。</OutOfBrowserSettings.Blurb>
+  <OutOfBrowserSettings.WindowSettings>
+    <WindowSettings Title="SilverlightDemos 应用程序" />
+  </OutOfBrowserSettings.WindowSettings>
+  <OutOfBrowserSettings.Icons>
+    <Icon Size="32,32">Apply.png</Icon>
+  </OutOfBrowserSettings.Icons>
+</OutOfBrowserSettings>
