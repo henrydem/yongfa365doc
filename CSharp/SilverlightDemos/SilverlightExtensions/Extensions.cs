@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 
 namespace SilverlightExtensions
 {
-    public class Extension
+    public static class Extensions
     {
 
         public static void BindSource(this DataPager dataPager, int totalCount, int pageSize)
