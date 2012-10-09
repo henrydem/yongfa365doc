@@ -14,6 +14,7 @@
                 <!-- HierarchicalDataTemplates -->
                 <common:HierarchicalDataTemplate x:Key="cityEntry">
                     <StackPanel Orientation="Horizontal">
+                        <TextBlock>●</TextBlock>
                         <TextBlock FontStyle="Italic" Text="{Binding Path=CityName}"/>
                     </StackPanel>
                 </common:HierarchicalDataTemplate>
@@ -34,7 +35,7 @@
             </StackPanel.Resources>
 
          
-            <sdk:TreeView x:Name="countryTree" ItemTemplate="{StaticResource countryEntry}"/>
+            <sdk:TreeView x:Name="countryTree" ItemTemplate="{StaticResource countryEntry}" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="500"/>
         </StackPanel>
     </Grid>
 </UserControl>

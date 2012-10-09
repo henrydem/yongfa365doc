@@ -83,6 +83,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DataGridPagerPage.xaml.cs">
+      <DependentUpon>DataGridPagerPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TreeViewPage.xaml.cs">
       <DependentUpon>TreeViewPage.xaml</DependentUpon>
     </Compile>
@@ -103,6 +106,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Controls\DataGridPagerPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\TreeViewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -135,6 +142,10 @@
     <ProjectReference Include="..\SilverlightDB\SilverlightDB.csproj">
       <Project>{d3187c78-c21d-49eb-9ef4-be05492f07dd}</Project>
       <Name>SilverlightDB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SilverlightExtensions\SilverlightExtensions.csproj">
+      <Project>{a7c38a0c-78a1-4d7c-8513-2990831002ce}</Project>
+      <Name>SilverlightExtensions</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

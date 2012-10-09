@@ -13,19 +13,7 @@ using System.Windows.Shapes;
 
 namespace SilverlightExtensions
 {
-    public static class Extensions
+    public static class Basic
     {
-
-        public static void BindSource(this DataPager dataPager, int totalCount, int pageSize)
-        {
-            var list = new List<int>(totalCount);
-            for (int i = 0; i < totalCount; i++) list.Add(i);
-            dataPager.Source = new PagedCollectionView(list)
-            {
-                PageSize = pageSize
-            };
-        }
-
-
     }
 }
