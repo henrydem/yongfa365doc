@@ -26,7 +26,7 @@ namespace SilverlightDemos
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            this.RootVisual = new Controls.TreeViewPage();
+            this.RootVisual = new Controls.DataGridPagerPage();
         }
 
         private void Application_Exit(object sender, EventArgs e)

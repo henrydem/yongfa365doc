@@ -17,6 +17,12 @@ namespace SilverlightDemos.Layout
         public ByGrid()
         {
             InitializeComponent();
+            SilverlightExtensions.MouseEventHelper.SetMouseDoubleClick(splitter, new MouseButtonEventHandler(OnGridSplitterDoubleClick));
+        }
+
+        private void OnGridSplitterDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            leftCol.Width = new GridLength(leftCol.Width.Value == 150 ? 10 : 150);
         }
     }
 }

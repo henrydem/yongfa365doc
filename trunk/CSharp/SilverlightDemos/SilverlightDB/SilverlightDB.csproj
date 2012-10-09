@@ -59,7 +59,16 @@
   <ItemGroup>
     <Compile Include="City.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SilverlightDB.City.cs">
+      <DependentUpon>SilverlightDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SilverlightDB.Country.cs">
+      <DependentUpon>SilverlightDB.cs</DependentUpon>
+    </Compile>
     <Compile Include="SilverlightDB.cs" />
+    <Compile Include="SilverlightDB.Province.cs">
+      <DependentUpon>SilverlightDB.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>

@@ -63,6 +63,7 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataPagerExtension.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="MouseEventHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
