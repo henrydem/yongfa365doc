@@ -15,6 +15,8 @@ namespace AboutReflection
             TestDescription();
             TestLoad();
             Console.WriteLine();
+            ColorWriteLine("Attribute测试：");
+            MyAttributeTest.Test();
         }
 
         private static void TestDescription()
