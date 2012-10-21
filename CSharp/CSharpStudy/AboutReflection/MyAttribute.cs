@@ -16,7 +16,7 @@ namespace AboutReflection
         /// </summary>
         /// <param name="h">hhhhh</param>
         /// <param name="b">bbbbbbb</param>
-        public MyAttribute(string str, ConsoleColor color, bool b = true)
+        public MyAttribute(string str, bool b = true)
         {
             Str = str;
             B = b;
@@ -27,7 +27,8 @@ namespace AboutReflection
     //源为[MyAttribute]但可以简写为[My],两种写法都可以
     //调用 IsDefined速度快
     //调用 GetCustomAttributes,会创建相应实例
-    [My("heheheheheh", ConsoleColor.Black)]
+    //可以通过构造函数赋值，或者直接对属性赋值
+    [My("heheheheheh", true, Color = ConsoleColor.Red)]
     class MyClass
     {
 
@@ -51,6 +52,4 @@ namespace AboutReflection
             var adsfsadf = MyAttribute.GetCustomAttributes(typeof(MyClass));//true
         }
     }
-
-
 }
