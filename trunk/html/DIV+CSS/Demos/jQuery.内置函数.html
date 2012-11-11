@@ -1,0 +1,32 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Demo</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>
+        var arr = [100, 200, 300];
+        var dict = { "tom": "汤姆", "jack": "杰克", "jim": "吉姆" };
+
+        var arr2 = $.map(arr, function (item) { return item * 2 });
+        alert(arr2);
+
+        //推荐无论数组还是字典，都使用这个。便于统一。
+        $.each(dict, function (key, value) { alert("key = " + key + " value=" + value); });
+
+        //如果是一维数组，则key是其index。
+        $.each(arr, function (key, value) { alert("key = " + key + " value=" + value); });
+
+        //只有一个参数，表示index.
+        $.each(arr, function (item) { alert(item); });
+
+        //什么都不写则this表示当前obj的value
+        $.each(arr, function () { alert(this); });
+        $.each(dict, function () { alert(this); });
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
