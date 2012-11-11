@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <title>QQTab</title>
+    <script>
+        jQuery(function ($) {
+            $("li:even").addClass("header");
+            $("li:odd").addClass("body");
+            $(".header").click(function () {
+                $(this).next().show("fast").siblings(".body").hide();
+            });
+
+            $(".header:first").click();
+        });
+
+
+    </script>
+    <style>
+        ul {
+            list-style-type: none;
+        }
+
+        .header {
+            background-color: gray;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+        <li>我的好友</li>
+        <li>AMY<br />
+            manxia<br />
+            gruan<br />
+        </li>
+        <li>我的陌生人</li>
+        <li>陌生人1<br />
+            陌生人2<br />
+            陌生人3<br />
+        </li>
+        <li>黑名单</li>
+        <li>黑名单<br />
+            黑名单1<br />
+            黑名单2<br />
+        </li>
+    </ul>
+</body>
+</html>
