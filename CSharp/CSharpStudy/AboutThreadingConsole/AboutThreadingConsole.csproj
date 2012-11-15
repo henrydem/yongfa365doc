@@ -68,10 +68,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutThread.cs" />
     <Compile Include="ThreadsAnalysis.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Threads.cs" />
+    <Compile Include="AboutThreads.cs" />
     <Compile Include="WaitHandle.WaitAll.cs" />
     <Compile Include="WaitHandle.WaitOne.cs" />
   </ItemGroup>
