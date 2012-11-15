@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace AboutThreading
 {
-    class Threads
+    class AboutThreads
     {
         void Run()
         {

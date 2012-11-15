@@ -7,10 +7,11 @@ namespace AboutThreadingConsole
 {
     class Program
     {
+        //http://www.cnblogs.com/huangxincheng/category/368987.html
         static void Main()
         {
-            AboutNet4.Run();
-        
+            //AboutNet4.Run();
+            AboutThread.RunSuccess();
         }
     }
 }
