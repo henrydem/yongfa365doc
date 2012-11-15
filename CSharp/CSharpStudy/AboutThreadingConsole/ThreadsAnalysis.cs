@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace AboutThreading
 {
-    class Class1
+    class ThreadsAnalysis
     {
         /// <summary>
         /// 获得线程池中活动的线程数
