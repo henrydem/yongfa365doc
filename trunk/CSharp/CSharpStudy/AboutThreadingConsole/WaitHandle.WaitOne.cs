@@ -5,9 +5,9 @@ namespace AboutThreading
 {
     class WaitOne
     {
-        static ManualResetEvent manualEvent = new ManualResetEvent(false);
+        public static ManualResetEvent manualEvent = new ManualResetEvent(false);
 
-        static void Main()
+        public static void Run()
         {
             Console.WriteLine("Main starting.");
 
@@ -19,7 +19,7 @@ namespace AboutThreading
             Console.ReadKey();
         }
 
-        static void WorkMethod(object stateInfo)
+        public static void WorkMethod(object stateInfo)
         {
             Console.WriteLine("Work starting.");
 
