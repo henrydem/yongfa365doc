@@ -52,7 +52,7 @@ namespace AboutThreadingConsole
                 conList.Add(i);
             }
 
-            var task1 = Task.Factory.StartNew(() =>
+            var task1 = new Task(()=>
             {
                 for (int i = 0; i < 50000; i++)
                 {
@@ -60,6 +60,8 @@ namespace AboutThreadingConsole
                     conList.TryTake(out i);
                 }
             });
+
+            task1.Start();
 
             var task2 = Task.Factory.StartNew(() =>
             {
