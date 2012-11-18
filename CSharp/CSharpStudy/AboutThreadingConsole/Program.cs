@@ -11,7 +11,10 @@ namespace AboutThreadingConsole
         static void Main()
         {
             //AboutNet4.Run();
-            AboutThread.RunSuccess();
+           // AboutThread.RunSuccess();
+
+            StockConcurrent cls = new StockConcurrent();
+            cls.Run();
         }
     }
 }
