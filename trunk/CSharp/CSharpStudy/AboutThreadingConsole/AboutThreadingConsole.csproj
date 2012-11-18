@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutThread.cs" />
+    <Compile Include="StockConcurrent.cs" />
     <Compile Include="ThreadsAnalysis.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
