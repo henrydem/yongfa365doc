@@ -95,7 +95,6 @@ namespace AboutThreadingConsole
         int optRecordCount = 10;
         int optConcurrentCount = 100;
         int sleepNumber = 1;
-        int? showLevel = 1;
 
         public void Run()
         {
@@ -104,7 +103,7 @@ namespace AboutThreadingConsole
 
             for (int i = 0; i < optConcurrentCount; i++)
             {
-                Parallel.Invoke(Add,Sub);
+                Parallel.Invoke(Add, Sub);
             }
             var aaa = Stock.DB;
             Console.WriteLine(DateTime.Now - time);
@@ -112,24 +111,9 @@ namespace AboutThreadingConsole
             Console.ReadLine();
         }
 
-        public void Log(int level, string msg)
-        {
-            if (showLevel.HasValue)
-            {
-                if (showLevel.Value == level)
-                {
-                    Console.WriteLine(msg);
-                    return;
-                }
-                return;
-            }
-            Console.WriteLine(msg);
-        }
-
 
         public void Add()
         {
-            Log(2, "Add 1");
             //第一步：准备待处理的资源
             var lstWant = new List<long>();
             for (int i = 1; i < optRecordCount; i++)
@@ -137,62 +121,31 @@ namespace AboutThreadingConsole
                 lstWant.Add(i);
             }
 
-
         StartLabel:
 
-            Log(2, "Add 2");
             //第二步：抢资源
-            if (lstWant.Any(p => dictRequestPool.Keys.Contains(p)))
+            if (!TryGet(lstWant, "Add"))
             {
-                Thread.Sleep(sleepNumber);
                 goto StartLabel;
             }
 
-
-            var lstHasInPool = new List<long>();
-
-            foreach (var item in lstWant)
-            {
-                if (!dictRequestPool.TryAdd(item, null))
-                {
-                    Log(1, "Add Back");
-                    //只要有添加失败的，就是存在竞争，则自己退出
-                    foreach (var item2 in lstHasInPool)
-                    {
-                        Stock s;
-                        dictRequestPool.TryRemove(item2, out s);//因为这些都是自己添加的，所以肯定退出是安全的。
-                    }
-                    //重新开始
-                    goto StartLabel;
-                }
-
-                lstHasInPool.Add(item);
-            }
-
-
-            Log(2, "Add 3");
             //第三步：资源到手，慢慢处理。
-            Thread.Sleep(1);
-            Stock.DB.Where(p => lstHasInPool.Contains(p.StockID)).ToList().ForEach(item =>
+            Thread.Sleep(1);//实际操作时间
+            Stock.DB.Where(p => lstWant.Contains(p.StockID)).ToList().ForEach(item =>
             {
                 item.Number += optAddNumber;
             });
 
-
-
-            Log(2, "Add 4");
             //第四步：放手，资源处理完了就放回去吧。
-            foreach (var item in lstHasInPool)
-            {
-                Stock s;
-                dictRequestPool.TryRemove(item, out s);
-            }
+            Free(lstWant);
 
         }
 
+
+
+
         public void Sub()
         {
-            Log(2, "Sub 1");
             //第一步：准备待处理的资源
             var lstWant = new List<long>();
             for (int i = optRecordCount - 1; i > 0; i--)
@@ -200,58 +153,65 @@ namespace AboutThreadingConsole
                 lstWant.Add(i);
             }
 
-
-
-
         StartLabel:
 
-            Log(2, "Sub 2");
             //第二步：抢资源
-            if (lstWant.Any(p => dictRequestPool.Keys.Contains(p)))
+            if (!TryGet(lstWant, "Sub"))
             {
-                Thread.Sleep(sleepNumber);
                 goto StartLabel;
             }
 
-
-            var lstHasInPool = new List<long>();
-
-            foreach (var item in lstWant)
-            {
-                if (!dictRequestPool.TryAdd(item, null))
-                {
-                    Log(1, "Sub Back");
-                    //只要有添加失败的，就是存在竞争，则自己退出
-                    foreach (var item2 in lstHasInPool)
-                    {
-                        Stock s;
-                        dictRequestPool.TryRemove(item2, out s);//因为这些都是自己添加的，所以肯定退出是安全的。
-                    }
-                    //重新开始
-                    goto StartLabel;
-                }
-
-                lstHasInPool.Add(item);
-            }
-
-
-            Log(2, "Sub 3");
             //第三步：资源到手，慢慢处理。
-            Thread.Sleep(1);
-            Stock.DB.Where(p => lstHasInPool.Contains(p.StockID)).ToList().ForEach(item =>
+            Thread.Sleep(1);//实际操作时间
+            Stock.DB.Where(p => lstWant.Contains(p.StockID)).ToList().ForEach(item =>
             {
                 item.Number -= optSubNumber;
             });
 
-
-            Log(2, "Sub 4");
             //第四步：放手，资源处理完了就放回去吧。
-            foreach (var item in lstHasInPool)
+            Free(lstWant);
+
+        }
+
+
+        //抢资源
+        private bool TryGet(List<long> lstWant, string optType)
+        {
+
+            if (lstWant.Any(p => dictRequestPool.Keys.Contains(p)))
             {
-                Stock s;
+                Thread.Sleep(sleepNumber);
+                return false;
+            }
+            var lstHasInPool = new List<long>(); ;
+            foreach (var item in lstWant)
+            {
+                if (!dictRequestPool.TryAdd(item, null))
+                {
+                    Console.WriteLine(optType + " Back");
+                    //只要有添加失败的，就是存在竞争，则自己退出
+                    Stock s;
+                    foreach (var item2 in lstHasInPool)
+                    {
+                        dictRequestPool.TryRemove(item2, out s);//因为这些都是自己添加的，所以肯定退出是安全的。
+                    }
+                    //重新开始
+                    return false;
+                }
+                lstHasInPool.Add(item);
+            }
+            lstHasInPool.Clear();
+            return true;
+        }
+
+        //释放资源
+        private void Free(List<long> lst)
+        {
+            Stock s;
+            foreach (var item in lst)
+            {
                 dictRequestPool.TryRemove(item, out s);
             }
-
         }
 
 
