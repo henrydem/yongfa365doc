@@ -21,52 +21,37 @@ namespace AboutThreadingConsole
 
             for (int i = 0; i < 100; i++)
             {
-                Parallel.Invoke(
-                                    () =>
-                                    {
-                                        Func<Stock, bool> fun = p => { return p.Date == new DateTime(2012, 1, 1); };
-                                        Add(fun, 2);
-                                    }
-
-                                    ,
-
-                                    () =>
-                                    {
-                                        Func<Stock, bool> fun = p => { return p.Date == new DateTime(2012, 1, 1); };
-                                        Sub(fun, 3);
-                                    }
-
-                                );
+                Parallel.Invoke(Add,Sub);
             }
 
             Console.WriteLine(DateTime.Now - time);
-
+            Console.ReadKey(); 
 
         }
 
 
 
 
-        public void Add(Func<Stock, bool> fun, int number)
+        public void Add()
         {
             lock (objStockLock)
             {
-                var list = Stock.DB.Where(fun);
+                var list = Stock.DB.Where(p => p.Date == new DateTime(2012, 1, 1));
                 foreach (var item in list)
                 {
-                    item.Number += number;
+                    item.Number += 2;
                 }
             }
         }
 
-        public void Sub(Func<Stock, bool> fun, int number)
+        public void Sub()
         {
             lock (objStockLock)
             {
-                var list = Stock.DB.Where(fun);
+                var list = Stock.DB.Where(p => p.Date == new DateTime(2012, 1, 1));
                 foreach (var item in list)
                 {
-                    item.Number -= number;
+                    item.Number -= 3;
                 }
             }
         }
