@@ -78,6 +78,7 @@
     <Compile Include="StringReverse.cs" />
     <Compile Include="二进制，8进制，10进制，16进制.cs" />
     <Compile Include="所有经典排序算法.cs" />
+    <Compile Include="笛卡尔乘积.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="各种数字类型精度.htm" />

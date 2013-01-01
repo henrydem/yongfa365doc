@@ -9,6 +9,9 @@ namespace 算法
     {
         static void Main(string[] args)
         {
+            笛卡尔乘积.Run();
+            Console.ReadKey();
+
             Console.WriteLine(Other.从1加到N的值(100));
 
             int a = 123;
