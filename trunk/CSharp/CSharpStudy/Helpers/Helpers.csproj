@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="OleDbHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SNHelper.cs" />
     <Compile Include="SQLHelper.cs" />
     <Compile Include="SQLiteHelper.cs" />
   </ItemGroup>
