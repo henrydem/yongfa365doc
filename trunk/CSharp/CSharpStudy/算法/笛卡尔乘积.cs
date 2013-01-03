@@ -8,7 +8,7 @@ namespace 算法
 {
     class 笛卡尔乘积
     {
-        static void Exec(string msg, Func<List<string>> func)
+        static void Exec<T>(string msg, Func<List<T>> func)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("======================{0}===========================", msg);
@@ -18,7 +18,7 @@ namespace 算法
             var lstResult = func();
             sw.Stop();
             Console.WriteLine("Count:{0}, Run Time:{1}", lstResult.Distinct().Count(), sw.Elapsed);
-            lstResult.ForEach(p => Console.WriteLine(p));
+            // lstResult.ForEach(p => Console.WriteLine(p));
         }
 
         public static void Run()
@@ -27,6 +27,9 @@ namespace 算法
             {
                 new List<string>() { "A","B","C"},
                 new List<string>() { "D","E","F"},
+                new List<string>() { "G","H","I"},
+                new List<string>() { "G","H","I"},
+                new List<string>() { "G","H","I"},
                 new List<string>() { "G","H","I"},
             };
 
@@ -47,12 +50,18 @@ namespace 算法
                 return Method2(lstSource);
             });
 
-            Exec("Descartes", () =>
+            Exec("Method3", () =>
             {
                 var lstResult = new List<string>();
-                Descartes(lstSource, 0, lstResult, "");
+                Method3(lstSource, 0, lstResult, "");
                 return lstResult;
             });
+
+            Exec("Method4", () =>
+            {
+                return Method4(lstSource);
+            });
+
         }
 
 
@@ -80,14 +89,14 @@ namespace 算法
         }
 
 
-        private static string Descartes(List<List<string>> data, int level, List<string> result, string s)
+        private static string Method3(List<List<string>> data, int level, List<string> result, string s)
         {
             var temp = s;
             foreach (var item in data[level])
             {
                 if (level < data.Count - 1)
                 {
-                    temp += Descartes(data, level + 1, result, s + item);
+                    temp += Method3(data, level + 1, result, s + item);
                 }
                 else
                 {
@@ -97,16 +106,61 @@ namespace 算法
             return temp;
         }
 
+        private static List<string> Method4(List<List<string>> data)
+        {
+            int count = 1;
+            data.ForEach(p => count *= p.Count);
+
+            var lstResult = new List<string>();
+            for (int i = 0; i < count; ++i)
+            {
+                var lstTemp = new List<string>();
+                int j = 1;
+                data.ForEach(p =>
+                {
+                    j *= p.Count;
+                    lstTemp.Add(p[(i / (count / j)) % p.Count]);
+                });
+                lstResult.Add(string.Join("", lstTemp));
+            }
+            return lstResult;
+        }
+
+        private static void Method4_1()
+        {
+            var lstSource = new List<List<string>>()
+            {
+                new List<string>() { "a" },
+                new List<string>() { "c", "d" },
+                new List<string>() { "e", "f", "g" },
+                new List<string>() { "h", "i" },
+                new List<string>() { "j" }
+            };
+            int count = 1;
+            lstSource.ForEach(p => count *= p.Count);
+
+            for (int i = 0; i < count; ++i)
+            {
+                int j = 1;
+                lstSource.ForEach(l =>
+                {
+                    j *= l.Count;
+                    Console.Write(l[(i / (count / j)) % l.Count]);
+                });
+                Console.WriteLine();
+            }
+
+        }
 
 
-        private static string look(List<List<string>> data, int level,string s )
+        private static string look(List<List<string>> data, int level, string s)
         {
             var builder = new StringBuilder();
             foreach (var item in data[level])
             {
                 if (level < data.Count - 1)
                 {
-                    builder.Append(look(data, level + 1,s + item ));
+                    builder.Append(look(data, level + 1, s + item));
                 }
                 else
                 {
@@ -115,6 +169,10 @@ namespace 算法
             }
             return builder.ToString();
         }
+
+
+
+
 
     }
 }
