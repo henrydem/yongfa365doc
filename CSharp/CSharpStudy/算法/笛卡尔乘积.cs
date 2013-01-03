@@ -28,9 +28,6 @@ namespace 算法
                 new List<string>() { "A","B","C"},
                 new List<string>() { "D","E","F"},
                 new List<string>() { "G","H","I"},
-                new List<string>() { "G","H","I"},
-                new List<string>() { "G","H","I"},
-                new List<string>() { "G","H","I"},
             };
 
 
