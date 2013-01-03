@@ -18,7 +18,7 @@ namespace 算法
             var lstResult = func();
             sw.Stop();
             Console.WriteLine("Count:{0}, Run Time:{1}", lstResult.Distinct().Count(), sw.Elapsed);
-            // lstResult.ForEach(p => Console.WriteLine(p));
+            lstResult.ForEach(p => Console.WriteLine(p));
         }
 
         public static void Run()
