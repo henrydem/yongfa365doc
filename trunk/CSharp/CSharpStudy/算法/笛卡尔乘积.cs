@@ -59,6 +59,11 @@ namespace 算法
                 return Method4(lstSource);
             });
 
+            Exec("Method5", () =>
+            {
+                return Method4(lstSource);
+            });
+
         }
 
 
@@ -123,6 +128,30 @@ namespace 算法
             return lstResult;
         }
 
+
+
+        private static List<List<T>> Common<T>(List<List<T>> lstSplit)
+        {
+            int count = 1;
+            lstSplit.ForEach(item => count *= item.Count);
+            //lstSplit.Aggregate(1, (total, next) => total *= next.Count);
+
+            var lstResult = new List<List<T>>();
+
+            for (int i = 0; i < count; ++i)
+            {
+                var lstTemp = new List<T>();
+                int j = 1;
+                lstSplit.ForEach(item =>
+                {
+                    j *= item.Count;
+                    lstTemp.Add(item[(i / (count / j)) % item.Count]);
+                });
+                lstResult.Add(lstTemp);
+            }
+            return lstResult;
+        }
+
         private static void Method4_1()
         {
             var lstSource = new List<List<string>>()
@@ -147,6 +176,11 @@ namespace 算法
                 Console.WriteLine();
             }
 
+        }
+
+        private static List<string> Method5(List<List<string>> data)
+        {
+            return Common(data).SelectMany(p => p).ToList();
         }
 
 
