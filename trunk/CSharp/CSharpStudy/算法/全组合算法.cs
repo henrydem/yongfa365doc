@@ -5,6 +5,7 @@ using System.Text;
 
 namespace 算法
 {
+    //ref http://bbs.csdn.net/topics/300069382?page=2
     class 全组合算法
     {
         [Flags]
