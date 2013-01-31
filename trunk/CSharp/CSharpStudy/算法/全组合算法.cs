@@ -21,10 +21,13 @@ namespace 算法
             var lstSource = GetEnumList<PersonType>();
             var lstComb = FullCombination(lstSource);
             var lstResult = new List<PersonType>();
-            lstComb.ForEach(item => lstResult.Add(item.Aggregate((result, source) => result | source)));
+            lstComb.ForEach(item =>
+            {
+                lstResult.Add(item.Aggregate((result, source) => result | source));
+            });
         }
 
-        private static List<T> GetEnumList<T>()
+        public static List<T> GetEnumList<T>()
         {
             var lst = new List<T>();
             foreach (T item in Enum.GetValues(typeof(T)))
@@ -34,7 +37,8 @@ namespace 算法
             return lst;
         }
 
-        private static List<List<T>> FullCombination<T>(List<T> lstSource)
+        //全组合算法
+        public static List<List<T>> FullCombination<T>(List<T> lstSource)
         {
             var n = lstSource.Count;
             var max = 1 << n;
