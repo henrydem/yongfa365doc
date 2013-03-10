@@ -37,16 +37,23 @@
     </script>
 
 
-    <select id="multiple" multiple="multiple">
-        <option>Multiple</option>
-        <option>Multiple2</option>
-        <option>Multiple3</option>
+    <select id="select_multiple" multiple="multiple">
+        <option value="val1">Multiple1</option>
+        <option value="val2">Multiple2</option>
+        <option value="val3">Multiple3</option>
+        <option value="val4">Multiple4</option>
     </select>
 
     
 
     <script>
-        $("#multiple").val(["Multiple2", "Multiple3"]);
+        $("#select_multiple").val(["val2", "val3"]);
+        alert($("#select_multiple").val());
+        $("#select_multiple :selected").each(function () {
+            alert($(this).val());
+            alert($(this).text());
+        });
+        $("#select_multiple").val([]);
     </script>
 </body>
 </html>
