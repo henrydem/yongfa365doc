@@ -14,10 +14,13 @@
     <input type="checkbox" name="checkbox" id="checkbox_id5" value="5" />5  
  
     <script>
-        alert($(":checkbox").val());//这样是取不出他的值的
-
-
+    
+        alert($(":checkbox").is(":checked"));
+        
         $(":checkbox").val(['1', '2']);
+        
+        alert($(":checkbox").is(":checked"));
+         
         $(":checkbox:checked").each(function () { //由于复选框一般选中的是多个,所以可以循环输出选中的值  
             alert($(this).val());
         });
