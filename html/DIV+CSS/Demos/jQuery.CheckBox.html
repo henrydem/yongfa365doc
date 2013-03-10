@@ -1,0 +1,50 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Demo</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>
+        jQuery(function ($) {
+            for (var i = 0; i < 3; i++) {
+                $(".pnlOpt").clone(true).appendTo($("body"))
+            }
+ 
+            $(".btnSelectAll").click(function () {
+                $(":checkbox", $(this).parent().parent()).attr("checked", true);
+            });
+ 
+            $(".btnSelectNotAll").click(function () {
+                $(":checkbox", $(this).parent().parent()).attr("checked", false);
+            });
+ 
+            $(".btnSelectOther").click(function () {
+                $(":checkbox", $(this).parent().parent()).each(function () {
+                    $(this).attr("checked", !$(this).attr("checked"));
+                });
+            });
+ 
+        });
+    </script>
+</head>
+<body>
+    <fieldset class="pnlOpt">
+        <legend>
+            <input type="button" value="btnSelectAll" class="btnSelectAll" />
+            <input type="button" value="btnSelectNotAll" class="btnSelectNotAll" />
+            <input type="button" value="btnSelectOther" class="btnSelectOther" />
+        </legend>
+        <div>
+            <input type="checkbox" />
+            <input type="checkbox" />
+            <input type="checkbox" />
+            <input type="checkbox" />
+            <input type="checkbox" />
+            <input type="checkbox" />
+            <input type="checkbox" />
+            <input type="checkbox" />
+            <input type="checkbox" />
+        </div>
+    </fieldset>
+</body>
+</html>

@@ -1,0 +1,53 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>smartFloat</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <style>
+        body {
+            height: 2000px;
+        }
+
+        .float {
+            width: 200px;
+            padding: 10px;
+            border: 1px solid #ffecb0;
+            background-color: #fffee0;
+            position: absolute;
+            top: 131px;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="float" id="float">
+        smartFloat,滚动到我时，我会一直保持在上面不动。
+    </div>
+    <script>
+        $.fn.smartFloat = function () {
+            var position = function (element) {
+                var top = element.offset().top, pos = element.css("position");
+                $(window).scroll(function () {
+                    var scrolls = $(this).scrollTop();
+                    if (scrolls > top) {
+                        if (window.XMLHttpRequest) {
+                            element.css({ position: "fixed", top: 0 });
+                        } else {
+                            element.css({ top: scrolls });
+                        }
+                    } else {
+                        //element.css({position: pos,top: top});	
+                        element.removeAttr("style");
+                    }
+                });
+            };
+            return $(this).each(function () {
+                position($(this));
+            });
+        };
+        //绑定
+        $("#float").smartFloat();
+    </script>
+</body>
+</html>
