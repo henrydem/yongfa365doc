@@ -1,0 +1,29 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>jquery.checkbox</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+</head>
+<body>
+
+    <input type="checkbox" name="checkbox" id="checkbox_id1" value="1" />1  
+    <input type="checkbox" name="checkbox" id="checkbox_id2" value="2" />2  
+    <input type="checkbox" name="checkbox" id="checkbox_id3" value="3" />3  
+    <input type="checkbox" name="checkbox" id="checkbox_id4" value="4" />4  
+    <input type="checkbox" name="checkbox" id="checkbox_id5" value="5" />5  
+ 
+    <script>
+        alert($(":checkbox").val());//这样是取不出他的值的
+
+
+        $(":checkbox").val(['1', '2']);
+        $(":checkbox:checked").each(function () { //由于复选框一般选中的是多个,所以可以循环输出选中的值  
+            alert($(this).val());
+        });
+        $(":checkbox").val([]);
+
+    </script>
+
+</body>
+</html>

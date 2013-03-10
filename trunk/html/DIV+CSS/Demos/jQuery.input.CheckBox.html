@@ -20,7 +20,7 @@
  
             $(".btnSelectOther").click(function () {
                 $(":checkbox", $(this).parent().parent()).each(function () {
-                    $(this).attr("checked", !$(this).attr("checked"));
+                    $(this).attr("checked", !$(this).is(":checked"));
                 });
             });
  

@@ -1,0 +1,52 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>jquery.select</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+</head>
+<body>
+
+    <select name="select" id="select_id">
+        <option value="val11">text11</option>
+        <option value="val22">text22</option>
+        <option value="val33">text33</option>
+        <option value="val44">text44</option>
+        <option value="val55">text55</option>
+        <option value="val66">text66</option>
+    </select>
+
+    <script>
+        $("#select_id").val('val33');
+
+        $("#select_id").change(function () {// 1.为Select添加事件，当选择其中一项时触发
+            alert($(this).val());//val始终是正确的
+            alert($(this).text());//text始终是所有text，不是选中的。
+            alert($("#select_id :selected").text());
+        });         
+
+
+        $("#select_id").append("<option value='val.append.最后位置'>最后位置</option>");
+        $("#select_id").prepend("<option value='val.prepend.第一个位置'>第一个位置</option>");
+
+        $("#select_id :first").remove();
+        $("#select_id option[value='val22']").remove();
+        $("#select_id [value='val33']").remove();
+        $("#select_id").empty();
+
+    </script>
+
+
+    <select id="multiple" multiple="multiple">
+        <option>Multiple</option>
+        <option>Multiple2</option>
+        <option>Multiple3</option>
+    </select>
+
+    
+
+    <script>
+        $("#multiple").val(["Multiple2", "Multiple3"]);
+    </script>
+</body>
+</html>
