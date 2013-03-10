@@ -1,0 +1,41 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>jQuery.Radio</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+</head>
+<body>
+
+    <input type="radio" name="radio" id="radio1" value="1" />1  
+    <input type="radio" name="radio" id="radio2" value="2" />2  
+    <input type="radio" name="radio" id="radio3" value="3" />3  
+    <input type="radio" name="radio" id="radio4" value="4" />4  
+ 
+    <script>
+        jQuery(function ($) {
+            alert($(":radio").is(":checked"));//or
+            alert($("input[type='radio'][name='radio']:checked").length == 0 ? "没有任何单选框被选中" : "已经有选中");
+            alert($(":radio[name='radio']:checked").val());
+
+            $(":radio[name='radio']").val(["2"]);//选中2，不能使用val("2")
+            alert($(':radio:checked').val());
+
+            $(":radio[name='radio'][value='3']").attr("checked", "checked");
+            alert($(':radio:checked').val());
+
+            $(":radio").get(0).checked = true;
+            alert($(':radio:checked').val());
+
+            alert($("#radio2").is(":checked"));
+            alert($(":radio").is(":checked"));
+            
+            $(":radio").val([]);
+        });
+
+
+    </script>
+
+
+</body>
+</html>
