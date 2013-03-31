@@ -60,7 +60,7 @@ namespace AboutReflection
 
         private static void TestLoad()
         {
-            User cls = new User();
+            var cls = new User();
             ColorWriteLine("列出属性：");
             foreach (var item in cls.GetType().GetProperties())
             {
@@ -68,44 +68,75 @@ namespace AboutReflection
             }
 
             ColorWriteLine("typeof");
-            Type t = typeof(System.String);
+            var t = typeof(System.String);
             Console.WriteLine(t);
 
 
             ColorWriteLine("Assembly.Load 程序集名");
             {
-                object obj = Assembly.Load("AboutReflection").CreateInstance("AboutReflection.User");//反射创建
-                User cls2 = obj as User;
+                var obj = Assembly.Load("AboutReflection").CreateInstance("AboutReflection.User");//反射创建
+                var cls2 = obj as User;
                 Console.WriteLine(cls2.Age);
             }
-  
+
 
             ColorWriteLine("Assembly.LoadFrom 相对路径");
             {
 
-                object obj = Assembly.LoadFrom("AboutReflection.exe").CreateInstance("AboutReflection.User");//反射创建
-                User cls2 = obj as User;
+                var obj = Assembly.LoadFrom("AboutReflection.exe").CreateInstance("AboutReflection.User");//反射创建
+                var cls2 = obj as User;
                 Console.WriteLine(cls2.Age);
             }
 
-            
+
             ColorWriteLine("Assembly.LoadFile 绝对路径");
             {
-                string path = AppDomain.CurrentDomain.BaseDirectory + "\\AboutReflection.exe";
-                object obj = Assembly.LoadFile(path).CreateInstance("AboutReflection.User");//反射创建
+                var path = AppDomain.CurrentDomain.BaseDirectory + "\\AboutReflection.exe";
+                var obj = Assembly.LoadFile(path).CreateInstance("AboutReflection.User");//反射创建
 
                 //使用反射执行静态方法
                 MethodInfo mi = obj.GetType().GetMethod("静态方法");
-                object result = mi.Invoke(null, new object[] { "柳永法", 23 });
+                var result = mi.Invoke(null, new object[] { "柳永法", 23 });
                 Console.WriteLine(result);
 
                 //使用反射执行普通方法
                 MethodInfo mi2 = obj.GetType().GetMethod("普通方法");
-                object result2 = mi2.Invoke(obj, new object[] { "柳永法", 23 });
+                var result2 = mi2.Invoke(obj, new object[] { "柳永法", 23 });
                 Console.WriteLine(result2);
 
             }
 
+
+
+            ColorWriteLine("Activator.CreateInstance");
+            {
+                var type = typeof(User);
+
+
+                var result = type.GetMethod("静态方法").Invoke(null, new object[] { "柳永法", 23 });
+                //使用反射执行静态方法
+                Console.WriteLine(result);
+
+
+                var obj = Activator.CreateInstance(type);
+
+                //使用反射执行普通方法
+                var result2 = type.GetMethod("普通方法").Invoke(obj, new object[] { "柳永法", 23 });
+                Console.WriteLine(result2);
+
+
+
+
+                try
+                {
+                    var obj2 = Activator.CreateInstance(type);
+                }
+                catch (TargetInvocationException ex)//CLR VIA书上说的
+                {
+                    throw ex.InnerException;
+                }
+
+            }
 
         }
 
