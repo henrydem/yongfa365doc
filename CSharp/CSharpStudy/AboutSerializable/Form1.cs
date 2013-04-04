@@ -67,9 +67,8 @@ namespace AboutSerializable
 
 
 
-            YongFa365.Serialization.SerializeHelper helper = new YongFa365.Serialization.SerializeHelper();
 
-            string aaa = helper.ToJson(user);
+            string aaa = SerializeHelper.DataContractSerializerToJson(user);
             File.AppendAllText("json.txt", aaa);
         }
 
@@ -89,9 +88,8 @@ namespace AboutSerializable
 
 "",'[]
 永法";
-            YongFa365.Serialization.SerializeHelper helper = new YongFa365.Serialization.SerializeHelper();
 
-            string aaa = helper.ToXml(user);
+            string aaa = SerializeHelper.ToXml(user);
             File.AppendAllText("XML.txt", aaa);
         }
 
@@ -111,9 +109,8 @@ namespace AboutSerializable
 "",'[]
 永法";
 
-            YongFa365.Serialization.SerializeHelper helper = new YongFa365.Serialization.SerializeHelper();
 
-            string aaa = helper.ToBinary(user);
+            string aaa = SerializeHelper.ToBinary(user);
             File.AppendAllText("bin.txt", aaa);
         }
 
@@ -133,9 +130,8 @@ namespace AboutSerializable
 "",'[]
 永法";
             user.IsLive = true;
-            YongFa365.Serialization.SerializeHelper helper = new YongFa365.Serialization.SerializeHelper();
 
-            string aaa = helper.ToSoap(user);
+            string aaa = SerializeHelper.ToSoap(user);
             File.AppendAllText("soap.txt", aaa);
         }
 

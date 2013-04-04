@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Runtime.Serialization.Json;
@@ -15,11 +16,11 @@ namespace YongFa365.Serialization
     class SerializeHelper
     {
         #region XmlSerializer
-        public string ToXml<T>(T item)
+        public static string ToXml<T>(T item)
         {
-            XmlSerializer serializer = new XmlSerializer(item.GetType());
-            StringBuilder sb = new StringBuilder();
-            using (XmlWriter writer = XmlWriter.Create(sb))
+            var serializer = new XmlSerializer(item.GetType());
+            var sb = new StringBuilder();
+            using (var writer = XmlWriter.Create(sb))
             {
                 serializer.Serialize(writer, item);
                 return sb.ToString();
@@ -29,16 +30,16 @@ namespace YongFa365.Serialization
         /// <summary>
         /// 在XML序列化时去除默认命名空间xmlns:xsd和xmlns:xsi
         /// </summary>
-        public string ToXml2<T>(T item)
+        public static string ToXml2<T>(T item)
         {
-            XmlSerializer serializer = new XmlSerializer(item.GetType());
+            var serializer = new XmlSerializer(item.GetType());
 
             //在XML序列化时去除默认命名空间xmlns:xsd和xmlns:xsi
-            XmlSerializerNamespaces xmlns = new XmlSerializerNamespaces();
+            var xmlns = new XmlSerializerNamespaces();
             xmlns.Add("", "");
 
-            StringBuilder sb = new StringBuilder();
-            using (XmlWriter writer = XmlWriter.Create(sb))
+            var sb = new StringBuilder();
+            using (var writer = XmlWriter.Create(sb))
             {
                 serializer.Serialize(writer, item, xmlns);
                 return sb.ToString();
@@ -48,22 +49,22 @@ namespace YongFa365.Serialization
         /// <summary>
         /// 在XML序列化后 xml代码更好看
         /// </summary>
-        public string ToXml3<T>(T item)
+        public static string ToXml3<T>(T item)
         {
             using (MemoryStream stream = new MemoryStream())
             {
-                XmlSerializer serializer = new XmlSerializer(item.GetType());
-                XmlSerializerNamespaces xmlns = new XmlSerializerNamespaces();
+                var serializer = new XmlSerializer(item.GetType());
+                var xmlns = new XmlSerializerNamespaces();
                 xmlns.Add("", "");
                 serializer.Serialize(stream, item, xmlns);
                 return Encoding.UTF8.GetString(stream.GetBuffer());
             }
         }
 
-        public T FromXml<T>(string str)
+        public static T FromXml<T>(string str)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-            using (XmlReader reader = new XmlTextReader(new StringReader(str)))
+            var serializer = new XmlSerializer(typeof(T));
+            using (var reader = new XmlTextReader(new StringReader(str)))
             {
                 return (T)serializer.Deserialize(reader);
             }
@@ -71,16 +72,16 @@ namespace YongFa365.Serialization
         #endregion
 
         #region BinaryFormatter
-        public string ToBinary<T>(T item)
+        public static string ToBinary<T>(T item)
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
+            var formatter = new BinaryFormatter();
+            using (var ms = new MemoryStream())
             {
                 formatter.Serialize(ms, item);
                 ms.Position = 0;
-                byte[] bytes = ms.ToArray();
-                StringBuilder sb = new StringBuilder();
-                foreach (byte bt in bytes)
+                var bytes = ms.ToArray();
+                var sb = new StringBuilder();
+                foreach (var bt in bytes)
                 {
                     sb.Append(string.Format("{0:X2}", bt));
                 }
@@ -88,17 +89,17 @@ namespace YongFa365.Serialization
             }
         }
 
-        public T FromBinary<T>(string str)
+        public static T FromBinary<T>(string str)
         {
-            int intLen = str.Length / 2;
-            byte[] bytes = new byte[intLen];
-            for (int i = 0; i < intLen; i++)
+            var intLen = str.Length / 2;
+            var bytes = new byte[intLen];
+            for (var i = 0; i < intLen; i++)
             {
-                int ibyte = Convert.ToInt32(str.Substring(i * 2, 2), 16);
+                var ibyte = Convert.ToInt32(str.Substring(i * 2, 2), 16);
                 bytes[i] = (byte)ibyte;
             }
-            BinaryFormatter formatter = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream(bytes))
+            var formatter = new BinaryFormatter();
+            using (var ms = new MemoryStream(bytes))
             {
                 return (T)formatter.Deserialize(ms);
             }
@@ -106,10 +107,10 @@ namespace YongFa365.Serialization
         #endregion
 
         #region SoapFormatter
-        public string ToSoap<T>(T item)
+        public static string ToSoap<T>(T item)
         {
-            SoapFormatter formatter = new SoapFormatter();
-            using (MemoryStream ms = new MemoryStream())
+            var formatter = new SoapFormatter();
+            using (var ms = new MemoryStream())
             {
                 formatter.Serialize(ms, item);
                 ms.Position = 0;
@@ -119,12 +120,12 @@ namespace YongFa365.Serialization
             }
         }
 
-        public T FromSoap<T>(string str)
+        public static T FromSoap<T>(string str)
         {
-            XmlDocument xmlDoc = new XmlDocument();
+            var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(str);
-            SoapFormatter formatter = new SoapFormatter();
-            using (MemoryStream ms = new MemoryStream())
+            var formatter = new SoapFormatter();
+            using (var ms = new MemoryStream())
             {
                 xmlDoc.Save(ms);
                 ms.Position = 0;
@@ -134,21 +135,43 @@ namespace YongFa365.Serialization
         #endregion
 
 
-        #region JsonSerializer
-        public string ToJson<T>(T item)
+        #region DataContractSerializer XML
+        public static string DataContractSerializerToXML<T>(T item)
         {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(item.GetType());
-            using (MemoryStream ms = new MemoryStream())
+            var serializer = new DataContractSerializer(item.GetType());
+            using (var ms = new MemoryStream())
             {
                 serializer.WriteObject(ms, item);
                 return Encoding.UTF8.GetString(ms.ToArray());
             }
         }
 
-        public T FromJson<T>(string str) where T : class
+        public static T DataContractSerializerFromXML<T>(string str) where T : class
         {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(str)))
+            var serializer = new DataContractSerializer(typeof(T));
+            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(str)))
+            {
+                return serializer.ReadObject(ms) as T;
+            }
+        }
+        #endregion
+
+
+        #region DataContractJsonSerializer json
+        public static string DataContractSerializerToJson<T>(T item)
+        {
+            var serializer = new DataContractJsonSerializer(item.GetType());
+            using (var ms = new MemoryStream())
+            {
+                serializer.WriteObject(ms, item);
+                return Encoding.UTF8.GetString(ms.ToArray());
+            }
+        }
+
+        public static T DataContractSerializerFromJson<T>(string str) where T : class
+        {
+            var serializer = new DataContractJsonSerializer(typeof(T));
+            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(str)))
             {
                 return serializer.ReadObject(ms) as T;
             }
