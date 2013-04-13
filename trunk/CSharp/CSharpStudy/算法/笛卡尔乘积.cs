@@ -81,13 +81,14 @@ namespace 算法
 
         private static List<string> Method1(List<List<string>> lst)
         {
-            return lst.Aggregate((current, total) => total.Join(current, (string x) => 1, (string y) => 1, (string a, string b) => b + a).ToList());
+            return lst.Aggregate((result, next) => next.Join(result, (string x) => 1, (string y) => 1, (string a, string b) => b + a).ToList());
         }
 
 
         private static List<string> Method2(List<List<string>> lst)
         {
-            return lst.Aggregate(new List<string> { "-->" }, (r, s) => (from a in r from b in s select a + b).ToList());
+            //return lst.Aggregate(new List<string> { "-->" }, (total, next) => (from a in total from b in next select a + b).ToList());
+            return lst.Aggregate((result, next) => (from a in result from b in next select a + b).ToList());
         }
 
 
@@ -134,7 +135,7 @@ namespace 算法
         {
             int count = 1;
             lstSplit.ForEach(item => count *= item.Count);
-            //lstSplit.Aggregate(1, (total, next) => total *= next.Count);
+            lstSplit.Aggregate(1, (total, next) => total * next.Count);
 
             var lstResult = new List<List<T>>();
 
