@@ -5,6 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Web.Script.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -114,7 +115,7 @@ namespace YongFa365.Serialization
             {
                 formatter.Serialize(ms, item);
                 ms.Position = 0;
-                XmlDocument xmlDoc = new XmlDocument();
+                var xmlDoc = new XmlDocument();
                 xmlDoc.Load(ms);
                 return xmlDoc.InnerXml;
             }
@@ -146,12 +147,12 @@ namespace YongFa365.Serialization
             }
         }
 
-        public static T DataContractSerializerFromXML<T>(string str) where T : class
+        public static T DataContractSerializerFromXML<T>(string str)
         {
             var serializer = new DataContractSerializer(typeof(T));
             using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(str)))
             {
-                return serializer.ReadObject(ms) as T;
+                return (T)serializer.ReadObject(ms);
             }
         }
         #endregion
@@ -168,13 +169,29 @@ namespace YongFa365.Serialization
             }
         }
 
-        public static T DataContractSerializerFromJson<T>(string str) where T : class
+        public static T DataContractSerializerFromJson<T>(string str)
         {
             var serializer = new DataContractJsonSerializer(typeof(T));
             using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(str)))
             {
-                return serializer.ReadObject(ms) as T;
+                return (T)serializer.ReadObject(ms);
             }
+        }
+        #endregion
+
+
+        #region JavaScriptSerializer json
+        public static string JavaScriptSerializerToJson<T>(T item)
+        {
+            var serializer = new JavaScriptSerializer();
+            return serializer.Serialize(item);
+        }
+
+        public static T JavaScriptSerializerFromJson<T>(string str)
+        {
+            var serializer = new JavaScriptSerializer();
+            return serializer.Deserialize<T>(str);
+
         }
         #endregion
 
