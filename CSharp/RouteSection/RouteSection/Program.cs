@@ -17,7 +17,7 @@ namespace RouteSection
         }
     }
 
-    #region MyRoutingSection
+
     public static class RouteConfigManager
     {
         public static void RegisterRoutes()
@@ -185,18 +185,25 @@ namespace RouteSection
 
         public RouteValueDictionary Value
         {
-            get { return this._Value; }//TODO:可能要判断为null时返回null
+            get { return this._Value; }
         }
 
         protected override bool OnDeserializeUnrecognizedAttribute(string name, string value)
         {
-            _Value.Add(name, value);
+            if (value == "UrlParameter.Optional")
+            {
+                _Value.Add(name, UrlParameter.Optional);
+            }
+            else
+            {
+                _Value.Add(name, value);
+            }
+
             return true;
         }
     }
 
 
-    #endregion
 
 
 }
