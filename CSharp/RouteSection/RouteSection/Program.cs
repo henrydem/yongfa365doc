@@ -42,7 +42,16 @@ namespace RouteSection
                 }
                 else if (route.Type == "ignore")
                 {
-                    routes.IgnoreRoute(route.Url, route.Constraints.Value);
+                    //ignore里的Constraints必须有值，或为null,跟map不一样
+                    if (route.Constraints.Value.Count == 0)
+                    {
+                        routes.IgnoreRoute(route.Url);
+                    }
+                    else
+                    {
+                        routes.IgnoreRoute(route.Url, route.Constraints.Value);
+                    }
+
                 }
                 else if (route.Type == "map")
                 {
