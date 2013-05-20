@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" >
+  
+  <xs:element name="RouteConfigSection" type="RouteConfigSection"/>
+
+  <xs:complexType name="RouteConfigSection">
+    <xs:choice minOccurs="1" maxOccurs="1">
+      <xs:element name="routes" minOccurs="1" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="add" type="RouteConfigElement" minOccurs="1" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+
+
+
+  <xs:complexType name="RouteConfigElement">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="defaults" minOccurs="0" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation>value can use：UrlParameter.Optional</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="constraints" minOccurs="0" maxOccurs="1" />
+      <xs:element name="dataTokens" minOccurs="0" maxOccurs="1" />
+    </xs:choice>
+
+    <xs:attribute name="type" type="OperationType" use="required">
+      <xs:annotation>
+        <xs:documentation>OperationType</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="name" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation>IsKey if(type != "map") only give a no Duplicate Name</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="url" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation></xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="routeHandlerType" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>eg：Ticket.Entity.RouteConfigSection,Ticket.Entity</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    
+  </xs:complexType>
+
+
+
+
+  <xs:simpleType name="OperationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="clear"/>
+      <xs:enumeration value="ignore"/>
+      <xs:enumeration value="map"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+</xs:schema>
