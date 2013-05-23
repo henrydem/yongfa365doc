@@ -58,10 +58,10 @@ namespace RouteSection
 
                     routes.Add(route.Name, new Route
                         (
-                        route.Url, 
-                        route.Defaults.Value, 
-                        route.Constraints.Value, 
-                        route.DataTokens.Value, 
+                        route.Url,
+                        route.Defaults.Value,
+                        route.Constraints.Value,
+                        route.DataTokens.Value,
                         GetInstanceOfRouteHandler(route)
                         )
                         );
@@ -104,13 +104,16 @@ namespace RouteSection
         [ConfigurationProperty("routes", IsDefaultCollection = false)]
         public RouteConfigElementCollection Routings { get { return (RouteConfigElementCollection)base["routes"]; } }
 
+        //https://github.com/bspell1/NLogEx/blob/master/NLogEx.Mvc/Config/Config.cs
         [ConfigurationProperty("xmlns")]
-        private string NS1 { get; set; }
+        private String Ns1 { get { return null; } }
+
         [ConfigurationProperty("xmlns:xsi")]
-        private string NS2 { get; set; }
+        private String Ns2 { get { return null; } }
+
         [ConfigurationProperty("xsi:noNamespaceSchemaLocation")]
-        private string NS3 { get; set; }
-    
+        private String Ns3 { get { return null; } }
+
     }
 
 

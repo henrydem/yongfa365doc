@@ -51,6 +51,9 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="RouteConfigSection.AutoGen.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="RouteConfigSection.xsd">
       <SubType>Designer</SubType>
     </None>
