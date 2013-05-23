@@ -57,6 +57,9 @@ namespace AboutSerializable
         [XmlArray("给Scores换名")]
         [XmlArrayItem("给Scores数组或list所表示的类换名")]
         public List<StudentScore> Scores { get; set; }
+
+        [XmlElement("将List扁平化并且此为节点名")]
+        public List<StudentScore> Scores { get; set; }
     }
 
     [Serializable]
