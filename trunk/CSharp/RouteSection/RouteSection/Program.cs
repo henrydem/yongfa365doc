@@ -103,6 +103,14 @@ namespace RouteSection
     {
         [ConfigurationProperty("routes", IsDefaultCollection = false)]
         public RouteConfigElementCollection Routings { get { return (RouteConfigElementCollection)base["routes"]; } }
+
+        [ConfigurationProperty("xmlns")]
+        private string NS1 { get; set; }
+        [ConfigurationProperty("xmlns:xsi")]
+        private string NS2 { get; set; }
+        [ConfigurationProperty("xsi:noNamespaceSchemaLocation")]
+        private string NS3 { get; set; }
+    
     }
 
 
