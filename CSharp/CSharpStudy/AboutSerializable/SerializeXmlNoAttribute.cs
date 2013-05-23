@@ -26,9 +26,9 @@ namespace AboutSerializable
                 }
             };
 
-            SerializeHelper serial = new SerializeHelper();
-            string temp = serial.ToXml3(student);
-            Student student2 = serial.FromXml<Student>(temp);
+
+            string temp = SerializeHelper.ToXml3(student);
+            Student student2 = SerializeHelper.FromXml<Student>(temp);
 
         }
     }

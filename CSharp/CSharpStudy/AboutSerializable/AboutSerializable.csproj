@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="CodeTimer.cs" />
     <Compile Include="SerializeXmlNoAttribute.cs" />
     <Compile Include="YongFa365.Serialization.cs" />

@@ -13,6 +13,7 @@ namespace AboutSerializable
         [STAThread]
         static void Main()
         {
+            new Class1().Run();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
